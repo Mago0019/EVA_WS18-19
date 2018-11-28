@@ -1,8 +1,12 @@
 package server;
 
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Thread-Klasse die alle aktiven Clients des Servers verwaltet.
+ */
 public class Lobby extends Thread {
 
 	List<Player> lobbyList;
@@ -18,4 +22,10 @@ public class Lobby extends Thread {
 		
 	}
 
+	
+	public void addUser(Socket socket) {
+		Player pl = new Player();
+		pl.socket = socket;
+		this.lobbyList.add(pl);
+	}
 }
