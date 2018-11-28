@@ -23,11 +23,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -44,7 +44,9 @@ public class SampleController {
 	@FXML
 	private Label titelLabel;
 	@FXML
-	private TextArea textArea;
+	private Pane Spiel_Pane;
+	@FXML
+	private TextFlow textFlow;  // NUR EIN TEST! Vll gibt es bessere Textboxen um Nachrichten anzuzeigen
 	@FXML
 	private VBox topVBox;
 	@FXML
@@ -63,9 +65,15 @@ public class SampleController {
 	private MenuItem mHilfe_hilfe;
 
 	@FXML
-	public void event_1(ActionEvent eventVSPressed) {
+	public void event_ChipEinwerfen(ActionEvent eventVSPressed) {
 		try {
-				textArea.setText("test");
+			/* TODO: 
+			 * - Textfeld für Zahleingabe
+			 * - Button zum Abschicken
+			 * - Überprüfen ob Eingabe korrekt
+			 * - an Server übermitteln, wo der Chip rein soll
+			*/
+				
 			
 		} catch (Exception e) {
 			System.out.println("ERROR: Verschlüsseln fehgeschlagen!");
@@ -74,8 +82,12 @@ public class SampleController {
 	}
 
 	@FXML
-	public void event_2(ActionEvent eventESPressed) {
+	public void event_updateField(ActionEvent eventSpielfeldUpdate) {
 		try {
+			/* TODO:
+			 * - Getriggert, wenn antwort vom Server
+			 * - aktualisiert Spielfeld 
+			*/
 			
 		} catch (Exception e) {
 			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
@@ -101,7 +113,7 @@ public class SampleController {
 			while ((txtLine = bReader.readLine()) != null) {
 				txtContent.append(txtLine + "\n");
 			}
-			textArea.setText(txtContent.toString());
+			//textArea.setText(txtContent.toString());
 			fReader.close();
 			bReader.close();
 
@@ -114,7 +126,7 @@ public class SampleController {
 	@FXML
 	public void event_DateiSpeichern(ActionEvent eventSpeichernPressed) {
 		try {
-			System.out.println("Speichern ausgelöst.");
+	/*		System.out.println("Speichern ausgelöst.");
 
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Save Resource File");
@@ -130,7 +142,7 @@ public class SampleController {
 			bWriter.flush();
 			fWriter.close();
 			bWriter.close();
-
+*/
 		} catch (Exception e) {
 			System.out.println("ERROR: Speichern fehgeschlagen! Keine Datei aufgewählt.");
 			//e.printStackTrace();
