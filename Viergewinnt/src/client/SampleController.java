@@ -38,21 +38,11 @@ public class SampleController {
 	@FXML
 	private HBox hBox;
 	@FXML
-	private VBox vBox;
-	@FXML
 	private Button öffnenB;
 	@FXML
 	private Button speichernB;
 	@FXML
-	private Button verschlB;
-	@FXML
-	private Button entschlB;
-	@FXML
 	private Label titelLabel;
-	@FXML
-	private Label ostLabel;
-	@FXML
-	private TextField SWort;
 	@FXML
 	private TextArea textArea;
 	@FXML
@@ -62,43 +52,21 @@ public class SampleController {
 	@FXML
 	private Menu menuDatei;
 	@FXML
-	private Menu menuBearbeiten;
-	@FXML
 	private Menu menuHilfe;
 	@FXML
-	private MenuItem mDatei_beenden;
+	private MenuItem mDatei_einstellungen;
 	@FXML
-	private MenuItem mBearbeiten_KeyGenerieren;
+	private MenuItem mDatei_beenden;
 	@FXML
 	private MenuItem mHilfe_ueber;
 	@FXML
 	private MenuItem mHilfe_hilfe;
 
 	@FXML
-	public void event_Verschluesseln(ActionEvent eventVSPressed) {
+	public void event_1(ActionEvent eventVSPressed) {
 		try {
-			System.out.println("Verschlüsseln ausgelöst.");
-			String areaInhalt = textArea.getText();
-			char[] key = SWort.getText().toCharArray();
-			char[] charArray = areaInhalt.toCharArray();
-			if (key.length == 0 || charArray.length == 0) {
-				showNoInputAlert();
-			} else {
-				String verschlText = "";
-				int iText = -1;
-				int iKey = -1;
-				int i = 0;
-				char newChar;
-
-				for (char c : charArray) {
-					iText = getIndex(c);
-					iKey = getIndex(key[i]);
-					newChar = getChar((iText + iKey) % 108);
-					verschlText += newChar;
-					i = (i + 1) % key.length;
-				}
-				textArea.setText(verschlText);
-			}
+				textArea.setText("test");
+			
 		} catch (Exception e) {
 			System.out.println("ERROR: Verschlüsseln fehgeschlagen!");
 			e.printStackTrace();
@@ -106,31 +74,9 @@ public class SampleController {
 	}
 
 	@FXML
-	public void event_Entschluesseln(ActionEvent eventESPressed) {
+	public void event_2(ActionEvent eventESPressed) {
 		try {
-			System.out.println("Entschlüsseln ausgelöst.");
-			String areaInhalt = textArea.getText();
-			char[] key = SWort.getText().toCharArray();
-			char[] charArray = areaInhalt.toCharArray();
-
-			if (key.length == 0 || charArray.length == 0) {
-				showNoInputAlert();
-			} else {
-				String entschlText = "";
-				int iText = -1;
-				int iKey = -1;
-				int i = 0;
-				char newChar;
-
-				for (char c : charArray) {
-					iText = getIndex(c);
-					iKey = getIndex(key[i]);
-					newChar = getChar((iText - iKey + 108) % 108);
-					entschlText += newChar;
-					i = (i + 1) % key.length;
-				}
-				textArea.setText(entschlText);
-			}
+			
 		} catch (Exception e) {
 			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
 			e.printStackTrace();
@@ -191,38 +137,12 @@ public class SampleController {
 		}
 	}
 
-	public static int getIndex(char text) {
-		String tabelle = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ äöüÄÖÜß!\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`´{}|~°²³€";
-		// 108 Zeichen mit Z.Umbruch (EditV3.1: noch 11 zugefügt)
-		char zeilenumbruch = 10;
-		tabelle += zeilenumbruch;
-		// tabelle += System.lineSeparator();
-		char[] charTabelle = tabelle.toCharArray();
-		for (int i = 0; i < charTabelle.length; i++) {
-			if (text == charTabelle[i]) {
-				return i;
-			}
-		}
-		// Falls nichts gefunden:
-		System.out.println(
-				"ERROR: Unbekanntes Zeichen im zu verschlüsselnden Text. Wurde im Schlüsselsatz nicht gefunden: " + text
-						+ " Nummer: " + (int) text);
-		return 0;
-	}
-
-	private static char getChar(int a) {
-		String tabelle = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ äöüÄÖÜß!\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`´{}|~°²³€";
-		// 108 Zeichen mit Z.Umbruch (EditV3.1: noch 11 zugefügt)
-		char zeilenumbruch = 10;
-		tabelle += zeilenumbruch;
-		// tabelle += System.lineSeparator();
-		char[] charTabelle = tabelle.toCharArray();
-		return charTabelle[a];
-	}
 
 	@FXML
 	public void event_Menue_Beenden(ActionEvent eventBeendenPressed) {
 		try {
+			// TODO: vll Fenster mit Abfrage, ob beendet werden soll / ob noch gespeichert werden soll.
+			
 			System.out.println("Programm beenden.");
 			Stage stage = (Stage) root.getScene().getWindow();
 			stage.close();
@@ -233,34 +153,16 @@ public class SampleController {
 		}
 	}
 	
-	@FXML
-	public void event_Menue_KeyGenerieren(){
-		try {
-			System.out.println("Key generieren.");
-			String generatedKey = "";
-			char c;
-			String tabelle = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ äöüÄÖÜß!\"#$%&'()*+,-./0123456789:;<=>?@[\\]^_`´{}|~°²³€";
-			for(int i = 0; i<=3; i++){
-				c = tabelle.charAt((int) (Math.random()*108));
-				generatedKey += c;
-			}
-			SWort.setText(generatedKey);
-
-		} catch (Exception e) {
-			System.out.println("ERROR: Key konnte nicht generiert werden!");
-			e.printStackTrace();
-		}
-	}
-
+	
 	@FXML
 	public void event_Menue_Ueber(ActionEvent eventUeberPressed) {
 		try {
 			System.out.println("Info-Dialog geöffnet.");
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Über");
-			alert.setHeaderText("Vigenère Verschlüsselungsprogramm");
+			alert.setHeaderText("VierGewinnt");
 			alert.setContentText(
-					"Verschlüsselungsprogramm basierend auf dem Vigenère-Verfahren.\nVersion 4.0  -  16.05.17\n\nGeschrieben von Patrick Geerds\nProgrammier-Techniken 1 - ÜB 5 Aufgabe 4 (erweitert)");
+					"VierGewinnt 2D\nVersion 0.1  -  28.11.18\n\nGeschrieben von Patrick Geerds und Manuel Golz\nEntwicklung-Verteilter-Systeme im WS 18/19");
 			alert.show();
 
 		} catch (Exception e) {
@@ -277,7 +179,7 @@ public class SampleController {
 			alert.setTitle("Hilfe");
 			alert.setHeaderText("Eine kleine Anleitung");
 			alert.setContentText(
-					"Bei dem Vigenère-Verfahren wird ein Text mithilfe eines Schlüssels umgewandelt. Mithilfe desselben Schlüssels kann der Text wieder lesbar gemacht werden.\n\n- Im Text, als auch im Schlüssel sind Alle ASCII-Zeichen, als auch Umlaute erlaubt.\n- Sowohl der Text, als auch der Schlüssel sollten schon eingegeben sein, bevor versucht wird zu Ver- oder Entschlüsseln.\n- Ein Schlüsselwort, das länger ist als der eigentliche Text ist wenig sinnvoll.\n- Der Inhalt des Textfelds kann - über die unteren Buttons - als Textdatei abgespeichert und wieder geladen werden.");
+					"How To:\n- Chip in eine Spalte werfen (fallen immer bis nach unten) \n\nGewinnen: \n- Wer 4 Chips in einer Reihe/Spalte/Diagonale liegen hat, gewinnt.");
 			alert.show();
 
 		} catch (Exception e) {
@@ -286,7 +188,7 @@ public class SampleController {
 		}
 	}
 
-	public void showNoInputAlert() {
+	public void showNoInputAlert() { // TODO: Kann man vll für falsche eingabe wiederverwerten/zum Abfragen, ob beendet werden soll.
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Eingabefehler");
 		alert.setHeaderText("Keine Eingabe");
