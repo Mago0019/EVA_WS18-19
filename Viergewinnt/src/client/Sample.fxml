@@ -7,12 +7,11 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.SampleController">
+<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" stylesheets="@application.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.SampleController">
    <bottom>
       <HBox fx:id="hBox" alignment="CENTER" prefHeight="55.0" prefWidth="600.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
@@ -26,12 +25,6 @@
    </bottom>
    <right>
       <VBox fx:id="vBox" prefHeight="318.0" prefWidth="118.0" spacing="10.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label fx:id="ostLabel" text="Schlüsselwort:" />
-            <TextField fx:id="SWort" />
-            <Button fx:id="verschlB" mnemonicParsing="false" onAction="#event_Verschluesseln" text="Verschlüsseln" />
-            <Button fx:id="entschlB" mnemonicParsing="false" onAction="#event_Entschluesseln" text="Entschlüsseln" />
-         </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
@@ -47,12 +40,8 @@
               <menus>
                 <Menu fx:id="menuDatei" mnemonicParsing="false" text="Datei">
                   <items>
-                    <MenuItem fx:id="mDatei_beenden" mnemonicParsing="false" onAction="#event_Menue_Beenden" text="Beenden" />
-                  </items>
-                </Menu>
-                <Menu fx:id="menuBearbeiten" mnemonicParsing="false" text="Bearbeiten">
-                  <items>
-                    <MenuItem fx:id="mBearbeiten_KeyGenerieren" mnemonicParsing="false" onAction="#event_Menue_KeyGenerieren" text="Key Generieren" />
+                    <MenuItem fx:id="mDatei_einstellungen" mnemonicParsing="false" text="Einstellungen" />
+                        <MenuItem fx:id="mDatei_beenden1" mnemonicParsing="false" onAction="#event_Menue_Beenden" text="Beenden" />
                   </items>
                 </Menu>
                 <Menu fx:id="menuHilfe" mnemonicParsing="false" text="Hilfe">
@@ -63,7 +52,7 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <Label fx:id="titelLabel" nodeOrientation="LEFT_TO_RIGHT" text="Textver- und Entschlüsselung">
+            <Label fx:id="titelLabel" nodeOrientation="LEFT_TO_RIGHT" text="Viergewinnt v0.1">
                <padding>
                   <Insets left="10.0" top="10.0" />
                </padding>
