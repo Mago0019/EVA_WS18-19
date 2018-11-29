@@ -29,7 +29,7 @@ public class Server {
 					Socket newSocket = empfangsSocket.accept();
 
 					// TODO: Socket weitergeben an EmpfangsThread
-					new EmpfangsThread(newSocket);
+					new EmpfangsThread(newSocket, lobby).start();
 					
 				} catch (Exception e) {
 					e.printStackTrace();

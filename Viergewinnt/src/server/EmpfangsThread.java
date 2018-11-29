@@ -12,9 +12,11 @@ import java.net.Socket;
 public class EmpfangsThread extends Thread {
 
 	Socket clientSocket;
+	Lobby lobby;
 
-	public EmpfangsThread(Socket clientSocket) {
+	public EmpfangsThread(Socket clientSocket, Lobby lobby) {
 		this.clientSocket = clientSocket;
+		this.lobby = lobby;
 	}
 
 	@Override
@@ -29,14 +31,23 @@ public class EmpfangsThread extends Thread {
 				PrintStream output = new PrintStream(clientSocket.getOutputStream());
 
 				// TODO: Befehlscode für NamensAnforderung
-				output.print("");
+				output.print("\\0");
 
-				// TODO: Namen empfangen
-				input.readLine();
+				// TODO: Namen empfangen / Marshalling + DeMarshalling in extra MEthoden
+				String newName = input.readLine();
+				
+				// Name 
+				if(newName != null && newName.length() > 2 && newName.length() < 10) {
+					clientName = newName;
+					done = true;
+				}
 
 			} catch (Exception e) {
+				System.out.println("ERROR: Abfragen des ClientNamens fehlgeschlagen!");
 			}
-		}
-
+		}// end While
+		
+		//In die Lobby einfügen
+		lobby.addUser(clientSocket, clientName);
 	}
 }
