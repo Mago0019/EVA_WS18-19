@@ -1,7 +1,5 @@
 package server;
 
-import java.net.Socket;
-
 public class GameSession extends Thread
 {
 	Player player1;
