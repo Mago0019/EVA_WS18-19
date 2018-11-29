@@ -1,19 +1,19 @@
-package client;
+package server;
 
-public class Spielfeld 
+public class GameField 
 {
 	int[][] field;
 	int width;
 	int hight;
 
-	public Spielfeld() 
+	public GameField() 
 	{
 		this.field = new int[7][6];
 		this.width = 7;
 		this.hight = 6;
 	}
 	
-	public Spielfeld(int width, int hight)
+	public GameField(int width, int hight)
 	{
 		if (width < 16 && hight < 16)
 		{
@@ -30,6 +30,7 @@ public class Spielfeld
 		
 	}
 	
+	
 	public boolean setStone(int collumn, int player)
 	{
 		for(int i = this.hight-1; i >= 0 ; i-- )
@@ -42,6 +43,11 @@ public class Spielfeld
 			
 		}
 		return false;
+	}
+	
+	public int [][] getField()
+	{
+		return this.field;
 	}
 	
 	
@@ -144,7 +150,7 @@ public class Spielfeld
 		
 		//Diagonale von links-oben nach rechts-unten prüfen
 		
-		if(collumn - row >= 0)	//sorgt dafür, das der Start nicht nach links raus läuft
+		if(collumn - row >= 0)	//sorgt dafür, das der Start nicht nach oben raus läuft
 		{
 			for(int i = 0; i <= this.hight - 1 ; i++)
 			{
@@ -165,7 +171,7 @@ public class Spielfeld
 				}
 			}
 		}
-		else					// sorgt dafür dass der Start nicht nach unten raus läuft
+		else					// sorgt dafür dass der Start nicht nach links raus läuft
 		{
 			for(int i = row - collumn ; i >=0; i--)
 			{
@@ -190,4 +196,8 @@ public class Spielfeld
 		
 		return false;
 	}
+	
+	
 }
+
+
