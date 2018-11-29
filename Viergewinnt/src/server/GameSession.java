@@ -1,19 +1,29 @@
 package server;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class GameSession extends Thread
 {
 	Player player1;
 	Player player2;
 	String gameName;
-	int[][] field;
+	GameField gameField;
 	
+	
+	public GameSession(Player player1, Player player2, String gameName, int width, int hight)
+	{
+		this.player1 = player1;
+		this.player2 = player2;
+		this.gameName = gameName;
+		this.gameField = new GameField(width, hight);
+	}
 	
 	public GameSession(Player player1, Player player2, String gameName)
 	{
 		this.player1 = player1;
 		this.player2 = player2;
 		this.gameName = gameName;
-		this.field = field;
+		this.gameField = new GameField(); //nutzt default Größe fürs Spielfeld Breite : 7, Höhe : 6
 	}
 	
 	@Override
