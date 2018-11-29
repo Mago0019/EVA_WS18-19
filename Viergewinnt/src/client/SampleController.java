@@ -23,6 +23,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -37,10 +38,6 @@ public class SampleController {
 	private BorderPane root;
 	@FXML
 	private HBox hBox;
-	@FXML
-	private Button öffnenB;
-	@FXML
-	private Button speichernB;
 	@FXML
 	private Label titelLabel;
 	@FXML
@@ -62,7 +59,21 @@ public class SampleController {
 	@FXML
 	private MenuItem mHilfe_ueber;
 	@FXML
-	private MenuItem mHilfe_hilfe;
+	private Label SpielerName_L;
+	@FXML
+	private Label ServerIP_L;
+	@FXML
+	private Label ServerPort_L; 
+	@FXML
+	private TextField ServerPort_TF;
+	@FXML
+	private TextField SpielerName_TF;
+	@FXML
+	private TextField ServerIP_TF; 
+	@FXML
+	private Button joinServer_B;
+
+	
 
 	@FXML
 	public void event_ChipEinwerfen(ActionEvent eventVSPressed) {
@@ -208,4 +219,18 @@ public class SampleController {
 		alert.show();
 	}
 
+	
+	@FXML
+	public void event_joinServer(ActionEvent klick) {
+		try {
+			System.out.println("Server - ip: " + ServerIP_TF.getText() + ":" + ServerPort_TF.getText() + " , PlayerName: " + SpielerName_TF.getText() );
+			Client client = new Client(this);
+			client.serverConnect(ServerIP_TF.getText(), Integer.parseInt(ServerPort_TF.getText()),SpielerName_TF.getText() );
+			
+			
+		} catch (Exception e) {
+			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
+			e.printStackTrace();
+		}
+	}
 }
