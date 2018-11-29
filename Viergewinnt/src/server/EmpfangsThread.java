@@ -32,6 +32,7 @@ public class EmpfangsThread extends Thread {
 
 				// TODO: Befehlscode für NamensAnforderung
 				output.print("\\0");
+				output.flush();
 
 				// TODO: Namen empfangen / Marshalling + DeMarshalling in extra MEthoden
 				String newName = input.readLine();
@@ -40,6 +41,7 @@ public class EmpfangsThread extends Thread {
 				if(newName != null && newName.length() > 2 && newName.length() < 10) {
 					clientName = newName;
 					done = true;
+					System.out.println("New PlayerName: " + clientName);
 				}
 
 			} catch (Exception e) {

@@ -26,7 +26,7 @@ public class Server {
 
 			int port = 19009;
 			InetAddress adr = InetAddress.getLocalHost();
-			System.out.println("Server IP: " + adr.getHostAddress());
+			System.out.println("Server IP: " + adr.getHostAddress() + ":" + port);
 
 			empfangsSocket = new ServerSocket(port, 50, adr);
 
