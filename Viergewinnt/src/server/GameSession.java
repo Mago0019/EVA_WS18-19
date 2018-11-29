@@ -4,16 +4,16 @@ import java.net.Socket;
 
 public class GameSession extends Thread
 {
-	Socket client1;
-	Socket client2;
+	Player player1;
+	Player player2;
 	String gameName;
 	int[][] field;
 	
 	
-	public GameSession(Socket client1, Socket client2, String gameName)
+	public GameSession(Player player1, Player player2, String gameName)
 	{
-		this.client1 = client1;
-		this.client2 = client2;
+		this.player1 = player1;
+		this.player2 = player2;
 		this.gameName = gameName;
 		this.field = field;
 	}
@@ -21,6 +21,10 @@ public class GameSession extends Thread
 	@Override
 	public void run()
 	{
-		//TODO
+		//TODO ...
+		
+		
+		// TODO: Beim Beenden des Spiels müssen die beiden Player wieder aus der "InGame"-LobbyListe ausgetragen werden.
+		
 	}
 }
