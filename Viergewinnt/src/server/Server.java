@@ -1,63 +1,90 @@
 package server;
 
-import java.io.IOException;
 import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Scanner;
 
+/**
+ * Startet das Empfangssocket und arbeitet dann als IO-Thread für den Server.
+ */
 public class Server {
+
+	public static boolean serverRunning = true;
 
 	public static void main(String[] args) {
 
-		boolean serverRunning = true;
-		Lobby lobby = null;
-		ServerSocket empfangsSocket = null;
-
-		ExecutorService tPool = Executors.newScheduledThreadPool(5); // CoreSize = 5
-		
-		try {
+		try (Scanner sc = new Scanner(System.in)) {
 			System.out.println("Server gestartet.");
-			lobby = new Lobby(tPool);
-			lobby.start();
 
-			int port = 19009;
-			InetAddress adr = InetAddress.getLocalHost();
-			System.out.println("Server IP: " + adr.getHostAddress() + ":" + port);
+			// SERVER-DATEN
+			int PORT = 19009;
+			InetAddress ADR = InetAddress.getLocalHost();
+			System.out.println("Server IP: " + ADR.getHostAddress() + ":" + PORT + "\n");
 
-			empfangsSocket = new ServerSocket(port, 50, adr);
+			String eingabe;
 
 			while (serverRunning) {
 				try {
-					Socket newSocket = empfangsSocket.accept();
-					//newSocket.setSoTimeout(2000); //in ms
+					eingabe = sc.nextLine();
+					eingabe.toLowerCase();
 
-					// TODO: Socket weitergeben an EmpfangsThread || THREADPOOL
-					
-					tPool.execute( new EmpfangsThread(newSocket, lobby) );
-					
-					
-					// TODO: Shutdown für ThreadPool + Server selbst (auch als eigener IO-Thread)
-				} catch (SocketException te) {
-					System.out.println("ERROR: Setzen des TimeOuts für ClientSocket fehlgeschlagen.");
+					switch (eingabe) {
+					case "?":
+						b_showCommands();
+						break;
+
+					case "stop":
+					case "shutdown":
+						b_shutdownServer();
+						break;
+
+					case "lobby":
+						b_showLobby();
+						break;
+
+					default:
+						System.out.println(" - wrong command -");
+						break;
+					}
+
 				} catch (Exception e) {
 					e.printStackTrace();
 					System.out.println("ERROR: Verbindungsaufbau mit Clienten fehlgeschlagen.");
 				}
-			}
+			} // end While
+
+			System.out.println("Server erfolgreich beendet.");
+
 		} catch (Exception e) {
 			System.out.println("ERROR: Server abgestürzt!");
-		} finally {
-			if (empfangsSocket != null) {
-				try {
-					empfangsSocket.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
 		}
+
+	}
+
+	private static void b_showCommands() {
+		System.out.println("-------------------------------------------");
+		System.out.printf("ServerCommands: %s %s %s", "? - show Commands", "stop/shutdown - shutdown entire server",
+				"lobby - show the players current online");
+		System.out.println("-------------------------------------------");
+	}
+	
+	private static void b_showLobby() {
+		
+		System.out.println("");
+	}
+	
+	private static void b_shutdownServer() {
+		// 1. Beende WellcomeSocket
+		// TODO
+
+		// 2. Beende Spiele
+
+		// 3. Beende Lobby
+
+		// 4. Beende diesen Server
+		serverRunning = false;
+	}
+
+	public static void starteWellcomeSocket() {
 
 	}
 
