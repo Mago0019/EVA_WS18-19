@@ -20,6 +20,11 @@ public class Lobby extends Thread {
 		this.inGameList = new ArrayList<Player>();
 		this.tPool = threadPool;
 		this.gameCount = 0;
+		
+		// TODO: NUR ZUM TESTEN:
+		for(int i = 1; i<5; i++) {
+			lobbyList.add( new Player("Dummy " + i , null));
+		}
 	}
 
 	@Override
@@ -51,5 +56,22 @@ public class Lobby extends Thread {
 		} catch (Exception e) {
 			System.out.println("ERROR: StartGameSession fehlgeschlagen!");
 		}
+	}
+	
+	public String getLobbyList() {
+		StringBuilder sb = new StringBuilder("Lobby: ");
+		
+		for(Player p : lobbyList) {
+			sb.append(p.name + "; ");
+		}
+		sb.substring(2);  // letzte zwei Zeichen (; ) löschen.
+		
+		sb.append("\nIn Game: ");
+		for(Player p : inGameList) {
+			sb.append(p.name);
+		}
+		sb.substring(2);  // letzte zwei Zeichen (; ) löschen.
+		
+		return sb.toString();
 	}
 }
