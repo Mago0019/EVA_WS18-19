@@ -7,7 +7,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeoutException;
 
 public class Server {
 
@@ -33,11 +32,12 @@ public class Server {
 			while (serverRunning) {
 				try {
 					Socket newSocket = empfangsSocket.accept();
-					newSocket.setSoTimeout(2000); //in ms
+					//newSocket.setSoTimeout(2000); //in ms
 
 					// TODO: Socket weitergeben an EmpfangsThread || THREADPOOL
 					
 					tPool.execute( new EmpfangsThread(newSocket, lobby) );
+					
 					
 					// TODO: Shutdown für ThreadPool + Server selbst (auch als eigener IO-Thread)
 				} catch (SocketException te) {

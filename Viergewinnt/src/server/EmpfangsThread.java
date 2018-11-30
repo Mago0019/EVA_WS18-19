@@ -21,27 +21,29 @@ public class EmpfangsThread extends Thread {
 
 	@Override
 	public void run() {
+		System.out.println("EmpfangsThread gestartet.");
 		// Frage den Clienten nach dem Namen und geben ihn dann an die Lobby weiter.
 		String clientName = "noName";
 		boolean done = false;
 
-		while (done) {
+		while (!done) {
 			try {
 				BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 				PrintStream output = new PrintStream(clientSocket.getOutputStream());
 
 				// TODO: Befehlscode für NamensAnforderung
-				output.print("\\0");
-				output.flush();
+				output.print("~~0 \n");
+				//output.flush();
+				System.out.println("Client angefragt - Code: ~~0");
 
 				// TODO: Namen empfangen / Marshalling + DeMarshalling in extra MEthoden
 				String newName = input.readLine();
+				System.out.println("Antwort von Client: " + newName);
 				
 				// Name 
 				if(newName != null && newName.length() > 2 && newName.length() < 10) {
 					clientName = newName;
 					done = true;
-					System.out.println("New PlayerName: " + clientName);
 				}
 
 			} catch (Exception e) {
