@@ -64,7 +64,7 @@
             <Label text="Server IP-Adresse" GridPane.columnIndex="1" />
             <Label text="Server Port" GridPane.columnIndex="2" />
             <TextField fx:id="SpielerName_TF" text="Name" GridPane.rowIndex="1" />
-            <TextField fx:id="ServerIP_TF" text="127.0.0.1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="ServerIP_TF" text="10.0.184.151" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="ServerPort_TF" text="19009" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <Button fx:id="joinServer_B" mnemonicParsing="false" onAction="#event_joinServer" text="Join Server" GridPane.columnIndex="1" GridPane.rowIndex="2" />
          </children>
