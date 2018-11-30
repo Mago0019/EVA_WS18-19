@@ -23,7 +23,7 @@ public class GameSession extends Thread
 		this.player1 = player1;
 		this.player2 = player2;
 		this.gameName = gameName;
-		this.gameField = new GameField(); //nutzt default Größe fürs Spielfeld Breite : 7, Höhe : 6
+		this.gameField = new GameField(); //nutzt default Größe fürs Spielfeld: Breite : 7, Höhe : 6
 	}
 	
 	@Override

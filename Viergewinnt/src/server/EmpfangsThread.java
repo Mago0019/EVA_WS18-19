@@ -40,7 +40,7 @@ public class EmpfangsThread extends Thread {
 				String newName = input.readLine();
 				System.out.println("Antwort von Client: " + newName);
 				
-				// Name 
+				// neuen Namen überprüfen
 				if(newName != null && newName.length() > 2 && newName.length() < 10) {
 					clientName = newName;
 					done = true;
