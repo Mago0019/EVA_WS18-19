@@ -223,7 +223,6 @@ public class SampleController {
 	@FXML
 	public void event_joinServer(ActionEvent klick) {
 		try {
-			System.out.println("Server - ip: " + ServerIP_TF.getText() + ":" + ServerPort_TF.getText() + " , PlayerName: " + SpielerName_TF.getText() );
 			Client client = new Client(this);
 			client.serverConnect(ServerIP_TF.getText(), Integer.parseInt(ServerPort_TF.getText()),SpielerName_TF.getText() );
 			
