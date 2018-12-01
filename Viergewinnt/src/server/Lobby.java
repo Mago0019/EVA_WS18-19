@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * Thread-Klasse die alle aktiven Clients des Servers verwaltet.
+ * TODO: Lobby statisch machen (falls es geht) -> Zugriff von überall möglich
  */
 public class Lobby extends Thread {
 
@@ -14,8 +15,9 @@ public class Lobby extends Thread {
 	List<Player> inGameList;
 	ExecutorService tPool;
 	private int gameCount;
+	static Lobby instance;
 
-	public Lobby(ExecutorService threadPool) {	
+	public Lobby(ExecutorService threadPool) {	 // privater Konstruktor
 		this.lobbyList = new ArrayList<Player>();
 		this.inGameList = new ArrayList<Player>();
 		this.tPool = threadPool;
@@ -26,6 +28,14 @@ public class Lobby extends Thread {
 			lobbyList.add( new Player("Dummy " + i , null));
 		}
 	}
+	
+//	public static Lobby getInstance() {
+//		if(instance != null)
+//			return instance;
+//		instance = new Lobby() {
+//			
+//		}
+//	}
 
 	@Override
 	public void run() {

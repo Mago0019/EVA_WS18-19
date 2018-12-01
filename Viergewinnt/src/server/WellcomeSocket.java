@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Thread der den ServerSocket verwaltet -> Clienten annehmen und gleich an einen neuen EmpfangsThread übergeben.
+ * Thread der den ServerSocket verwaltet -> Clients annehmen und gleich an einen neuen EmpfangsThread übergeben.
  */
 public class WellcomeSocket extends Thread {
 
@@ -63,5 +63,8 @@ public class WellcomeSocket extends Thread {
 		if(lobby != null)
 			return lobby.getLobbyList();
 		return null;
+	}
+	public ExecutorService getThreadPool() {
+		return this.tPool;
 	}
 }
