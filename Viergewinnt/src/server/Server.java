@@ -29,6 +29,7 @@ public class Server {
 
 					switch (eingabe) {
 					case "?":
+					case "help":
 						b_showCommands();
 						break;
 
@@ -62,7 +63,7 @@ public class Server {
 
 	private static void b_showCommands() {
 		System.out.println("-------------------------------------------");
-		System.out.printf("ServerCommands: %s %s %s", "? - show Commands", "stop/shutdown - shutdown entire server",
+		System.out.printf("ServerCommands: %s %s %s", "?/help - show Commands", "stop/shutdown - shutdown entire server",
 				"lobby - show the players current online");
 		System.out.println("-------------------------------------------");
 	}
