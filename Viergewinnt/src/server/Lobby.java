@@ -3,46 +3,39 @@ package server;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Thread-Klasse die alle aktiven Clients des Servers verwaltet.
- * TODO: Lobby statisch machen (falls es geht) -> Zugriff von überall möglich
+ * TODO: Lobby statisch machen (falls es geht) -> Zugriff von überall möglich (singleton, vll threadlos)
+ * 
+ * KRITISCHE KLASSE! MUSS THREADSAFE SEIN!
  */
-public class Lobby extends Thread {
+public class Lobby {
 
-	List<Player> lobbyList;
-	List<Player> inGameList;
-	ExecutorService tPool;
+	private List<Player> lobbyList;
+	private List<Player> inGameList;
 	private int gameCount;
-	static Lobby instance;
+	private static Lobby instance;
 
-	public Lobby(ExecutorService threadPool) {	 // privater Konstruktor
+	private Lobby() {	 // privater Konstruktor
 		this.lobbyList = new ArrayList<Player>();
 		this.inGameList = new ArrayList<Player>();
-		this.tPool = threadPool;
 		this.gameCount = 0;
 		
-		// TODO: NUR ZUM TESTEN:
+		// TODO: NUR ZUM TESTEN: Füllen der Lobby
 		for(int i = 1; i<5; i++) {
 			lobbyList.add( new Player("Dummy " + i , null));
 		}
 	}
 	
-//	public static Lobby getInstance() {
-//		if(instance != null)
-//			return instance;
-//		instance = new Lobby() {
-//			
-//		}
-//	}
-
-	@Override
-	public void run() {
-		// TODO: Verwalten der Nutzer und Starten von GameSessions
-		
+	public static synchronized Lobby getInstance() { // Synchronized, damit nicht ausversehen 2 Objekte erzeugt werden.
+		if(instance != null)
+			return instance;
+		instance = new Lobby();
+		return instance;
 	}
 
+	
 	/**
 	 * Fügt einen Clienten zur Lobby hinzu
 	 */
@@ -53,12 +46,17 @@ public class Lobby extends Thread {
 		this.lobbyList.add(pl);
 	}
 	
-	private void startGameSession(Player player1, Player player2) {
+	/**
+	 * Wird von einem EmpfangsThread aufgerufen und verbindet beide Threads um während dem Spiel kommunizieren zu können.
+	 * @param player1 der Spieler des Threads, der die Methode aufruft
+	 * @param player2 der andere Spieler, mit dem sich verbunden werden soll
+	 */
+	public void startGameSession(Player player1, Player player2) {
 		gameCount++;
 		try {
 			String gameName = "Game " + gameCount;  // TODO: bessere Namensgenerierung
 			GameSession gs = new GameSession(player1, player2, gameName); 
-			
+			gs.start();
 			
 			inGameList.add(player1);
 			inGameList.add(player2);
@@ -68,6 +66,11 @@ public class Lobby extends Thread {
 		}
 	}
 	
+	/**
+	 * Formattierte String ausgabe für alle Spieler in der Lobby und alle Spieler, die momentan in einem Spiel sind.
+	 * 
+	 * @return zwei-zeiliger String
+	 */
 	public String getLobbyList() {
 		StringBuilder sb = new StringBuilder("Lobby: ");
 		
