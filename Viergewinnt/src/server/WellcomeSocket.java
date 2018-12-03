@@ -32,8 +32,7 @@ public class WellcomeSocket extends Thread {
 			// Benötigte Werkzeuge generieren
 			empfangsSocket = new ServerSocket(PORT, 50, ADR);		
 			tPool = Executors.newScheduledThreadPool(5); // CoreSize = 5 für EmpfangsThreads und GameSessions		
-			lobby = new Lobby(tPool);
-			lobby.start();
+			this.lobby = Lobby.getInstance(); 
 			
 		} catch (IOException e) {
 			System.out.println("ERROR (WellcomeSocket): Starten des ServerSockets fehlgeschlagen.");
@@ -48,6 +47,7 @@ public class WellcomeSocket extends Thread {
 
 				// TODO: Socket weitergeben an EmpfangsThread
 				tPool.execute( new EmpfangsThread(newSocket, lobby) );
+				
 				
 				
 			} catch (SocketException se) {

@@ -8,6 +8,8 @@ import java.util.List;
  * Thread-Klasse die alle aktiven Clients des Servers verwaltet.
  * TODO: Lobby statisch machen (falls es geht) -> Zugriff von überall möglich (singleton, vll threadlos)
  * 
+ * TODO(EVTL): Spieler ID Generieren lassen -> später vll interessant, falls Spieler den gleichen Namen haben.
+ * 
  * KRITISCHE KLASSE! MUSS THREADSAFE SEIN!
  */
 public class Lobby {
