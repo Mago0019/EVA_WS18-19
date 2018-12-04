@@ -10,7 +10,7 @@ import java.net.Socket;
 public class Client
 {
 	String serverIP;
-	int port;
+	int serverPort;
 	String name;
 	SampleController sampleC;
 	
@@ -25,12 +25,12 @@ public class Client
 		{
 			this.serverIP = serverIP;
 			this.name = name;
-			this.port = port;
+			this.serverPort = port;
 			
 			System.out.println("Server - ip: " + serverIP + ":" + port );
 			System.out.println("Player - ip: " + InetAddress.getLocalHost().getHostAddress()  + " PlayerName: " + name );
 						
-			Socket socket = new Socket(this.serverIP, this.port);
+			Socket socket = new Socket(this.serverIP, this.serverPort);  // TODO: vll Port ändern
 			//socket.setSoTimeout(2000);
 			
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));

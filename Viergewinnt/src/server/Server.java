@@ -8,8 +8,8 @@ import java.util.Scanner;
  */
 public class Server {
 
-	public static boolean serverRunning = true;
-
+	public static boolean serverRunning = true;	
+	
 	public static void main(String[] args) {
 
 		try (Scanner sc = new Scanner(System.in)) {
@@ -19,7 +19,12 @@ public class Server {
 			int PORT = 19009;
 			InetAddress ADR = InetAddress.getLocalHost();
 			System.out.println("Server IP: " + ADR.getHostAddress() + ":" + PORT + "\n");
-
+			
+			WellcomeSocket wellcomeSocket = new WellcomeSocket(ADR, PORT);
+			wellcomeSocket.start();
+			
+			b_showCommands();
+			
 			String eingabe;
 
 			while (serverRunning) {
@@ -83,10 +88,6 @@ public class Server {
 
 		// 4. Beende diesen Server
 		serverRunning = false;
-	}
-
-	public static void starteWellcomeSocket() {
-
 	}
 
 }

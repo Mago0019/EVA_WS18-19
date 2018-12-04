@@ -48,8 +48,6 @@ public class WellcomeSocket extends Thread {
 				// TODO: Socket weitergeben an EmpfangsThread
 				tPool.execute( new EmpfangsThread(newSocket, lobby) );
 				
-				
-				
 			} catch (SocketException se) {
 				System.out.println("ERROR: SocketException / Timeout");
 			} catch (IOException ioe) {
