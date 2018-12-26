@@ -3,15 +3,19 @@ package client;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Client
 {
 	String serverIP;
 	int serverPort;
 	String name;
+	static ArrayList<String> lobby;
+	int[][] field;
+	int width;
+	int hight;
 	SampleController sampleC;
 	
 	public Client(SampleController sampleC)
@@ -40,6 +44,7 @@ public class Client
 			System.out.println(serverNachricht);
 			
 			System.out.println("nachricht erhalten");
+			
 			
 			
 			output.print("ACK");

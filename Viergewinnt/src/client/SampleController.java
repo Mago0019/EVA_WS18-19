@@ -11,13 +11,15 @@ package client;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -69,7 +71,9 @@ public class SampleController {
 	@FXML
 	private TextField ServerIP_TF; 
 	@FXML
-	private Button joinServer_B;
+	private ListView<String> lobby_LV;
+	@FXML
+	private ListView<String> gameList_LV;
 
 	
 
@@ -223,7 +227,38 @@ public class SampleController {
 		try {
 			Client client = new Client(this);
 			client.serverConnect(ServerIP_TF.getText(), Integer.parseInt(ServerPort_TF.getText()),SpielerName_TF.getText() );
+			try {
+				Pane mainPane = (Pane) FXMLLoader.load(Main.class.getResource("Test.fxml"));
+				Scene scene = new Scene(mainPane);
+				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+				Stage stage = (Stage)((Node)klick.getSource()).getScene().getWindow();
+				stage.setScene(scene);
+				stage.show();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 			
+		} catch (Exception e) {
+			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
+			e.printStackTrace();
+		}
+	}
+	@FXML
+	public void event_joinServerLobbyPane(ActionEvent klick) {
+		try {
+			Client client = new Client(this);
+			
+//			Client.lobby.add("Patrick");
+//			Client.lobby.add("Manuel");
+//			Client.lobby.add("Lukas");
+//			Client.lobby.add("Gregor");
+//			Client.lobby.add("Thomas");
+//			Client.lobby.add("Nadine");
+//			
+//			
+//			lobby_LV.setItems((ObservableList<String>)Client.lobby);
+			client.serverConnect(ServerIP_TF.getText(), Integer.parseInt(ServerPort_TF.getText()),SpielerName_TF.getText() );
+
 			
 		} catch (Exception e) {
 			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");

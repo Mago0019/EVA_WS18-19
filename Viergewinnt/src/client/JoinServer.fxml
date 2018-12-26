@@ -18,7 +18,7 @@
    <bottom>
       <HBox fx:id="hBox" alignment="CENTER" prefHeight="55.0" prefWidth="600.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="ffnenB" mnemonicParsing="false" onAction="#event_DateiOeffnen" text="Server Beitreten" />
+            <Button fx:id="joinServer_B" mnemonicParsing="false" onAction="#event_joinServer" text="Server Beitreten" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -71,20 +71,20 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Spieler Name" GridPane.columnIndex="1">
+            <Label fx:id="SpielerName_L" text="Spieler Name" GridPane.columnIndex="1">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </Label>
-            <Label text="Server IP-Adresse" GridPane.columnIndex="3">
+            <Label fx:id="ServerIP_L" text="Server IP-Adresse" GridPane.columnIndex="3">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </Label>
-            <TextField text="Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <TextField text="127.0.0.1" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-            <TextField text="19009" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-            <Label text="Server Port" GridPane.columnIndex="5">
+            <TextField fx:id="SpielerName_TF" text="Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="ServerIP_TF" text="127.0.0.1" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <TextField fx:id="ServerPort_TF" text="19009" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+            <Label fx:id="ServerPort_L" text="Server Port" GridPane.columnIndex="5">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
