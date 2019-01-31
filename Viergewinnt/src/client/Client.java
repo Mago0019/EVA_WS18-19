@@ -5,22 +5,27 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Client
 {
 	String serverIP;
 	int serverPort;
 	String name;
-	static ArrayList<String> lobby;
 	int[][] field;
 	int width;
 	int hight;
-	SampleController sampleC;
+	LobbyController lobbyC;
+	LinkedList<String> lobbyList;
 	
-	public Client(SampleController sampleC)
+	public Client(LobbyController lobbyC)
 	{
-		this.sampleC = sampleC;
+		this.lobbyC = lobbyC;
+		this.lobbyList= new LinkedList<String>();
+		lobbyList.add("Patrick");
+		lobbyList.add("Manuel");
+		lobbyList.add("Thomas");
+		lobbyList.add("Nadine");
 	}
 	
 	public void serverConnect(String serverIP, int port, String name)
@@ -36,6 +41,8 @@ public class Client
 						
 			Socket socket = new Socket(this.serverIP, this.serverPort);  // TODO: vll Port ändern
 			//socket.setSoTimeout(2000);
+
+			
 			
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			PrintStream output = new PrintStream(socket.getOutputStream()); 
