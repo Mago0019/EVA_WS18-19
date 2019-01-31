@@ -148,35 +148,30 @@ public class JoinServerController {
 
 	@FXML
 	public void event_joinServer(ActionEvent klick) {
+		LobbyController lobbyC = new LobbyController();
+		Client client = new Client(lobbyC);
 		boolean done = false;
 		while (!done) {
 			try {
-				LobbyController lobbyC = new LobbyController();
-				Client client = new Client(lobbyC);
-				client.serverIP = ServerIP_TF.getText();
-				client.serverPort = Integer.parseInt(ServerPort_TF.getText());
-				client.name = SpielerName_TF.getText();
+				boolean verbindungErfolgreich = client.serverConnect(ServerIP_TF.getText(), Integer.parseInt(ServerPort_TF.getText()), SpielerName_TF.getText());
 
-				client.serverConnect();
-				try {
+				if(verbindungErfolgreich) { // Client hat Socket erfolgreich erzeugt
 					Pane mainPane = (Pane) FXMLLoader.load(Main.class.getResource("LobbyPane.fxml"));
 					Scene scene = new Scene(mainPane);
 					scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 					Stage stage = (Stage) ((Node) klick.getSource()).getScene().getWindow();
 					stage.setScene(scene);
-					// lobbyC.updateLobbyListView(client.lobbyList);
-					stage.show();
-
-				} catch (NumberFormatException nfe) {
-					// Todo:  entweder Alert starten, oder ein Textfeld mit einer Errormeldung füllen
-					System.out.println("ERROR: Port ist keine Zahl");
-				}
-				catch (Exception e) {
-					e.printStackTrace();
+					stage.show();	
+					
+					done = true;
 				}
 
+			} catch (NumberFormatException nfe) {
+				// Todo: entweder Alert starten, oder ein Textfeld mit einer Errormeldung füllen
+				System.out.println("ERROR: Port ist keine Zahl!");
 			} catch (Exception e) {
-				System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
+				// Diese Errormeldung könnte auch vom Clienten geworfen werden.
+				System.out.println("ERROR: Verbinden mit Server fehlgeschlagen!");
 				e.printStackTrace();
 			}
 		}

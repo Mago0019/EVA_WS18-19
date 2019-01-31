@@ -1,6 +1,7 @@
 package client;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.InetAddress;
@@ -12,11 +13,19 @@ public class Client
 	String serverIP;
 	int serverPort;
 	String name;
-	int[][] field;
-	int width;
-	int hight;
-	LobbyController lobbyController;
-	LinkedList<String> lobbyList;
+	private int[][] field;
+	private int width; // falls es später dynamisch sein soll
+	private int hight;
+	private LinkedList<String> lobbyList;
+	
+	//---- UI ------
+	private LobbyController lobbyController;
+	
+	// ---- IO ----
+	private Socket socket;
+	private BufferedReader input;
+	private PrintStream output;
+	
 	
 	public Client(LobbyController lobbyC)
 	{
@@ -24,21 +33,23 @@ public class Client
 		lobbyController.setClient(this);
 	}
 	
-	public void serverConnect()
-	{
-		try 
-		{
+	public boolean serverConnect(String serverIP, int serverPort, String spielerName) {
+		try {
+			this.serverIP = serverIP;
+			this.serverPort = serverPort;
+			this.name = spielerName;
+			
 			
 			System.out.println("Server - ip: " + serverIP + ":" + serverPort );
 			System.out.println("Player - ip: " + InetAddress.getLocalHost().getHostAddress()  + " PlayerName: " + name );
 						
-			Socket socket = new Socket(this.serverIP, this.serverPort);  // TODO: vll Port ändern
+			this.socket = new Socket(this.serverIP, this.serverPort);  // TODO: vll Port ändern
 			//socket.setSoTimeout(2000);
 
 			
 			
-			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			PrintStream output = new PrintStream(socket.getOutputStream()); 
+			input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			output = new PrintStream(socket.getOutputStream()); 
 			System.out.println("Warte auf Anfrage vom Server");
 			String serverNachricht = input.readLine();
 			System.out.println(serverNachricht);
@@ -48,12 +59,12 @@ public class Client
 			
 			
 			output.print("ACK");
-			socket.close();
+			return true; // Verbinden hat geklappt
 			
-			
-		}catch(Exception e)
-		{
-			e.printStackTrace();
+		}catch(Exception e) {
+			// Verbinden fehlgeschlagen
+			try { socket.close(); } catch (IOException e1) {}
+			return false;
 		}
 		
 	}
