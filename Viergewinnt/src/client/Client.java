@@ -15,28 +15,21 @@ public class Client
 	int[][] field;
 	int width;
 	int hight;
-	LobbyController lobbyC;
+	LobbyController lobbyController;
 	LinkedList<String> lobbyList;
 	
 	public Client(LobbyController lobbyC)
 	{
-		this.lobbyC = lobbyC;
-		this.lobbyList= new LinkedList<String>();
-		lobbyList.add("Patrick");
-		lobbyList.add("Manuel");
-		lobbyList.add("Thomas");
-		lobbyList.add("Nadine");
+		this.lobbyController = lobbyC;
+		lobbyController.setClient(this);
 	}
 	
-	public void serverConnect(String serverIP, int port, String name)
+	public void serverConnect()
 	{
 		try 
 		{
-			this.serverIP = serverIP;
-			this.name = name;
-			this.serverPort = port;
 			
-			System.out.println("Server - ip: " + serverIP + ":" + port );
+			System.out.println("Server - ip: " + serverIP + ":" + serverPort );
 			System.out.println("Player - ip: " + InetAddress.getLocalHost().getHostAddress()  + " PlayerName: " + name );
 						
 			Socket socket = new Socket(this.serverIP, this.serverPort);  // TODO: vll Port ändern

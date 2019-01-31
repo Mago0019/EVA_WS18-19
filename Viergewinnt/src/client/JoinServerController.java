@@ -1,4 +1,5 @@
 package client;
+
 /**
  * EVA WS 18/19
  * Patrick Geerds
@@ -38,7 +39,7 @@ public class JoinServerController {
 	@FXML
 	private Pane Spiel_Pane;
 	@FXML
-	private TextFlow textFlow;  // NUR EIN TEST! Vll gibt es bessere Textboxen um Nachrichten anzuzeigen
+	private TextFlow textFlow; // NUR EIN TEST! Vll gibt es bessere Textboxen um Nachrichten anzuzeigen
 	@FXML
 	private VBox topVBox;
 	@FXML
@@ -58,27 +59,24 @@ public class JoinServerController {
 	@FXML
 	private Label ServerIP_L;
 	@FXML
-	private Label ServerPort_L; 
+	private Label ServerPort_L;
 	@FXML
 	private TextField ServerPort_TF;
 	@FXML
 	private TextField SpielerName_TF;
 	@FXML
-	private TextField ServerIP_TF; 
+	private TextField ServerIP_TF;
 	@FXML
 	private Button joinServer_B;
 
 	@FXML
 	public void event_ChipEinwerfen(ActionEvent eventVSPressed) {
 		try {
-			/* TODO: 
-			 * - Textfeld für Zahleingabe
-			 * - Button zum Abschicken
-			 * - Überprüfen ob Eingabe korrekt
-			 * - an Server übermitteln, wo der Chip rein soll
-			*/
-				
-			
+			/*
+			 * TODO: - Textfeld für Zahleingabe - Button zum Abschicken - Überprüfen ob
+			 * Eingabe korrekt - an Server übermitteln, wo der Chip rein soll
+			 */
+
 		} catch (Exception e) {
 			System.out.println("ERROR: Verschlüsseln fehgeschlagen!");
 			e.printStackTrace();
@@ -88,11 +86,10 @@ public class JoinServerController {
 	@FXML
 	public void event_updateField(ActionEvent eventSpielfeldUpdate) {
 		try {
-			/* TODO:
-			 * - Getriggert, wenn antwort vom Server
-			 * - aktualisiert Spielfeld 
-			*/
-			
+			/*
+			 * TODO: - Getriggert, wenn antwort vom Server - aktualisiert Spielfeld
+			 */
+
 		} catch (Exception e) {
 			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
 			e.printStackTrace();
@@ -102,8 +99,9 @@ public class JoinServerController {
 	@FXML
 	public void event_Menue_Beenden(ActionEvent eventBeendenPressed) {
 		try {
-			// TODO: vll Fenster mit Abfrage, ob beendet werden soll / ob noch gespeichert werden soll.
-			
+			// TODO: vll Fenster mit Abfrage, ob beendet werden soll / ob noch gespeichert
+			// werden soll.
+
 			System.out.println("Programm beenden.");
 			Stage stage = (Stage) root.getScene().getWindow();
 			stage.close();
@@ -113,8 +111,7 @@ public class JoinServerController {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	@FXML
 	public void event_Menue_Ueber(ActionEvent eventUeberPressed) {
 		try {
@@ -149,31 +146,39 @@ public class JoinServerController {
 		}
 	}
 
-	
 	@FXML
 	public void event_joinServer(ActionEvent klick) {
-		try {
-			LobbyController lobbyC = new LobbyController();
-			Client client = new Client(lobbyC);
-			client.serverConnect(ServerIP_TF.getText(), Integer.parseInt(ServerPort_TF.getText()),SpielerName_TF.getText() );
+		boolean done = false;
+		while (!done) {
 			try {
-				Pane mainPane = (Pane) FXMLLoader.load(Main.class.getResource("LobbyPane.fxml"));
-				Scene scene = new Scene(mainPane);
-				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-				Stage stage = (Stage)((Node)klick.getSource()).getScene().getWindow();
-				stage.setScene(scene);
-				lobbyC.lobby.addAll(client.lobbyList);
-				//lobbyC.updateLobbyListView(client.lobbyList);
-				stage.show();
-				
-				
-			} catch(Exception e) {
+				LobbyController lobbyC = new LobbyController();
+				Client client = new Client(lobbyC);
+				client.serverIP = ServerIP_TF.getText();
+				client.serverPort = Integer.parseInt(ServerPort_TF.getText());
+				client.name = SpielerName_TF.getText();
+
+				client.serverConnect();
+				try {
+					Pane mainPane = (Pane) FXMLLoader.load(Main.class.getResource("LobbyPane.fxml"));
+					Scene scene = new Scene(mainPane);
+					scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+					Stage stage = (Stage) ((Node) klick.getSource()).getScene().getWindow();
+					stage.setScene(scene);
+					// lobbyC.updateLobbyListView(client.lobbyList);
+					stage.show();
+
+				} catch (NumberFormatException nfe) {
+					// Todo:  entweder Alert starten, oder ein Textfeld mit einer Errormeldung füllen
+					System.out.println("ERROR: Port ist keine Zahl");
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			} catch (Exception e) {
+				System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
 				e.printStackTrace();
 			}
-			
-		} catch (Exception e) {
-			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
-			e.printStackTrace();
 		}
 	}
 

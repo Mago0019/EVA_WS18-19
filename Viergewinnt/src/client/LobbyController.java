@@ -1,5 +1,7 @@
 package client;
 
+import java.util.LinkedList;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,10 +15,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 public class LobbyController
@@ -24,13 +23,7 @@ public class LobbyController
 	@FXML
 	private BorderPane root;
 	@FXML
-	private HBox hBox;
-	@FXML
 	private Label titelLabel;
-	@FXML
-	private Pane Spiel_Pane;
-	@FXML
-	private TextFlow textFlow;  // NUR EIN TEST! Vll gibt es bessere Textboxen um Nachrichten anzuzeigen
 	@FXML
 	private VBox topVBox;
 	@FXML
@@ -59,6 +52,7 @@ public class LobbyController
 	public ListView<String> openGames_LV = new ListView<>();
 
 	ObservableList<String> lobby = FXCollections.observableArrayList();
+	private Client client;
 		
 	@FXML
 	public void event_Menue_Beenden(ActionEvent eventBeendenPressed) {
@@ -124,24 +118,9 @@ public class LobbyController
 		
 	}
 	
-	
-	
-	@FXML
-	public void updateLobby(ActionEvent klick) // sollte unnötig sein
-	{
-		System.out.println("test - lobby_LV");
-		for(String s : this.lobby_LV.getItems())
-		{
-			System.out.println(s);
-		}
-		
-		System.out.println("test - lobby");
-		
-		for(String s : lobby)
-		{
-			System.out.println(s);
-		}
-		this.lobby_LV.refresh();
+
+	public void setClient(Client client) {
+		this.client = client;
 	}
 	
 }
