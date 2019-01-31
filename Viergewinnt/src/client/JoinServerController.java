@@ -1,19 +1,25 @@
 package client;
-
-import java.util.LinkedList;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+/**
+ * EVA WS 18/19
+ * Patrick Geerds
+ * Manuel G.
+ * 
+ * Version 1.0
+ * 16.05.17
+ */
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -21,8 +27,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
-public class LobbyController
-{
+public class JoinServerController {
+
 	@FXML
 	private BorderPane root;
 	@FXML
@@ -48,20 +54,51 @@ public class LobbyController
 	@FXML
 	private MenuItem mHilfe_ueber;
 	@FXML
-	private Label lobbyList_L;
+	private Label SpielerName_L;
 	@FXML
-	private Label gameList_L;
+	private Label ServerIP_L;
 	@FXML
-	private Button createGame_B;
+	private Label ServerPort_L; 
 	@FXML
-	private Button joinGame_B;
+	private TextField ServerPort_TF;
 	@FXML
-	public ListView<String> lobbyList_LV = new ListView<>();
+	private TextField SpielerName_TF;
 	@FXML
-	public ListView<String> gameList_LV = new ListView<>();
+	private TextField ServerIP_TF; 
+	@FXML
+	private Button joinServer_B;
 
-	ObservableList<String> lobby = FXCollections.observableArrayList();
-		
+	@FXML
+	public void event_ChipEinwerfen(ActionEvent eventVSPressed) {
+		try {
+			/* TODO: 
+			 * - Textfeld für Zahleingabe
+			 * - Button zum Abschicken
+			 * - Überprüfen ob Eingabe korrekt
+			 * - an Server übermitteln, wo der Chip rein soll
+			*/
+				
+			
+		} catch (Exception e) {
+			System.out.println("ERROR: Verschlüsseln fehgeschlagen!");
+			e.printStackTrace();
+		}
+	}
+
+	@FXML
+	public void event_updateField(ActionEvent eventSpielfeldUpdate) {
+		try {
+			/* TODO:
+			 * - Getriggert, wenn antwort vom Server
+			 * - aktualisiert Spielfeld 
+			*/
+			
+		} catch (Exception e) {
+			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
+			e.printStackTrace();
+		}
+	}
+
 	@FXML
 	public void event_Menue_Beenden(ActionEvent eventBeendenPressed) {
 		try {
@@ -86,7 +123,7 @@ public class LobbyController
 			alert.setTitle("Über");
 			alert.setHeaderText("VierGewinnt");
 			alert.setContentText(
-					"VierGewinnt 2D\nVersion 0.3  -  28.11.18\n\nGeschrieben von Patrick Geerds und Manuel Golz\nEntwicklung-Verteilter-Systeme im WS 18/19");
+					"VierGewinnt 2D\nVersion 0.1  -  28.11.18\n\nGeschrieben von Patrick Geerds und Manuel Golz\nEntwicklung-Verteilter-Systeme im WS 18/19");
 			alert.show();
 
 		} catch (Exception e) {
@@ -111,35 +148,39 @@ public class LobbyController
 			e.printStackTrace();
 		}
 	}
+
 	
 	@FXML
-	public void updateLobbyListView(ActionEvent klick)
-	{
-		System.out.println("test - lobby_LV");
-		for(String s : this.lobbyList_LV.getItems())
-		{
-			System.out.println(s);
+	public void event_joinServer(ActionEvent klick) {
+		try {
+			LobbyController lobbyC = new LobbyController();
+			Client client = new Client(lobbyC);
+			client.serverConnect(ServerIP_TF.getText(), Integer.parseInt(ServerPort_TF.getText()),SpielerName_TF.getText() );
+			try {
+				Pane mainPane = (Pane) FXMLLoader.load(Main.class.getResource("LobbyPane.fxml"));
+				Scene scene = new Scene(mainPane);
+				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+				Stage stage = (Stage)((Node)klick.getSource()).getScene().getWindow();
+				stage.setScene(scene);
+				lobbyC.lobby.addAll(client.lobbyList);
+				lobbyC.lobbyList_LV.setItems(lobbyC.lobby);
+				System.out.println(" - test - ");
+				for(String s : lobbyC.lobbyList_LV.getItems())
+				{
+					System.out.println(s);
+				}
+				//lobbyC.updateLobbyListView(client.lobbyList);
+				stage.show();
+				
+				
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+		} catch (Exception e) {
+			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
+			e.printStackTrace();
 		}
-		
-		System.out.println("test - lobby");
-		
-		for(String s : lobby)
-		{
-			System.out.println(s);
-		}
-		this.lobbyList_LV.refresh();
 	}
-	
-	
-	public void updateLobbyListView(LinkedList<String> lobbyList)
-	{
-		lobby.addAll(lobbyList);
-		lobbyList_LV.setItems(lobby);
-		for(String s : this.lobbyList_LV.getItems())
-		{
-			System.out.println(s);
-		}
-		
-		
-	}
+
 }
