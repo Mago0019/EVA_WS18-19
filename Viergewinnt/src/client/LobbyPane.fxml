@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="500.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.LobbyController">
+   <top>
+      <VBox fx:id="topVBox" BorderPane.alignment="CENTER_LEFT">
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <children>
+            <MenuBar fx:id="menuBar">
+              <menus>
+                <Menu fx:id="menuDatei" mnemonicParsing="false" text="Datei">
+                  <items>
+                    <MenuItem fx:id="mDatei_einstellungen" mnemonicParsing="false" text="Einstellungen" />
+                        <MenuItem fx:id="mDatei_beenden1" mnemonicParsing="false" onAction="#event_Menue_Beenden" text="Beenden" />
+                  </items>
+                </Menu>
+                <Menu fx:id="menuHilfe" mnemonicParsing="false" text="Hilfe">
+                  <items>
+                        <MenuItem fx:id="mHilfe_hilfe" mnemonicParsing="false" onAction="#event_Menue_Hilfe" text="Hilfe" />
+                    <MenuItem fx:id="mHilfe_ueber" mnemonicParsing="false" onAction="#event_Menue_Ueber" text="Über" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <items>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <StackPane prefHeight="30.0" prefWidth="246.0">
+                     <children>
+                        <Label text="Spieler online" />
+                     </children>
+                  </StackPane>
+                  <StackPane prefHeight="530.0" prefWidth="246.0">
+                     <children>
+                        <ListView fx:id="lobby_LV" prefHeight="538.0" prefWidth="246.0" />
+                     </children>
+                  </StackPane>
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <StackPane prefHeight="30.0" prefWidth="246.0">
+                     <children>
+                        <Label text="offene Spiele" />
+                     </children>
+                  </StackPane>
+                  <StackPane prefHeight="530.0" prefWidth="246.0">
+                     <children>
+                        <ListView fx:id="gameList_LV" prefHeight="568.0" prefWidth="246.0" />
+                     </children>
+                  </StackPane>
+               </children>
+            </VBox>
+         </items>
+      </SplitPane>
+   </center>
+   <bottom>
+      <HBox prefHeight="50.0" prefWidth="500.0" BorderPane.alignment="CENTER">
+         <children>
+            <StackPane prefHeight="50.0" prefWidth="125.0" />
+            <StackPane prefHeight="50.0" prefWidth="125.0" />
+            <StackPane prefHeight="150.0" prefWidth="125.0">
+               <children>
+                  <Button mnemonicParsing="false" text="erstelle Spiel" />
+               </children>
+            </StackPane>
+            <StackPane prefHeight="150.0" prefWidth="125.0">
+               <children>
+                  <Button mnemonicParsing="false" text="trete Spiel bei" />
+               </children>
+            </StackPane>
+         </children>
+      </HBox>
+   </bottom>
+</BorderPane>

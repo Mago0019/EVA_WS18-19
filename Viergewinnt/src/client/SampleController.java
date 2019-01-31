@@ -11,6 +11,7 @@ package client;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,8 +19,8 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -71,11 +72,7 @@ public class SampleController {
 	@FXML
 	private TextField ServerIP_TF; 
 	@FXML
-	private ListView<String> lobby_LV;
-	@FXML
-	private ListView<String> gameList_LV;
-
-	
+	private Button joinServer_B;
 
 	@FXML
 	public void event_ChipEinwerfen(ActionEvent eventVSPressed) {
@@ -225,15 +222,26 @@ public class SampleController {
 	@FXML
 	public void event_joinServer(ActionEvent klick) {
 		try {
-			Client client = new Client(this);
+			LobbyController lobbyC = new LobbyController();
+			Client client = new Client(lobbyC);
 			client.serverConnect(ServerIP_TF.getText(), Integer.parseInt(ServerPort_TF.getText()),SpielerName_TF.getText() );
 			try {
-				Pane mainPane = (Pane) FXMLLoader.load(Main.class.getResource("Test.fxml"));
+				Pane mainPane = (Pane) FXMLLoader.load(Main.class.getResource("LobbyPane.fxml"));
 				Scene scene = new Scene(mainPane);
 				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 				Stage stage = (Stage)((Node)klick.getSource()).getScene().getWindow();
 				stage.setScene(scene);
+				lobbyC.lobby.addAll(client.lobbyList);
+				lobbyC.lobby_LV.setItems(lobbyC.lobby);
+				System.out.println(" - test - ");
+				for(String s : lobbyC.lobby_LV.getItems())
+				{
+					System.out.println(s);
+				}
+				//lobbyC.updateLobbyListView(client.lobbyList);
 				stage.show();
+				
+				
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -243,26 +251,5 @@ public class SampleController {
 			e.printStackTrace();
 		}
 	}
-	@FXML
-	public void event_joinServerLobbyPane(ActionEvent klick) {
-		try {
-			Client client = new Client(this);
-			
-//			Client.lobby.add("Patrick");
-//			Client.lobby.add("Manuel");
-//			Client.lobby.add("Lukas");
-//			Client.lobby.add("Gregor");
-//			Client.lobby.add("Thomas");
-//			Client.lobby.add("Nadine");
-//			
-//			
-//			lobby_LV.setItems((ObservableList<String>)Client.lobby);
-			client.serverConnect(ServerIP_TF.getText(), Integer.parseInt(ServerPort_TF.getText()),SpielerName_TF.getText() );
 
-			
-		} catch (Exception e) {
-			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
-			e.printStackTrace();
-		}
-	}
 }
