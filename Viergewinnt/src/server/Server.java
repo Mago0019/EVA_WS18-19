@@ -76,7 +76,7 @@ public class Server {
 	private static void b_showLobby() {
 		
 		System.out.println("");
-	}
+	} 
 	
 	private static void b_shutdownServer() {
 		// 1. Beende WellcomeSocket

@@ -13,7 +13,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -49,21 +48,15 @@ public class LobbyController
 	@FXML
 	private MenuItem mHilfe_ueber;
 	@FXML
-	private Label SpielerName_L;
+	private Label lobbyList_L;
 	@FXML
-	private Label ServerIP_L;
+	private Label gameList_L;
 	@FXML
-	private Label ServerPort_L; 
+	private Button createGame_B;
 	@FXML
-	private TextField ServerPort_TF;
+	private Button joinGame_B;
 	@FXML
-	private TextField SpielerName_TF;
-	@FXML
-	private TextField ServerIP_TF; 
-	@FXML
-	private Button joinServer_B;
-	@FXML
-	public ListView<String> lobby_LV = new ListView<>();
+	public ListView<String> lobbyList_LV = new ListView<>();
 	@FXML
 	public ListView<String> gameList_LV = new ListView<>();
 
@@ -120,22 +113,10 @@ public class LobbyController
 	}
 	
 	@FXML
-	public void event_joinServerLobbyPane(ActionEvent klick) {
-		try {
-			Client client = new Client(this);
-			client.serverConnect(ServerIP_TF.getText(), Integer.parseInt(ServerPort_TF.getText()),SpielerName_TF.getText() );
-			
-		} catch (Exception e) {
-			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
-			e.printStackTrace();
-		}
-	}
-	
-	@FXML
 	public void updateLobbyListView(ActionEvent klick)
 	{
 		System.out.println("test - lobby_LV");
-		for(String s : this.lobby_LV.getItems())
+		for(String s : this.lobbyList_LV.getItems())
 		{
 			System.out.println(s);
 		}
@@ -146,15 +127,15 @@ public class LobbyController
 		{
 			System.out.println(s);
 		}
-		this.lobby_LV.refresh();
+		this.lobbyList_LV.refresh();
 	}
 	
 	
 	public void updateLobbyListView(LinkedList<String> lobbyList)
 	{
 		lobby.addAll(lobbyList);
-		lobby_LV.setItems(lobby);
-		for(String s : this.lobby_LV.getItems())
+		lobbyList_LV.setItems(lobby);
+		for(String s : this.lobbyList_LV.getItems())
 		{
 			System.out.println(s);
 		}

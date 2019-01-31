@@ -7,11 +7,6 @@ package client;
  * Version 1.0
  * 16.05.17
  */
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,10 +25,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class SampleController {
+public class JoinServerController {
 
 	@FXML
 	private BorderPane root;
@@ -169,9 +163,9 @@ public class SampleController {
 				Stage stage = (Stage)((Node)klick.getSource()).getScene().getWindow();
 				stage.setScene(scene);
 				lobbyC.lobby.addAll(client.lobbyList);
-				lobbyC.lobby_LV.setItems(lobbyC.lobby);
+				lobbyC.lobbyList_LV.setItems(lobbyC.lobby);
 				System.out.println(" - test - ");
-				for(String s : lobbyC.lobby_LV.getItems())
+				for(String s : lobbyC.lobbyList_LV.getItems())
 				{
 					System.out.println(s);
 				}

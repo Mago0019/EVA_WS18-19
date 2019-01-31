@@ -40,34 +40,18 @@
       </VBox>
    </top>
    <center>
-      <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.5" BorderPane.alignment="CENTER">
          <items>
-            <VBox prefHeight="200.0" prefWidth="100.0">
+            <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <StackPane prefHeight="30.0" prefWidth="246.0">
-                     <children>
-                        <Label text="Spieler online" />
-                     </children>
-                  </StackPane>
-                  <StackPane prefHeight="530.0" prefWidth="246.0">
-                     <children>
-                        <ListView fx:id="lobby_LV" prefHeight="538.0" prefWidth="246.0" />
-                     </children>
-                  </StackPane>
+                  <Label fx:id="lobbyList_L" alignment="CENTER" contentDisplay="CENTER" text="Spieler online" />
+                  <ListView fx:id="lobby_LV" prefHeight="570.0" prefWidth="246.0" />
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <StackPane prefHeight="30.0" prefWidth="246.0">
-                     <children>
-                        <Label text="offene Spiele" />
-                     </children>
-                  </StackPane>
-                  <StackPane prefHeight="530.0" prefWidth="246.0">
-                     <children>
-                        <ListView fx:id="gameList_LV" prefHeight="568.0" prefWidth="246.0" />
-                     </children>
-                  </StackPane>
+                  <Label fx:id="gameList_L" text="offene Spiele" />
+                  <ListView fx:id="gameList_LV" prefHeight="570.0" prefWidth="246.0" />
                </children>
             </VBox>
          </items>
@@ -80,12 +64,12 @@
             <StackPane prefHeight="50.0" prefWidth="125.0" />
             <StackPane prefHeight="150.0" prefWidth="125.0">
                <children>
-                  <Button mnemonicParsing="false" text="erstelle Spiel" />
+                  <Button fx:id="createGame_B" mnemonicParsing="false" text="erstelle Spiel" />
                </children>
             </StackPane>
             <StackPane prefHeight="150.0" prefWidth="125.0">
                <children>
-                  <Button mnemonicParsing="false" text="trete Spiel bei" />
+                  <Button fx:id="joinGame_B" mnemonicParsing="false" text="trete Spiel bei" />
                </children>
             </StackPane>
          </children>
