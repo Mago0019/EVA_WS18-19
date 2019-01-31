@@ -8,10 +8,6 @@ package client;
  * 16.05.17
  */
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -154,6 +150,10 @@ public class SampleController {
 
 	
 	@FXML
+	/**
+	 * Erzeugt den Clienten (Socket) und wechselt die Pane zur Lobby
+	 * @param klick
+	 */
 	public void event_joinServer(ActionEvent klick) {
 		try {
 			LobbyController lobbyC = new LobbyController();
