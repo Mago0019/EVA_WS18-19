@@ -106,61 +106,6 @@ public class SampleController {
 	}
 
 	@FXML
-	public void event_DateiOeffnen(ActionEvent eventOeffnenPressed) {
-		try {
-			System.out.println("Öffnen ausgelöst.");
-
-			FileChooser fileChooser = new FileChooser();
-			fileChooser.setTitle("Open Resource File");
-			File file = fileChooser.showOpenDialog(root.getScene().getWindow());
-			// Ich brauche die Stage, um das Fenster zu öffnen. Das greif ich
-			// vom root ab.
-
-			FileReader fReader = new FileReader(file);
-			BufferedReader bReader = new BufferedReader(fReader);
-			String txtLine = "";
-			StringBuilder txtContent = new StringBuilder();
-			while ((txtLine = bReader.readLine()) != null) {
-				txtContent.append(txtLine + "\n");
-			}
-			//textArea.setText(txtContent.toString());
-			fReader.close();
-			bReader.close();
-
-		} catch (Exception e) {
-			System.out.println("ERROR: Öffnen fehgeschlagen! Keine Datei aufgewählt.");
-			//e.printStackTrace();
-		}
-	}
-
-	@FXML
-	public void event_DateiSpeichern(ActionEvent eventSpeichernPressed) {
-		try {
-	/*		System.out.println("Speichern ausgelöst.");
-
-			FileChooser fileChooser = new FileChooser();
-			fileChooser.setTitle("Save Resource File");
-			File file = fileChooser.showOpenDialog(root.getScene().getWindow());
-
-			String txtFromTArea = textArea.getText();
-			// System.out.println(txtFromTArea);
-			FileWriter fWriter = new FileWriter(file);
-			BufferedWriter bWriter = new BufferedWriter(fWriter);
-			bWriter.write(txtFromTArea);
-
-			fWriter.flush();
-			bWriter.flush();
-			fWriter.close();
-			bWriter.close();
-*/
-		} catch (Exception e) {
-			System.out.println("ERROR: Speichern fehgeschlagen! Keine Datei aufgewählt.");
-			//e.printStackTrace();
-		}
-	}
-
-
-	@FXML
 	public void event_Menue_Beenden(ActionEvent eventBeendenPressed) {
 		try {
 			// TODO: vll Fenster mit Abfrage, ob beendet werden soll / ob noch gespeichert werden soll.
@@ -208,14 +153,6 @@ public class SampleController {
 			System.out.println("ERROR: Hilfe konnte nicht aufgerufen werden!");
 			e.printStackTrace();
 		}
-	}
-
-	public void showNoInputAlert() { // TODO: Kann man vll für falsche eingabe wiederverwerten/zum Abfragen, ob beendet werden soll.
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle("Eingabefehler");
-		alert.setHeaderText("Keine Eingabe");
-		alert.setContentText("Zum Ver- oder Entschlüsseln geben Sie bitte sowohl einen zu verschlüsselnden Text ein, als auch ein Schlüsselwort.\nSolange nicht beides vorhanden ist, kann das Verfahren nicht durchgeführt werden.");
-		alert.show();
 	}
 
 	
