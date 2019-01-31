@@ -181,7 +181,7 @@ public class SampleController {
 			}
 			
 		} catch (Exception e) {
-			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
+			System.out.println("ERROR: ");
 			e.printStackTrace();
 		}
 	}
