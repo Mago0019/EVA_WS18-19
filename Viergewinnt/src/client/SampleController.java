@@ -8,9 +8,6 @@ package client;
  * 16.05.17
  */
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,7 +26,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class SampleController {
@@ -103,7 +99,6 @@ public class SampleController {
 			*/
 			
 		} catch (Exception e) {
-			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
 			e.printStackTrace();
 		}
 	}
@@ -122,7 +117,6 @@ public class SampleController {
 			e.printStackTrace();
 		}
 	}
-	
 	
 	@FXML
 	public void event_Menue_Ueber(ActionEvent eventUeberPressed) {
@@ -163,7 +157,7 @@ public class SampleController {
 	public void event_joinServer(ActionEvent klick) {
 		try {
 			Client client = new Client(this);
-			client.serverConnect(ServerIP_TF.getText(), Integer.parseInt(ServerPort_TF.getText()),SpielerName_TF.getText() );
+			client.serverConnect(ServerIP_TF.getText(), Integer.parseInt( ServerPort_TF.getText() ), SpielerName_TF.getText() );
 			try {
 				Pane mainPane = (Pane) FXMLLoader.load(Main.class.getResource("Test.fxml"));
 				Scene scene = new Scene(mainPane);
@@ -172,34 +166,13 @@ public class SampleController {
 				stage.setScene(scene);
 				stage.show();
 			} catch(Exception e) {
+				System.out.println("Erzeugen der ");
 				e.printStackTrace();
 			}
 			
 		} catch (Exception e) {
-			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
 			e.printStackTrace();
 		}
 	}
-	@FXML
-	public void event_joinServerLobbyPane(ActionEvent klick) {
-		try {
-			Client client = new Client(this);
-			
-//			Client.lobby.add("Patrick");
-//			Client.lobby.add("Manuel");
-//			Client.lobby.add("Lukas");
-//			Client.lobby.add("Gregor");
-//			Client.lobby.add("Thomas");
-//			Client.lobby.add("Nadine");
-//			
-//			
-//			lobby_LV.setItems((ObservableList<String>)Client.lobby);
-			client.serverConnect(ServerIP_TF.getText(), Integer.parseInt(ServerPort_TF.getText()),SpielerName_TF.getText() );
-
-			
-		} catch (Exception e) {
-			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
-			e.printStackTrace();
-		}
-	}
+	
 }
