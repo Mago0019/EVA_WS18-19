@@ -163,12 +163,6 @@ public class JoinServerController {
 				Stage stage = (Stage)((Node)klick.getSource()).getScene().getWindow();
 				stage.setScene(scene);
 				lobbyC.lobby.addAll(client.lobbyList);
-				lobbyC.lobbyList_LV.setItems(lobbyC.lobby);
-				System.out.println(" - test - ");
-				for(String s : lobbyC.lobbyList_LV.getItems())
-				{
-					System.out.println(s);
-				}
 				//lobbyC.updateLobbyListView(client.lobbyList);
 				stage.show();
 				

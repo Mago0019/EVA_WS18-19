@@ -47,44 +47,35 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <Label fx:id="titelLabel" nodeOrientation="LEFT_TO_RIGHT" text="Viergewinnt v0.1">
-               <padding>
-                  <Insets left="10.0" top="10.0" />
-               </padding>
-            </Label>
          </children>
       </VBox>
    </top>
    <center>
-      <GridPane prefWidth="600.0" BorderPane.alignment="CENTER">
+      <GridPane alignment="CENTER" hgap="10.0" vgap="10.0" BorderPane.alignment="CENTER">
         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="5.0" prefWidth="5.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="20.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="5.0" prefWidth="5.0" />
+          <ColumnConstraints hgrow="SOMETIMES" />
+            <ColumnConstraints hgrow="SOMETIMES" />
+          <ColumnConstraints hgrow="SOMETIMES" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints vgrow="SOMETIMES" />
+          <RowConstraints vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label fx:id="SpielerName_L" text="Spieler Name" GridPane.columnIndex="1">
+            <Label fx:id="SpielerName_L" alignment="CENTER" contentDisplay="CENTER" text="Spieler Name" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </Label>
-            <Label fx:id="ServerIP_L" text="Server IP-Adresse" GridPane.columnIndex="3">
+            <Label fx:id="ServerIP_L" text="Server IP-Adresse" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </Label>
-            <TextField fx:id="SpielerName_TF" text="Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <TextField fx:id="ServerIP_TF" text="127.0.0.1" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-            <TextField fx:id="ServerPort_TF" text="19009" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-            <Label fx:id="ServerPort_L" text="Server Port" GridPane.columnIndex="5">
+            <TextField fx:id="SpielerName_TF" alignment="CENTER" text="Name" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+            <TextField fx:id="ServerIP_TF" alignment="CENTER" text="127.0.0.1" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+            <TextField fx:id="ServerPort_TF" alignment="CENTER" text="19009" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+            <Label fx:id="ServerPort_L" text="Server Port" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -93,9 +84,9 @@
                </padding>
             </Label>
          </children>
-         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </padding>
+         <BorderPane.margin>
+            <Insets left="10.0" right="10.0" />
+         </BorderPane.margin>
       </GridPane>
    </center>
 </BorderPane>

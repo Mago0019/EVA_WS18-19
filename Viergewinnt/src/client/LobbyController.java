@@ -1,19 +1,17 @@
 package client;
 
-import java.util.LinkedList;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -56,9 +54,9 @@ public class LobbyController
 	@FXML
 	private Button joinGame_B;
 	@FXML
-	public ListView<String> lobbyList_LV = new ListView<>();
+	public ListView<String> lobby_LV = new ListView<>();
 	@FXML
-	public ListView<String> gameList_LV = new ListView<>();
+	public ListView<String> openGames_LV = new ListView<>();
 
 	ObservableList<String> lobby = FXCollections.observableArrayList();
 		
@@ -76,7 +74,6 @@ public class LobbyController
 			e.printStackTrace();
 		}
 	}
-	
 	
 	@FXML
 	public void event_Menue_Ueber(ActionEvent eventUeberPressed) {
@@ -113,10 +110,27 @@ public class LobbyController
 	}
 	
 	@FXML
-	public void updateLobbyListView(ActionEvent klick)
+	public void createGame() {
+		
+	}
+	
+	@FXML
+	public void joinGame() {
+		
+	}
+	
+	@FXML
+	public void startGame() {
+		
+	}
+	
+	
+	
+	@FXML
+	public void updateLobby(ActionEvent klick) // sollte unnötig sein
 	{
 		System.out.println("test - lobby_LV");
-		for(String s : this.lobbyList_LV.getItems())
+		for(String s : this.lobby_LV.getItems())
 		{
 			System.out.println(s);
 		}
@@ -127,19 +141,7 @@ public class LobbyController
 		{
 			System.out.println(s);
 		}
-		this.lobbyList_LV.refresh();
+		this.lobby_LV.refresh();
 	}
 	
-	
-	public void updateLobbyListView(LinkedList<String> lobbyList)
-	{
-		lobby.addAll(lobbyList);
-		lobbyList_LV.setItems(lobby);
-		for(String s : this.lobbyList_LV.getItems())
-		{
-			System.out.println(s);
-		}
-		
-		
-	}
 }
