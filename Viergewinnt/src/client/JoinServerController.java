@@ -28,7 +28,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
-public class JoinServerController {
+public class JoinServerController
+{
 
 	@FXML
 	private BorderPane root;
@@ -70,35 +71,43 @@ public class JoinServerController {
 	private Button joinServer_B;
 
 	@FXML
-	public void event_ChipEinwerfen(ActionEvent eventVSPressed) {
-		try {
+	public void event_ChipEinwerfen(ActionEvent eventVSPressed)
+	{
+		try
+		{
 			/*
 			 * TODO: - Textfeld für Zahleingabe - Button zum Abschicken - Überprüfen ob
 			 * Eingabe korrekt - an Server übermitteln, wo der Chip rein soll
 			 */
 
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			System.out.println("ERROR: Verschlüsseln fehgeschlagen!");
 			e.printStackTrace();
 		}
 	}
 
 	@FXML
-	public void event_updateField(ActionEvent eventSpielfeldUpdate) {
-		try {
+	public void event_updateField(ActionEvent eventSpielfeldUpdate)
+	{
+		try
+		{
 			/*
 			 * TODO: - Getriggert, wenn antwort vom Server - aktualisiert Spielfeld
 			 */
 
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
 			e.printStackTrace();
 		}
 	}
 
 	@FXML
-	public void event_Menue_Beenden(ActionEvent eventBeendenPressed) {
-		try {
+	public void event_Menue_Beenden(ActionEvent eventBeendenPressed)
+	{
+		try
+		{
 			// TODO: vll Fenster mit Abfrage, ob beendet werden soll / ob noch gespeichert
 			// werden soll.
 
@@ -106,15 +115,18 @@ public class JoinServerController {
 			Stage stage = (Stage) root.getScene().getWindow();
 			stage.close();
 
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			System.out.println("ERROR: Beenden fehgeschlagen!");
 			e.printStackTrace();
 		}
 	}
 
 	@FXML
-	public void event_Menue_Ueber(ActionEvent eventUeberPressed) {
-		try {
+	public void event_Menue_Ueber(ActionEvent eventUeberPressed)
+	{
+		try
+		{
 			System.out.println("Info-Dialog geöffnet.");
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Über");
@@ -123,15 +135,18 @@ public class JoinServerController {
 					"VierGewinnt 2D\nVersion 0.1  -  28.11.18\n\nGeschrieben von Patrick Geerds und Manuel Golz\nEntwicklung-Verteilter-Systeme im WS 18/19");
 			alert.show();
 
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			System.out.println("ERROR: Infofenster konnte nicht aufgerufen werden!");
 			e.printStackTrace();
 		}
 	}
 
 	@FXML
-	public void event_Menue_Hilfe(ActionEvent eventHilfePressed) {
-		try {
+	public void event_Menue_Hilfe(ActionEvent eventHilfePressed)
+	{
+		try
+		{
 			System.out.println("Info-Dialog geöffnet.");
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Hilfe");
@@ -140,46 +155,59 @@ public class JoinServerController {
 					"How To:\n- Chip in eine Spalte werfen (fallen immer bis nach unten) \n\nGewinnen: \n- Wer 4 Chips in einer Reihe/Spalte/Diagonale liegen hat, gewinnt.");
 			alert.show();
 
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			System.out.println("ERROR: Hilfe konnte nicht aufgerufen werden!");
 			e.printStackTrace();
 		}
 	}
 
 	@FXML
-	public void event_joinServer(ActionEvent klick) {
+	public void event_joinServer(ActionEvent klick)
+	{
+		int tries = 0;
 		boolean done = false;
-		while (!done) {
-			try {
-				LobbyController lobbyC = new LobbyController();
+		while (tries <=3 && !done)
+		{
+			try
+			{
+				FXMLLoader fxmlLoader= new FXMLLoader(getClass().getResource("/client/LobbyPane.fxml"));
+				Pane mainPane = fxmlLoader.load();
+				Scene scene = new Scene(mainPane);		
+				
+				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+				Stage lobbyStage = (Stage) ((Node) klick.getSource()).getScene().getWindow();
+				
+				LobbyController lobbyC = fxmlLoader.getController();
 				Client client = new Client(lobbyC);
 				client.serverIP = ServerIP_TF.getText();
 				client.serverPort = Integer.parseInt(ServerPort_TF.getText());
 				client.name = SpielerName_TF.getText();
 
 				client.serverConnect();
-				try {
-					Pane mainPane = (Pane) FXMLLoader.load(Main.class.getResource("LobbyPane.fxml"));
-					Scene scene = new Scene(mainPane);
-					scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-					Stage stage = (Stage) ((Node) klick.getSource()).getScene().getWindow();
-					stage.setScene(scene);
-					// lobbyC.updateLobbyListView(client.lobbyList);
-					stage.show();
+				
+				lobbyStage.setScene(scene);		
+				client.lobbyController.lobby.setAll(client.lobbyList);
+				client.lobbyController.lobby_LV.setItems(client.lobbyController.lobby);
+				lobbyStage.show();
 
-				} catch (NumberFormatException nfe) {
-					// Todo:  entweder Alert starten, oder ein Textfeld mit einer Errormeldung füllen
-					System.out.println("ERROR: Port ist keine Zahl");
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-				}
+				
+				done = true;
 
-			} catch (Exception e) {
-				System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
+			} catch (NumberFormatException nfe)
+			{
+				// Todo: entweder Alert starten, oder ein Textfeld mit einer Errormeldung füllen
+				System.out.println("ERROR: Port ist keine Zahl");
+				tries++;
+				
+			} catch (Exception e)
+			{
+				System.out.println("Ein Fehler ist aufgetreten");
 				e.printStackTrace();
+				tries++;
 			}
 		}
+		
 	}
 
 }

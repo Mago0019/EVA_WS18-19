@@ -20,7 +20,12 @@ public class Client
 	
 	public Client(LobbyController lobbyC)
 	{
-		this.lobbyController = lobbyC;
+		this.lobbyController = lobbyC;		
+		lobbyList = new LinkedList<String>();
+		lobbyList.add("Manuel");		//eine defaultliste zum testen
+		lobbyList.add("Patrick");
+		lobbyList.add("Andi");
+		lobbyList.add("Pol");
 		lobbyController.setClient(this);
 	}
 	
