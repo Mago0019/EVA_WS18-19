@@ -51,7 +51,7 @@ public class EmpfangsThread extends Thread {
 			try {
 				
 				// TODO: Marshalling  - erste 4 Bytes (Befehlscode) anschauen.
-				msg = input.readLine();
+				msg = input.readLine(); // TODO: bricht leider nach ein paar Sek ab, wenn keine Meldung kommt
 				
 				switch (msg) {
 				case "~~2": // z.B. Starte SpielLobby
@@ -68,7 +68,7 @@ public class EmpfangsThread extends Thread {
 			} catch (IOException ioe) {
 				tryCount++;
 				System.out.println("ERROR: EmpfangsThread hat verbindung zum CLienten verloren.");
-				ioe.printStackTrace();
+				//ioe.printStackTrace();
 			}
 		}
 

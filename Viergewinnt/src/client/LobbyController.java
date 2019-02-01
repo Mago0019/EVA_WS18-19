@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -47,14 +48,22 @@ public class LobbyController
 	@FXML
 	private Button joinGame_B;
 	@FXML
-	public ListView<String> lobby_LV = new ListView<>();
+	private ListView<String> lobby_LV = new ListView<>();
 	@FXML
-	public ListView<String> openGames_LV = new ListView<>();
+	private ListView<String> openGames_LV = new ListView<>();
 
-	ObservableList<String> lobby = FXCollections.observableArrayList();
-	ObservableList<String> openGames = FXCollections.observableArrayList();
+	ObservableList<String> lobby;
+	ObservableList<String> openGames;
 	private Client client;
 		
+
+	public void initialize() {
+		lobby = FXCollections.observableArrayList();
+		openGames = FXCollections.observableArrayList();
+		this.lobby_LV.setItems(lobby);
+		this.openGames_LV.setItems(openGames);
+	}
+	
 	@FXML
 	public void event_Menue_Beenden(ActionEvent eventBeendenPressed) {
 		try {
@@ -120,7 +129,16 @@ public class LobbyController
 		
 	}
 	
-
+	public void updateLobbyList(LinkedList<String> list) {
+		this.lobby.clear();
+		this.lobby.addAll(list);
+	}
+	
+	public void updateOpenGames(LinkedList<String> list) {
+		this.openGames.clear();
+		this.openGames.addAll(list);
+	}
+	
 	public void setClient(Client client) {
 		this.client = client;
 	}

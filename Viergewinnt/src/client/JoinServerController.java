@@ -160,6 +160,7 @@ public class JoinServerController {
 			Stage lobbyStage = (Stage) ((Node) klick.getSource()).getScene().getWindow();
 
 			LobbyController lobbyC = fxmlLoader.getController();
+			lobbyC.initialize();
 			Client client = new Client(lobbyC);
 
 			boolean verbindungErfolgreich = client.serverConnect(ServerIP_TF.getText(),
@@ -167,11 +168,9 @@ public class JoinServerController {
 
 			if (verbindungErfolgreich) {
 				lobbyStage.setScene(scene);
-				client.setLobbyListView();
-				client.setOpenGameView();
 				lobbyStage.show();
 			} else {
-				//TODO: Error anzeigen -> Name Flasch, oder keine Verbindung mit Server möglich gewesen.
+				//TODO: Error anzeigen -> Name Falsch, oder keine Verbindung mit Server möglich gewesen.
 			}
 			
 		} catch (NumberFormatException nfe) {

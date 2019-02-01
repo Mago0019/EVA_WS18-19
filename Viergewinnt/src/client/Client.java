@@ -32,14 +32,14 @@ public class Client
 	{
 		this.lobbyController = lobbyC;		
 		lobbyList = new LinkedList<String>();
-		lobbyList.add("Manuel");		//eine defaultliste zum testen
-		lobbyList.add("Patrick");
-		lobbyList.add("Andi");
-		lobbyList.add("Pol");
 		openGames = new LinkedList<String>();
-		openGames.add("Patricks Game");
-		openGames.add("Manuels Game");
 		lobbyController.setClient(this);
+//		lobbyList.add("Manuel");		//eine defaultliste zum testen
+//		lobbyList.add("Patrick");
+//		lobbyList.add("Andi");
+//		lobbyList.add("Pol");
+//		openGames.add("Patricks Game");
+//		openGames.add("Manuels Game");
 		
 		
 	}
@@ -73,13 +73,5 @@ public class Client
 		}
 		
 	}
-	public void setLobbyListView(){
-		lobbyController.lobby.setAll(this.lobbyList);
-		lobbyController.lobby_LV.setItems(lobbyController.lobby);
-	}
 	
-	public void setOpenGameView() {
-		lobbyController.openGames.setAll(this.openGames);
-		lobbyController.openGames_LV.setItems(lobbyController.openGames);
-	}
 }
