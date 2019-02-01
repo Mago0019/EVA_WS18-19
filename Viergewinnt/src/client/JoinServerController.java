@@ -148,33 +148,39 @@ public class JoinServerController {
 
 	@FXML
 	public void event_joinServer(ActionEvent klick) {
-		LobbyController lobbyC = new LobbyController();
-		Client client = new Client(lobbyC);
-		boolean done = false;
-		while (!done) {
-			try {
-				boolean verbindungErfolgreich = client.serverConnect(ServerIP_TF.getText(), Integer.parseInt(ServerPort_TF.getText()), SpielerName_TF.getText());
+		// boolean verbindungErfolgreich = client.serverConnect(ServerIP_TF.getText(),
+		// Integer.parseInt(ServerPort_TF.getText()), SpielerName_TF.getText());
 
-				if(verbindungErfolgreich) { // Client hat Socket erfolgreich erzeugt
-					Pane mainPane = (Pane) FXMLLoader.load(Main.class.getResource("LobbyPane.fxml"));
-					Scene scene = new Scene(mainPane);
-					scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-					Stage stage = (Stage) ((Node) klick.getSource()).getScene().getWindow();
-					stage.setScene(scene);
-					stage.show();	
-					
-					done = true;
-				}
+		try {
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/LobbyPane.fxml"));
+			Pane mainPane = fxmlLoader.load();
+			Scene scene = new Scene(mainPane);
 
-			} catch (NumberFormatException nfe) {
-				// Todo: entweder Alert starten, oder ein Textfeld mit einer Errormeldung füllen
-				System.out.println("ERROR: Port ist keine Zahl!");
-			} catch (Exception e) {
-				// Diese Errormeldung könnte auch vom Clienten geworfen werden.
-				System.out.println("ERROR: Verbinden mit Server fehlgeschlagen!");
-				e.printStackTrace();
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			Stage lobbyStage = (Stage) ((Node) klick.getSource()).getScene().getWindow();
+
+			LobbyController lobbyC = fxmlLoader.getController();
+			Client client = new Client(lobbyC);
+
+			boolean verbindungErfolgreich = client.serverConnect(ServerIP_TF.getText(),
+					Integer.parseInt(ServerPort_TF.getText()), SpielerName_TF.getText());
+
+			if (verbindungErfolgreich) {
+				lobbyStage.setScene(scene);
+//				client.lobbyController.lobby.setAll(client.lobbyList);
+//				client.lobbyController.lobby_LV.setItems(client.lobbyController.lobby);
+				lobbyStage.show();
+			} else {
+				//TODO: Error anzeigen -> Name Flasch, oder keine Verbindung mit Server möglich gewesen.
 			}
+			
+		} catch (NumberFormatException nfe) {
+			// Todo: entweder Alert starten, oder ein Textfeld mit einer Errormeldung füllen
+			System.out.println("ERROR: Port ist keine Zahl");
+		} catch (Exception e) {
+			// Diese Errormeldung könnte auch vom Clienten geworfen werden.
+			System.out.println("ERROR: Verbinden mit Server fehlgeschlagen!");
 		}
-	}
 
+	}
 }

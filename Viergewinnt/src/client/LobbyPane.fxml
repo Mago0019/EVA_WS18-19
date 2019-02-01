@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="500.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.LobbyController">
+<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="500.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.192" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.LobbyController">
    <top>
       <VBox fx:id="topVBox" BorderPane.alignment="CENTER_LEFT">
          <BorderPane.margin>
@@ -41,8 +41,8 @@
    <bottom>
       <HBox alignment="CENTER_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="createGame_B" mnemonicParsing="false" text="erstelle Spiel" />
-            <Button fx:id="joinGame_B" mnemonicParsing="false" text="trete Spiel bei" />
+            <Button fx:id="createGame_B" mnemonicParsing="false" onAction="#createGame" text="erstelle Spiel" />
+            <Button fx:id="joinGame_B" mnemonicParsing="false" onAction="#joinGame" text="trete Spiel bei" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="30.0" top="10.0" />

@@ -10,9 +10,9 @@ import java.util.LinkedList;
 
 public class Client
 {
-	String serverIP;
-	int serverPort;
-	String name;
+	private String serverIP;
+	private int serverPort;
+	private String name;
 	private int[][] field;
 	private int width; // falls es später dynamisch sein soll
 	private int hight;
@@ -29,7 +29,12 @@ public class Client
 	
 	public Client(LobbyController lobbyC)
 	{
-		this.lobbyController = lobbyC;
+		this.lobbyController = lobbyC;		
+		lobbyList = new LinkedList<String>();
+		lobbyList.add("Manuel");		//eine defaultliste zum testen
+		lobbyList.add("Patrick");
+		lobbyList.add("Andi");
+		lobbyList.add("Pol");
 		lobbyController.setClient(this);
 	}
 	
@@ -37,8 +42,7 @@ public class Client
 		try {
 			this.serverIP = serverIP;
 			this.serverPort = serverPort;
-			this.name = spielerName;
-			
+			this.name = spielerName;			
 			
 			System.out.println("Server - ip: " + serverIP + ":" + serverPort );
 			System.out.println("Player - ip: " + InetAddress.getLocalHost().getHostAddress()  + " PlayerName: " + name );
@@ -46,17 +50,12 @@ public class Client
 			this.socket = new Socket(this.serverIP, this.serverPort);  // TODO: vll Port ändern
 			//socket.setSoTimeout(2000);
 
-			
-			
 			input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			output = new PrintStream(socket.getOutputStream()); 
+		
 			System.out.println("Warte auf Anfrage vom Server");
 			String serverNachricht = input.readLine();
-			System.out.println(serverNachricht);
-			
-			System.out.println("nachricht erhalten");
-			
-			
+			System.out.println("Nachricht vom Server: " + serverNachricht);
 			
 			output.print("ACK");
 			return true; // Verbinden hat geklappt

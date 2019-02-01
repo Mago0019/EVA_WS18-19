@@ -104,17 +104,18 @@ public class LobbyController
 	}
 	
 	@FXML
-	public void createGame() {
+	public void createGame(ActionEvent klick) {
 		
 	}
 	
 	@FXML
-	public void joinGame() {
-		
+	public void joinGame(ActionEvent klick) {
+//		lobby.setAll(client.lobbyList);
+//		lobby_LV.setItems(lobby);
 	}
 	
 	@FXML
-	public void startGame() {
+	public void startGame(ActionEvent klick) {
 		
 	}
 	

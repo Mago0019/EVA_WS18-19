@@ -46,7 +46,8 @@ public class EmpfangsThread extends Thread {
 	private void listenToClient() {
 		// TODO: darauf warten, dass der Client eine Aktion in der Lobby ausführen will
 		String msg = "";
-		while (running) {
+		int tryCount = 0;
+		while (running && tryCount < 3) {
 			try {
 				
 				// TODO: Marshalling  - erste 4 Bytes (Befehlscode) anschauen.
@@ -65,6 +66,8 @@ public class EmpfangsThread extends Thread {
 				
 				
 			} catch (IOException ioe) {
+				tryCount++;
+				System.out.println("ERROR: EmpfangsThread hat verbindung zum CLienten verloren.");
 				ioe.printStackTrace();
 			}
 		}
