@@ -39,9 +39,9 @@ public class LobbyController
 	@FXML
 	private MenuItem mHilfe_ueber;
 	@FXML
-	private Label lobbyList_L;
+	private Label lobby_L;
 	@FXML
-	private Label gameList_L;
+	private Label openGames_L;
 	@FXML
 	private Button createGame_B;
 	@FXML
@@ -52,6 +52,7 @@ public class LobbyController
 	public ListView<String> openGames_LV = new ListView<>();
 
 	ObservableList<String> lobby = FXCollections.observableArrayList();
+	ObservableList<String> openGames = FXCollections.observableArrayList();
 	private Client client;
 		
 	@FXML

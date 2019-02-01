@@ -167,8 +167,8 @@ public class JoinServerController {
 
 			if (verbindungErfolgreich) {
 				lobbyStage.setScene(scene);
-//				client.lobbyController.lobby.setAll(client.lobbyList);
-//				client.lobbyController.lobby_LV.setItems(client.lobbyController.lobby);
+				client.setLobbyListView();
+				client.setOpenGameView();
 				lobbyStage.show();
 			} else {
 				//TODO: Error anzeigen -> Name Flasch, oder keine Verbindung mit Server möglich gewesen.

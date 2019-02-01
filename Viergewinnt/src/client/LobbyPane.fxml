@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="500.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.192" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.LobbyController">
+<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="500.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.LobbyController">
    <top>
       <VBox fx:id="topVBox" BorderPane.alignment="CENTER_LEFT">
          <BorderPane.margin>
@@ -57,7 +57,7 @@
          <children>
             <VBox alignment="TOP_CENTER">
                <children>
-       			  <Label fx:id="lobbyList_L" alignment="CENTER" text="Spieler online">
+       			  <Label fx:id="lobby_L" alignment="CENTER" text="Spieler online">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -70,7 +70,7 @@
             </VBox>
             <VBox alignment="TOP_CENTER">
                <children>
-                  <Label fx:id="gameList_L" text="Offene Spiele">
+                  <Label fx:id="openGames_L" text="Offene Spiele">
                      <VBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </VBox.margin>
@@ -78,7 +78,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <ListView fx:id="gameList_LV" prefHeight="500.0" />
+                  <ListView fx:id="openGames_LV" prefHeight="500.0" />
                </children>
             </VBox>
 

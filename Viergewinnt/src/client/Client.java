@@ -17,6 +17,7 @@ public class Client
 	private int width; // falls es später dynamisch sein soll
 	private int hight;
 	private LinkedList<String> lobbyList;
+	private LinkedList<String> openGames;
 	
 	//---- UI ------
 	private LobbyController lobbyController;
@@ -35,7 +36,12 @@ public class Client
 		lobbyList.add("Patrick");
 		lobbyList.add("Andi");
 		lobbyList.add("Pol");
+		openGames = new LinkedList<String>();
+		openGames.add("Patricks Game");
+		openGames.add("Manuels Game");
 		lobbyController.setClient(this);
+		
+		
 	}
 	
 	public boolean serverConnect(String serverIP, int serverPort, String spielerName) {
@@ -67,5 +73,13 @@ public class Client
 		}
 		
 	}
-
+	public void setLobbyListView(){
+		lobbyController.lobby.setAll(this.lobbyList);
+		lobbyController.lobby_LV.setItems(lobbyController.lobby);
+	}
+	
+	public void setOpenGameView() {
+		lobbyController.openGames.setAll(this.openGames);
+		lobbyController.openGames_LV.setItems(lobbyController.openGames);
+	}
 }
