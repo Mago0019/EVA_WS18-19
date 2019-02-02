@@ -160,6 +160,7 @@ public class JoinServerController {
 			Stage lobbyStage = (Stage) ((Node) klick.getSource()).getScene().getWindow();
 
 			GameController lobbyC = fxmlLoader.getController();
+			lobbyC.initialize();
 			Client client = new Client(lobbyC);
 
 			boolean verbindungErfolgreich = client.serverConnect(ServerIP_TF.getText(),
@@ -167,18 +168,15 @@ public class JoinServerController {
 
 			if (verbindungErfolgreich) {
 				lobbyStage.setScene(scene);
-				client.setLobbyListView();
-				client.setOpenGameView();
 				lobbyStage.show();
 			} else {
-				//TODO: Error anzeigen -> Name Flasch, oder keine Verbindung mit Server möglich gewesen.
+				//TODO: Error anzeigen -> Name Falsch, oder keine Verbindung mit Server möglich gewesen.
 			}
 			
 		} catch (NumberFormatException nfe) {
 			// Todo: entweder Alert starten, oder ein Textfeld mit einer Errormeldung füllen
 			System.out.println("ERROR: Port ist keine Zahl");
 		} catch (Exception e) {
-			e.printStackTrace();
 			// Diese Errormeldung könnte auch vom Clienten geworfen werden.
 			System.out.println("ERROR: Verbinden mit Server fehlgeschlagen!");
 		}

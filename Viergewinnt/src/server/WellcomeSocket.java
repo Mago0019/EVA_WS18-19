@@ -30,7 +30,7 @@ public class WellcomeSocket extends Thread {
 	public void run() {
 		try {
 			// Benötigte Werkzeuge generieren
-			empfangsSocket = new ServerSocket(PORT, 50, ADR);		
+			empfangsSocket = new ServerSocket(PORT, 50, ADR);
 			tPool = Executors.newScheduledThreadPool(5); // CoreSize = 5 für EmpfangsThreads und GameSessions		
 			this.lobby = Lobby.getInstance(); 
 			
@@ -43,10 +43,10 @@ public class WellcomeSocket extends Thread {
 			
 			try {
 				Socket newSocket = empfangsSocket.accept();
-				newSocket.setSoTimeout(3000); //in ms
+				newSocket.setSoTimeout(30_000); //in ms
 
 				// TODO: Socket weitergeben an EmpfangsThread
-				tPool.execute( new EmpfangsThread(newSocket, lobby) );
+				tPool.execute( new ClientThread(newSocket, lobby) );
 				
 			} catch (SocketException se) {
 				System.out.println("ERROR: SocketException / Timeout");
