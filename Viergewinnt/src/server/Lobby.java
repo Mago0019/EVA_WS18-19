@@ -89,4 +89,12 @@ public class Lobby {
 		
 		return sb.toString();
 	}
+	
+	public boolean containsPlayer(String name) { // Problem: Wenn ein spieler gerade ein spiel verlässt/startet
+		if(this.lobbyList.contains(name) || this.inGameList.contains(name)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

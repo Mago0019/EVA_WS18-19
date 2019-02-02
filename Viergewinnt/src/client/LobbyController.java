@@ -1,12 +1,14 @@
 package client;
 
+import java.io.IOException;
 import java.util.LinkedList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -27,6 +29,8 @@ public class LobbyController
 	private Label titelLabel;
 	@FXML
 	private VBox topVBox;
+	@FXML
+	private VBox openGames_VBox;
 	@FXML
 	private MenuBar menuBar;
 	@FXML
@@ -52,6 +56,7 @@ public class LobbyController
 	@FXML
 	private ListView<String> openGames_LV = new ListView<>();
 
+	private VBox otherVBox;
 	ObservableList<String> lobby;
 	ObservableList<String> openGames;
 	private Client client;
@@ -115,7 +120,14 @@ public class LobbyController
 	
 	@FXML
 	public void createGame(ActionEvent klick) {
-		
+
+		try {
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/openGame.fxml"));
+		Node node = (Node) fxmlLoader.load();
+		openGames_VBox.getChildren().setAll(node);
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
 	}
 	
 	@FXML

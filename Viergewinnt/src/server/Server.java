@@ -4,12 +4,10 @@ import java.net.InetAddress;
 import java.util.Scanner;
 
 /**
- * Startet das Empfangssocket und arbeitet dann als IO-Thread für den Server.
+ * Startet das WellcomeSocket und arbeitet dann als IO-Thread für den Server.
  */
 public class Server {
-
 	public static boolean serverRunning = true;	
-	
 	public static void main(String[] args) {
 
 		try (Scanner sc = new Scanner(System.in)) {
