@@ -8,6 +8,9 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.LinkedList;
 
+/**
+ * Hilfsklasse, die alle nötigen Informationen zwischenspeichert und die Kommunikation mit dem Server übernimmt.
+ */
 public class Client
 {
 	private String serverIP;
@@ -76,13 +79,13 @@ public class Client
 	
 	public void setLobbyListView(){
 		gameController.lobby.setAll(this.lobbyList);
-		gameController.lobby_LV.setItems(gameController.lobby);
+//		gameController.lobby_LV.setItems(gameController.lobby);
 	}
 	
 
 	public void setOpenGameView() {
 		gameController.openGames.setAll(this.openGames);
-		gameController.openGames_LV.setItems(gameController.openGames);
+//		gameController.openGames_LV.setItems(gameController.openGames);
 	}
 	
 	public String getName() {

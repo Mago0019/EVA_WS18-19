@@ -15,7 +15,7 @@ import java.net.Socket;
  */
 public class ClientThread extends Thread {
 
-	Socket clientSocket;
+	Socket clientSocket; // Monentane TimeOutZeit: 30sek
 	String clientName;
 	Lobby lobby;
 	boolean running;
@@ -34,13 +34,12 @@ public class ClientThread extends Thread {
 	public void run() {
 		System.out.println("ClientThread gestartet.");
 		
-		// IO deklarieren
+		// IO deklarieren für Lebenszeit des Threads
 		try (BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-				PrintStream output = new PrintStream(clientSocket.getOutputStream());){
+				PrintStream output = new PrintStream(clientSocket.getOutputStream());) {
 			this.input = input;
 			this.output = output;
 
-		
 		// Besorge Namen für Spieler
 		askForPlayerName();
 
@@ -50,13 +49,15 @@ public class ClientThread extends Thread {
 		// jetzt die Kommunikation regeln
 		listenToClient();
 
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			System.out.println("ERROR: ClientThread abgestürzt!");
+		}
 	}
 
 	private void listenToClient() {
 		// TODO: darauf warten, dass der Client eine Aktion in der Lobby ausführen will
 		String msg = "";
-		int tryCount = 0;
+		int tryCount = 0; 
 		while (running && tryCount < 3) {
 			try {
 				
@@ -64,10 +65,10 @@ public class ClientThread extends Thread {
 				msg = input.readLine(); // TODO: bricht leider nach ein paar Sek ab, wenn keine Meldung kommt
 				
 				switch (msg) {
-				case "~~2": // z.B. Starte SpielLobby
+				case "~~5": // z.B. Starte eigene SpielLobby
 					break;
 
-				case "~~3": // z.B. join anderer Lobby
+				case "~~52": // z.B. join anderer Lobby
 					break;
 					
 				default:
@@ -77,7 +78,7 @@ public class ClientThread extends Thread {
 				
 			} catch (IOException ioe) {
 				tryCount++;
-				System.out.println("ERROR: EmpfangsThread hat verbindung zum CLienten verloren.");
+				System.out.println("ERROR: EmpfangsThread hat Verbindung zum CLienten verloren.");
 				//ioe.printStackTrace();
 			}
 		}
@@ -105,7 +106,7 @@ public class ClientThread extends Thread {
 				System.out.println("Angefragter Name von Client: " + newName);
 
 				// neuen Namen überprüfen
-				if (newName != null && newName.length() > 2 && newName.length() < 10) {
+				if (newName != null && newName.length() > 2 && newName.length() < 15) {
 					
 					// Schauen, ob der Name schon vorhanden ist
 					if(lobby.containsPlayer(newName)) {
