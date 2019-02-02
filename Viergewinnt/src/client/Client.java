@@ -88,5 +88,29 @@ public class Client
 	public String getName() {
 		return this.name;
 	}
+	
+	public void setStone(int collumn) {
+		//sende collumn an Server
+	}
+	
+	public void createGame() {
+		
+	}
+	
+	public void joinGame() {
+		
+	}
+	
+	public void leaveYourGame() {
+		
+	}
+	
+	public void startGame() {
+		
+	}
+	
+	public void surrenderGame() {
+		
+	}
 
 }

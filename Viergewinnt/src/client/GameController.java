@@ -99,6 +99,7 @@ public class GameController
 	
 	@FXML
 	public void createGame(ActionEvent klick) {
+		client.createGame();
 		yourGame_L.setText(client.getName() + "s Game");
 		player1_TF.setText(client.getName());
 		openGames_VB.setVisible(false);
@@ -108,6 +109,7 @@ public class GameController
 	
 	@FXML
 	public void joinGame(ActionEvent klick) {
+		client.joinGame();
 		player2_TF.setText(client.getName());
 		openGames_VB.setVisible(false);
 		yourGame_VB.setVisible(true);
@@ -116,18 +118,21 @@ public class GameController
 	
 	@FXML
 	public void leaveYourGame(ActionEvent klick) {
+		client.leaveYourGame();
 		yourGame_VB.setVisible(false);	
 		openGames_VB.setVisible(true);
 	}	
 	
 	@FXML
 	public void startGame(ActionEvent klick) {
+		client.startGame();
 		lobby_HB.setVisible(false);
 		activeGame_VB.setVisible(true);
 	}
 	
 	@FXML
 	public void surrenderGame(ActionEvent klick) {
+		client.surrenderGame();
 		winLoose_L.setText("Sie haben Verloren :(");
 		winLoose_L.setVisible(true);
 		activeGame_VB.setVisible(false);
@@ -137,23 +142,29 @@ public class GameController
 	@FXML
 	public void setStone(ActionEvent klick) {
 		int collumn = Integer.parseInt(insertTurn_TF.getText());
-		
-		if(collumn < 1 || collumn > 7) {
-			//Todo error Meldung
-		}
-		else {
-			Circle stone = new Circle();
-			stone.setFill(Paint.valueOf("RED"));
-			stone.setRadius(30.0);
-			gameField_GP.add(stone, collumn-1, 6);
-			gameField_GP.setValignment(stone,VPos.CENTER);
-			gameField_GP.setHalignment(stone, HPos.CENTER);
-			
-		}
-		
+		client.setStone(collumn);
 	}
 	
-	
+	public void updateGamefield( int[][] field) {
+		gameField_GP.getChildren().clear();
+		
+		for(int row = 0; row <= field.length; row++) {
+			for(int collumn = 0; collumn <= field[0].length; collumn++) {
+				Circle stone = new Circle();
+				stone.setRadius(30.0);
+				if(field[row][collumn] > 0) {
+					stone.setFill(Paint.valueOf("RED"));
+				}
+				else {
+					stone.setFill(Paint.valueOf("BLUE"));
+				}
+				
+				gameField_GP.add(stone, collumn, row);
+				gameField_GP.setValignment(stone,VPos.CENTER);
+				gameField_GP.setHalignment(stone, HPos.CENTER);
+			}
+		}
+	}
 
 	public void setClient(Client client) {
 		this.client = client;
