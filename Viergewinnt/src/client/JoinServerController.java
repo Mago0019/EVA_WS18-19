@@ -159,9 +159,9 @@ public class JoinServerController {
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			Stage lobbyStage = (Stage) ((Node) klick.getSource()).getScene().getWindow();
 
-			GameController lobbyC = fxmlLoader.getController();
-			lobbyC.initialize();
-			Client client = new Client(lobbyC);
+			GameController gameC = fxmlLoader.getController();
+			gameC.initialize();
+			Client client = new Client(gameC);
 
 			boolean verbindungErfolgreich = client.serverConnect(ServerIP_TF.getText(),
 					Integer.parseInt(ServerPort_TF.getText()), SpielerName_TF.getText());

@@ -84,9 +84,16 @@ public class GameController
 	@FXML
 	public ListView<String> openGames_LV = new ListView<>();
 
-	ObservableList<String> lobby = FXCollections.observableArrayList();
-	ObservableList<String> openGames = FXCollections.observableArrayList();
 	private Client client;
+	ObservableList<String> lobby;
+	ObservableList<String> openGames;
+
+	public void initialize(){
+		lobby  = FXCollections.observableArrayList();
+		openGames = FXCollections.observableArrayList();
+		this.lobby_LV.setItems(lobby);
+		this.openGames_LV.setItems(openGames);
+	}
 		
 	
 	

@@ -33,19 +33,13 @@ public class Client
 		this.gameController = gameC;		
 		lobbyList = new LinkedList<String>();
 		openGames = new LinkedList<String>();
-<<<<<<< HEAD
-		openGames.add("Patricks Game");
-		openGames.add("Manuels Game");
 		gameController.setClient(this);
-=======
-		lobbyController.setClient(this);
 //		lobbyList.add("Manuel");		//eine defaultliste zum testen
 //		lobbyList.add("Patrick");
 //		lobbyList.add("Andi");
 //		lobbyList.add("Pol");
 //		openGames.add("Patricks Game");
 //		openGames.add("Manuels Game");
->>>>>>> branch 'master' of https://github.com/Mago0019/EVA_WS18-19
 		
 		
 	}
@@ -79,15 +73,13 @@ public class Client
 		}
 		
 	}
-<<<<<<< HEAD
+	
 	public void setLobbyListView(){
 		gameController.lobby.setAll(this.lobbyList);
 		gameController.lobby_LV.setItems(gameController.lobby);
 	}
-=======
->>>>>>> branch 'master' of https://github.com/Mago0019/EVA_WS18-19
 	
-<<<<<<< HEAD
+
 	public void setOpenGameView() {
 		gameController.openGames.setAll(this.openGames);
 		gameController.openGames_LV.setItems(gameController.openGames);
@@ -96,6 +88,5 @@ public class Client
 	public String getName() {
 		return this.name;
 	}
-=======
->>>>>>> branch 'master' of https://github.com/Mago0019/EVA_WS18-19
+
 }
