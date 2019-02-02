@@ -31,13 +31,9 @@ public class LobbyController
 	@FXML
 	private VBox topVBox;
 	@FXML
-<<<<<<< HEAD
-	private VBox openGames_VBox;
-=======
 	private VBox openGames_VB;
 	@FXML
 	private VBox yourGame_VB;
->>>>>>> branch 'master' of https://github.com/Mago0019/EVA_WS18-19.git
 	@FXML
 	private MenuBar menuBar;
 	@FXML
@@ -61,9 +57,6 @@ public class LobbyController
 	@FXML
 	private Button joinGame_B;
 	@FXML
-<<<<<<< HEAD
-	private ListView<String> lobby_LV = new ListView<>();
-=======
 	private Button startGame_B;
 	@FXML
 	private Button leaveYourGame_B;
@@ -73,7 +66,6 @@ public class LobbyController
 	private TextField player2_TF;
 	@FXML
 	public ListView<String> lobby_LV = new ListView<>();
->>>>>>> branch 'master' of https://github.com/Mago0019/EVA_WS18-19.git
 	@FXML
 	private ListView<String> openGames_LV = new ListView<>();
 
@@ -141,20 +133,9 @@ public class LobbyController
 	
 	@FXML
 	public void createGame(ActionEvent klick) {
-<<<<<<< HEAD
-
-		try {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/openGame.fxml"));
-		Node node = (Node) fxmlLoader.load();
-		openGames_VBox.getChildren().setAll(node);
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		}
-=======
 		openGames_VB.setVisible(false);
 		yourGame_VB.setVisible(true);		
->>>>>>> branch 'master' of https://github.com/Mago0019/EVA_WS18-19.git
-	}
+		}
 	
 	@FXML
 	public void joinGame(ActionEvent klick) {
