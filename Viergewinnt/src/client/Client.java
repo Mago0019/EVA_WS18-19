@@ -20,7 +20,7 @@ public class Client
 	private LinkedList<String> openGames;
 	
 	//---- UI ------
-	private LobbyController lobbyController;
+	private GameController gameController;
 	
 	// ---- IO ----
 	private Socket socket;
@@ -28,9 +28,9 @@ public class Client
 	private PrintStream output;
 	
 	
-	public Client(LobbyController lobbyC)
+	public Client(GameController gameC)
 	{
-		this.lobbyController = lobbyC;		
+		this.gameController = gameC;		
 		lobbyList = new LinkedList<String>();
 		lobbyList.add("Manuel");		//eine defaultliste zum testen
 		lobbyList.add("Patrick");
@@ -39,7 +39,7 @@ public class Client
 		openGames = new LinkedList<String>();
 		openGames.add("Patricks Game");
 		openGames.add("Manuels Game");
-		lobbyController.setClient(this);
+		gameController.setClient(this);
 		
 		
 	}
@@ -74,12 +74,16 @@ public class Client
 		
 	}
 	public void setLobbyListView(){
-		lobbyController.lobby.setAll(this.lobbyList);
-		lobbyController.lobby_LV.setItems(lobbyController.lobby);
+		gameController.lobby.setAll(this.lobbyList);
+		gameController.lobby_LV.setItems(gameController.lobby);
 	}
 	
 	public void setOpenGameView() {
-		lobbyController.openGames.setAll(this.openGames);
-		lobbyController.openGames_LV.setItems(lobbyController.openGames);
+		gameController.openGames.setAll(this.openGames);
+		gameController.openGames_LV.setItems(gameController.openGames);
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 }

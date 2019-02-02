@@ -152,14 +152,14 @@ public class JoinServerController {
 		// Integer.parseInt(ServerPort_TF.getText()), SpielerName_TF.getText());
 
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/LobbyPane.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/GamePane.fxml"));
 			Pane mainPane = fxmlLoader.load();
 			Scene scene = new Scene(mainPane);
 
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			Stage lobbyStage = (Stage) ((Node) klick.getSource()).getScene().getWindow();
 
-			LobbyController lobbyC = fxmlLoader.getController();
+			GameController lobbyC = fxmlLoader.getController();
 			Client client = new Client(lobbyC);
 
 			boolean verbindungErfolgreich = client.serverConnect(ServerIP_TF.getText(),
@@ -178,6 +178,7 @@ public class JoinServerController {
 			// Todo: entweder Alert starten, oder ein Textfeld mit einer Errormeldung füllen
 			System.out.println("ERROR: Port ist keine Zahl");
 		} catch (Exception e) {
+			e.printStackTrace();
 			// Diese Errormeldung könnte auch vom Clienten geworfen werden.
 			System.out.println("ERROR: Verbinden mit Server fehlgeschlagen!");
 		}
