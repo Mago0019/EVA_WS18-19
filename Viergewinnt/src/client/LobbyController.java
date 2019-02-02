@@ -17,6 +17,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -30,7 +31,13 @@ public class LobbyController
 	@FXML
 	private VBox topVBox;
 	@FXML
+<<<<<<< HEAD
 	private VBox openGames_VBox;
+=======
+	private VBox openGames_VB;
+	@FXML
+	private VBox yourGame_VB;
+>>>>>>> branch 'master' of https://github.com/Mago0019/EVA_WS18-19.git
 	@FXML
 	private MenuBar menuBar;
 	@FXML
@@ -48,11 +55,25 @@ public class LobbyController
 	@FXML
 	private Label openGames_L;
 	@FXML
+	private Label yourGame_L;
+	@FXML
 	private Button createGame_B;
 	@FXML
 	private Button joinGame_B;
 	@FXML
+<<<<<<< HEAD
 	private ListView<String> lobby_LV = new ListView<>();
+=======
+	private Button startGame_B;
+	@FXML
+	private Button leaveYourGame_B;
+	@FXML
+	private TextField player1_TF;
+	@FXML
+	private TextField player2_TF;
+	@FXML
+	public ListView<String> lobby_LV = new ListView<>();
+>>>>>>> branch 'master' of https://github.com/Mago0019/EVA_WS18-19.git
 	@FXML
 	private ListView<String> openGames_LV = new ListView<>();
 
@@ -120,6 +141,7 @@ public class LobbyController
 	
 	@FXML
 	public void createGame(ActionEvent klick) {
+<<<<<<< HEAD
 
 		try {
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/openGame.fxml"));
@@ -128,13 +150,23 @@ public class LobbyController
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
+=======
+		openGames_VB.setVisible(false);
+		yourGame_VB.setVisible(true);		
+>>>>>>> branch 'master' of https://github.com/Mago0019/EVA_WS18-19.git
 	}
 	
 	@FXML
 	public void joinGame(ActionEvent klick) {
-//		lobby.setAll(client.lobbyList);
-//		lobby_LV.setItems(lobby);
+		openGames_VB.setVisible(false);
+		yourGame_VB.setVisible(true);	
 	}
+	
+	@FXML
+	public void leaveYourGame(ActionEvent klick) {
+		yourGame_VB.setVisible(false);	
+		openGames_VB.setVisible(true);
+	}	
 	
 	@FXML
 	public void startGame(ActionEvent klick) {
