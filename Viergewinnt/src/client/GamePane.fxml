@@ -46,7 +46,7 @@
    <center>
       <StackPane BorderPane.alignment="TOP_CENTER">
          <children>
-           <HBox fx:id="lobby_HB" alignment="TOP_CENTER" visible="false">
+           <HBox fx:id="lobby_HB" alignment="TOP_CENTER">
                <children>
                   <VBox alignment="TOP_CENTER">
                      <children>
@@ -138,7 +138,7 @@
       
                </children>
             </HBox>
-            <VBox fx:id="activeGame_VB" alignment="CENTER">
+            <VBox fx:id="activeGame_VB" alignment="CENTER" visible="false">
                <children>
                   <GridPane gridLinesVisible="true" hgap="1.0" vgap="1.0">
                     <columnConstraints>

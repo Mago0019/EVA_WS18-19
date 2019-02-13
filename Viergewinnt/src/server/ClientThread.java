@@ -97,7 +97,7 @@ public class ClientThread extends Thread {
 			try {
 
 				// TODO: Befehlscode für NamensAnforderung
-				output.print("~~0 \n");
+				output.println("~~0");
 				// output.flush();
 				System.out.println("Client angefragt - Code: ~~0");
 
@@ -110,14 +110,15 @@ public class ClientThread extends Thread {
 					
 					// Schauen, ob der Name schon vorhanden ist
 					if(lobby.containsPlayer(newName)) {
-						output.print("~~01"); // Name schon vorhanden
+						output.println("~~01"); // Name schon vorhanden
 						
 					} else {
 						this.clientName = newName;
+						output.println("~~00"); // Name ist gültig
 						done = true;						
 					}
 				} else {
-					output.print("~~02"); // Ungültiger Name
+					output.println("~~02"); // Ungültiger Name
 				}
 				
 			} catch (Exception e) {

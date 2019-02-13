@@ -9,7 +9,8 @@ import java.net.Socket;
 import java.util.LinkedList;
 
 /**
- * Hilfsklasse, die alle nötigen Informationen zwischenspeichert und die Kommunikation mit dem Server übernimmt.
+ * Hilfsklasse, die alle nötigen Informationen zwischenspeichert und die
+ * Kommunikation mit dem Server übernimmt.
  */
 public class Client
 {
@@ -21,19 +22,18 @@ public class Client
 	private int hight;
 	private LinkedList<String> lobbyList;
 	private LinkedList<String> openGames;
-	
-	//---- UI ------
+
+	// ---- UI ------
 	private GameController gameController;
-	
+
 	// ---- IO ----
 	private Socket socket;
 	private BufferedReader input;
 	private PrintStream output;
-	
-	
+
 	public Client(GameController gameC)
 	{
-		this.gameController = gameC;		
+		this.gameController = gameC;
 		lobbyList = new LinkedList<String>();
 		openGames = new LinkedList<String>();
 		gameController.setClient(this);
@@ -43,77 +43,111 @@ public class Client
 //		lobbyList.add("Pol");
 //		openGames.add("Patricks Game");
 //		openGames.add("Manuels Game");
-		
-		
+
 	}
-	
-	public boolean serverConnect(String serverIP, int serverPort, String spielerName) {
-		try {
+
+	public int serverConnect(String serverIP, int serverPort, String spielerName)
+	{
+		try
+		{
 			this.serverIP = serverIP;
 			this.serverPort = serverPort;
-			this.name = spielerName;			
-			
-			System.out.println("Server - ip: " + serverIP + ":" + serverPort );
-			System.out.println("Player - ip: " + InetAddress.getLocalHost().getHostAddress()  + " PlayerName: " + name );
-						
-			this.socket = new Socket(this.serverIP, this.serverPort);  // TODO: vll Port ändern
-			//socket.setSoTimeout(2000);
+			this.name = spielerName;
+			boolean done = false;
 
+			System.out.println("Server - ip: " + serverIP + ":" + serverPort);
+			System.out.println("Player - ip: " + InetAddress.getLocalHost().getHostAddress() + " PlayerName: " + name);
+			if (this.socket == null)
+			{
+				this.socket = new Socket(this.serverIP, this.serverPort); // TODO: vll Port ändern
+				// socket.setSoTimeout(2000);
+			}
 			input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			output = new PrintStream(socket.getOutputStream()); 
-		
-			System.out.println("Warte auf Anfrage vom Server");
-			String serverNachricht = input.readLine();
-			System.out.println("Nachricht vom Server: " + serverNachricht);
-			
-			output.print("ACK");
-			return true; // Verbinden hat geklappt
-			
-		}catch(Exception e) {
+			output = new PrintStream(socket.getOutputStream());
+			while (!done)
+			{
+				System.out.println("Warte auf Anfrage vom Server");
+				String serverNachricht = input.readLine();
+				System.out.println("Nachricht vom Server: " + serverNachricht);
+				switch (serverNachricht)
+				{
+				case "~~0":
+					output.println(this.name);
+					break;
+				case "~~00":
+					done = true;
+					break;
+				case "~~01":
+					return 1;
+				case "~~02":
+					return 2;
+				}
+			}
+
+			return 0; // Verbinden hat geklappt
+
+		} catch (Exception e)
+		{
 			// Verbinden fehlgeschlagen
-			try { socket.close(); } catch (IOException e1) {}
-			return false;
+			try
+			{
+				if (socket != null)
+				{
+					socket.close();
+				}
+			} catch (IOException e1)
+			{
+			}
+			return 3;
 		}
-		
+
 	}
-	
-	public void setLobbyListView(){
+
+	public void setLobbyListView()
+	{
 		gameController.lobby.setAll(this.lobbyList);
 //		gameController.lobby_LV.setItems(gameController.lobby);
 	}
-	
 
-	public void setOpenGameView() {
+	public void setOpenGameView()
+	{
 		gameController.openGames.setAll(this.openGames);
 //		gameController.openGames_LV.setItems(gameController.openGames);
 	}
-	
-	public String getName() {
+
+	public String getName()
+	{
 		return this.name;
 	}
-	
-	public void setStone(int collumn) {
-		//sende collumn an Server
+
+	public void setStone(int collumn)
+	{
+		// sende collumn an Server
 	}
-	
-	public void createGame() {
-		
+
+	public void createGame()
+	{
+
 	}
-	
-	public void joinGame() {
-		
+
+	public void joinGame()
+	{
+
 	}
-	
-	public void leaveYourGame() {
-		
+
+	public void leaveYourGame()
+	{
+
 	}
-	
-	public void startGame() {
-		
+
+	public void startGame()
+	{
+
 	}
-	
-	public void surrenderGame() {
-		
+
+	public void surrenderGame()
+	{
+
 	}
 
 }

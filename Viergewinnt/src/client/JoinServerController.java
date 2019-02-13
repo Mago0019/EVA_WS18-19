@@ -67,6 +67,8 @@ public class JoinServerController {
 	@FXML
 	private TextField ServerIP_TF;
 	@FXML
+	private TextField Error_TF;
+	@FXML
 	private Button joinServer_B;
 
 	@FXML
@@ -163,22 +165,37 @@ public class JoinServerController {
 			gameC.initialize();
 			Client client = new Client(gameC);
 
-			boolean verbindungErfolgreich = client.serverConnect(ServerIP_TF.getText(),
+			int verbindungErfolgreich = client.serverConnect(ServerIP_TF.getText(),
 					Integer.parseInt(ServerPort_TF.getText()), SpielerName_TF.getText());
 
-			if (verbindungErfolgreich) {
+			if (verbindungErfolgreich == 0) {
 				lobbyStage.setScene(scene);
 				lobbyStage.show();
-			} else {
-				//TODO: Error anzeigen -> Name Falsch, oder keine Verbindung mit Server möglich gewesen.
+			} 
+			else {
+				switch (verbindungErfolgreich){
+				case 1: // Name schon vorhanden
+					this.Error_TF.setText("Der Name ist schon vorhanden, bitte versuche es mit einem anderen Namen erneut.");
+					this.Error_TF.setVisible(true);
+					break;
+				case 2: //ungültiger Name
+					this.Error_TF.setText("Der Name ist ungültig, bitte versuche es mit einem anderen Namen erneut.");
+					this.Error_TF.setVisible(true);
+					break;
+				case 3: //Verbindung konnte nicht aufgebaut werden
+					this.Error_TF.setText("Die Verbindung zum Server konnte nicht aufgebaut werden.");
+					this.Error_TF.setVisible(true);
+				}
 			}
 			
 		} catch (NumberFormatException nfe) {
 			// Todo: entweder Alert starten, oder ein Textfeld mit einer Errormeldung füllen
-			System.out.println("ERROR: Port ist keine Zahl");
+			this.Error_TF.setText("Der Port enthält ungültige Zeichen!");
+			this.Error_TF.setVisible(true);
 		} catch (Exception e) {
 			// Diese Errormeldung könnte auch vom Clienten geworfen werden.
-			System.out.println("ERROR: Verbinden mit Server fehlgeschlagen!");
+			this.Error_TF.setText("Die Verbindung zum Server konnte nicht aufgebaut werden.");
+			this.Error_TF.setVisible(true);
 		}
 
 	}
