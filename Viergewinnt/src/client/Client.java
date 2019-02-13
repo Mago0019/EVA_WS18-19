@@ -17,11 +17,13 @@ public class Client extends Thread
 	private String serverIP;
 	private int serverPort;
 	private String name;
-	private int[][] field;
+	private int[][] field; // positiv = player1; negativ = player2; 0 = leeres Feld
 	private int width; // falls es später dynamisch sein soll
 	private int hight;
+	private int playerNumber; // positiv = player1; negativ = player2
 	private LinkedList<String> lobbyList;
 	private LinkedList<String> openGames;
+	private boolean yourTurn;
 
 	// ---- UI ------
 	private GameController gameController;
@@ -135,30 +137,64 @@ public class Client extends Thread
 //		gameController.openGames_LV.setItems(gameController.openGames);
 	}
 
+	public boolean setStone(int collumn)
+	{
+		// sende collumn an Server
+		return true;
+	}
+	
+	public void setYourTurn(boolean yourTurn) {
+		this.yourTurn= yourTurn;
+	}
+	
 	public String getPlayerName() {
 		return this.name;
 	}
-
-	public void setStone(int collumn)
-	{
-		// sende collumn an Server
+	
+	public int getPlayerNumber() {
+		return this.playerNumber;
 	}
-
+	
 	public void createGame()
 	{
-
+		this.playerNumber = 1;
 	}
-
-	public void joinGame()
+	
+	/**
+	 * Die Methode schickt dem Server, dass man einem offenem Spiel beitreten will.
+	 * Der Server schickt einem dann einen String zurück, welcher den Namen des 1. Spielers beinhaltet.
+	 * @return Name Spieler 1
+	 */
+	public String joinGame()
 	{
-
+		playerNumber = -1;
+		String player1 ="";
+		return player1;
 	}
 
+	/**
+	 * Die Methode schickt dem Server eine Nachricht, dass der Client das Spiel verlassen hat
+	 */
 	public void leaveYourGame()
 	{
 
 	}
 
+	/**
+	 * die Methode wird aufgerufen, wenn der Client vom Server benachrichtigt wird, dass der Gegenspieler das Spiel verlassen hat. 
+	 */
+	public void oponentLeftGame()
+	{
+		this.gameController.otherPlayerLeftGame();
+	}
+	
+	/**
+	 * in der Methode wird dem Gamecontroller den namen des 2. Spielers übergeben, den der Client zuvor vom Server erhalten hat.
+	 */
+	public void playerJoinedGame() {
+		this.gameController.otherPlayerJoinedGame("name");
+	}
+	
 	public void startGame()
 	{
 
@@ -168,5 +204,11 @@ public class Client extends Thread
 	{
 
 	}
+	
+	public void yourTurn() {
+		this.yourTurn= true;
+		this.gameController.yourTurn();
+	}
+	
 
 }

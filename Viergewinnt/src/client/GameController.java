@@ -78,6 +78,8 @@ public class GameController
 	@FXML
 	private TextField player2_TF;
 	@FXML
+	private TextField info_TF;
+	@FXML
 	private GridPane gameField_GP;
 	@FXML
 	public ListView<String> lobby_LV = new ListView<>();
@@ -100,8 +102,9 @@ public class GameController
 	@FXML
 	public void createGame(ActionEvent klick) {
 		client.createGame();
-		yourGame_L.setText(client.getName() + "s Game");
-		player1_TF.setText(client.getName());
+		yourGame_L.setText(client.getPlayerName() + "s Game");
+		player1_TF.setText(client.getPlayerName());
+		player2_TF.setText(" - ");
 		openGames_VB.setVisible(false);
 		yourGame_VB.setVisible(true);		
 		winLoose_L.setVisible(false);
@@ -109,8 +112,10 @@ public class GameController
 	
 	@FXML
 	public void joinGame(ActionEvent klick) {
-		client.joinGame();
-		player2_TF.setText(client.getName());
+		String player1 = client.joinGame();
+		yourGame_L.setText(player1 + "s Game");
+		player1_TF.setText(player1);
+		player2_TF.setText(client.getPlayerName());
 		openGames_VB.setVisible(false);
 		yourGame_VB.setVisible(true);
 		winLoose_L.setVisible(false);
@@ -142,7 +147,35 @@ public class GameController
 	@FXML
 	public void setStone(ActionEvent klick) {
 		int collumn = Integer.parseInt(insertTurn_TF.getText());
-		client.setStone(collumn);
+		if(client.setStone(collumn)) {
+			this.setStone_B.setDisable(true);
+			this.info_TF.setText("Gegner ist am Zug.");
+		}
+		else {
+			this.info_TF.setText("Ungültiger Zug. Bitte versuche einen anderen Zug.");
+		}
+	}
+	
+	public void otherPlayerLeftGame(){
+		switch(this.client.getPlayerNumber()) {
+		case -1: 
+			yourGame_VB.setVisible(false);	
+			openGames_VB.setVisible(true);
+			break;
+		case 1:
+			player2_TF.setText(" - ");
+			break;
+		}
+		
+	}
+	public void otherPlayerJoinedGame(String namePlayer2) {
+		this.player2_TF.setText(namePlayer2);
+		this.startGame_B.setDisable(false);
+	}
+	
+	public void yourTurn() {
+		this.setStone_B.setDisable(false);
+		this.info_TF.setText("Du bist am Zug.");
 	}
 	
 	public void updateGamefield( int[][] field) {

@@ -179,7 +179,7 @@ public class JoinServerController {
 					this.Error_TF.setVisible(true);
 					break;
 				case 2: //ungültiger Name
-					this.Error_TF.setText("Der Name ist ungültig, bitte versuche es mit einem anderen Namen erneut.");
+					this.Error_TF.setText("Der Name ist zu kurz/zu lang.(min 3; max 14 Zeichen)");
 					this.Error_TF.setVisible(true);
 					break;
 				case 3: //Verbindung konnte nicht aufgebaut werden
