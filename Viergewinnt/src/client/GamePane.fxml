@@ -126,7 +126,7 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </VBox.margin>
                               </Button>
-                              <Button fx:id="startGame_B" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#startGame" text="Starte Spiel">
+                              <Button fx:id="startGame_B" alignment="CENTER" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#startGame" text="Starte Spiel">
                                  <VBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </VBox.margin>
@@ -219,6 +219,11 @@
                         <Insets bottom="25.0" top="2.0" />
                      </VBox.margin>
                   </GridPane>
+                  <TextField fx:id="info_TF" disable="true" editable="false">
+                     <VBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </VBox.margin>
+                  </TextField>
                   <HBox alignment="CENTER">
                      <children>
                         <TextField fx:id="insertTurn_TF" text="gebe die Spalte ein">
@@ -226,7 +231,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </HBox.margin>
                         </TextField>
-                        <Button fx:id="setStone_B" mnemonicParsing="false" onAction="#setStone" text="Stein setzen">
+                        <Button fx:id="setStone_B" disable="true" mnemonicParsing="false" onAction="#setStone" text="Stein setzen">
                            <HBox.margin>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </HBox.margin>
