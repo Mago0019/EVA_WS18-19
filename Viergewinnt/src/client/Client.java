@@ -135,31 +135,51 @@ public class Client extends Thread
 
 				// TODO: Marshalling - erste 4 Bytes (Befehlscode) anschauen.
 				msg = input.readLine(); // TODO: bricht leider nach ein paar Sek ab, wenn keine Meldung kommt
-
-				switch (msg) {
+				String order = msg.substring(0, 4);
+				String content = msg.substring(4, msg.length());
+				LinkedList<String> tempList = new LinkedList<String>();
+				switch (order) {
 				
 				case "~~10": // update LobbyList
+						tempList.clear();
+					for(String s: content.split(",")){
+						tempList.add(s);
+					}
+					this.lobbyList = tempList;
+					setLobbyListView();
 					break;
 
 				case "~~11": // update openGames
+					tempList.clear();
+					for(String s: content.split(",")){
+						tempList.add(s);
+					}
+					this.openGames = tempList;
+					setOpenGameView();
 					break;
 
 				case "~~20": // Player joined
+					playerJoinedGame(content);
 					break;
 					
 				case "~~21": // Player left
+					oponentLeftGame();
 					break;
 					
 				case "~~30": // Game started
+					gameHasStarted();
 					break;
 					
 				case "~~31": // yourTurn + update Field
+					setYourTurn(Boolean.parseBoolean(content));
 					break;
 					
 				case "~~32": // Turn-Response
+					turnResponse(Boolean.parseBoolean(content));
 					break;
 
 				case "~~33": // win/loose
+					win_loose(Boolean.parseBoolean(content));
 					break;
 					
 				case "~~98":
@@ -263,8 +283,8 @@ public class Client extends Thread
 	/**
 	 * in der Methode wird dem Gamecontroller den namen des 2. Spielers übergeben, den der Client zuvor vom Server erhalten hat.
 	 */
-	public void playerJoinedGame() {
-		this.gameController.otherPlayerJoinedGame("name");
+	public void playerJoinedGame(String name) {
+		this.gameController.otherPlayerJoinedGame(name);
 	}
 	
 	public void setYourTurn(boolean yourTurn) {
@@ -274,5 +294,12 @@ public class Client extends Thread
 	public void turnResponse(boolean correct) {
 		this.gameController.turnResponse(correct);
 	}
+	
+	public void gameHasStarted() {
+		this.gameController.startGame();
+	}
 
+	public void win_loose(boolean win) {
+		this.gameController.winLoose(win);
+	}
 }

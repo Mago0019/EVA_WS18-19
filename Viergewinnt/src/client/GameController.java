@@ -115,7 +115,7 @@ public class GameController
 		client.joinGame();
 		String gameName = openGames_LV.getSelectionModel().getSelectedItem();
 		yourGame_L.setText(gameName);
-		player1_TF.setText(gameName.substring(0, gameName.length() - 8));
+		player1_TF.setText(gameName.substring(0, gameName.length() - 7));
 		player2_TF.setText(client.getPlayerName());
 		openGames_VB.setVisible(false);
 		yourGame_VB.setVisible(true);
@@ -199,6 +199,11 @@ public class GameController
 		else {
 			winLoose_L.setText("Sie haben Verloren :(");
 		}
+	}
+	
+	public void startGame() {
+		lobby_HB.setVisible(false);
+		activeGame_VB.setVisible(true);
 	}
 	
 	public void updateGamefield( int[][] field) {
