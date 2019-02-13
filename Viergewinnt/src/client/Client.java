@@ -12,7 +12,7 @@ import java.util.LinkedList;
  * Hilfsklasse, die alle nötigen Informationen zwischenspeichert und die
  * Kommunikation mit dem Server übernimmt.
  */
-public class Client
+public class Client extends Thread
 {
 	private String serverIP;
 	private int serverPort;
@@ -43,13 +43,33 @@ public class Client
 //		lobbyList.add("Pol");
 //		openGames.add("Patricks Game");
 //		openGames.add("Manuels Game");
-
 	}
-
-	public int serverConnect(String serverIP, int serverPort, String spielerName)
-	{
-		try
-		{
+	
+	@Override
+	public synchronized void start() {
+		// Output übernimmt der Controller, der Input vom Server wird hier verarbeitet.
+		try (BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				PrintStream output = new PrintStream(socket.getOutputStream()); ) {
+			this.input = input;
+			this.output = output;
+			
+			
+			
+		} catch (Exception e) {
+		}
+		
+	}
+	
+	/**
+	 * Erste Verbindung mit dem Server wird aufgebaut und IO deklariert.
+	 * Wird vom JoinServerController aufgerufen.
+	 * @param serverIP IP-Adresse des Servers
+	 * @param serverPort Port des Servers
+	 * @param spielerName gewünschter Name
+	 * @return
+	 */
+	public int serverConnect(String serverIP, int serverPort, String spielerName) { 
+		try {
 			this.serverIP = serverIP;
 			this.serverPort = serverPort;
 			this.name = spielerName;
@@ -115,8 +135,7 @@ public class Client
 //		gameController.openGames_LV.setItems(gameController.openGames);
 	}
 
-	public String getName()
-	{
+	public String getPlayerName() {
 		return this.name;
 	}
 
