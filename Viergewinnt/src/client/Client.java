@@ -171,7 +171,17 @@ public class Client extends Thread
 					break;
 					
 				case "~~31": // yourTurn + update Field
-					setYourTurn(Boolean.parseBoolean(content));
+					int [][] tempField = new int [7][6];
+					String[] contents = content.split(";");
+					setYourTurn(Boolean.parseBoolean(contents[0]));
+					String[] field = contents[1].split(",");	
+					int counter = 0;
+					for(int row = 0; row < 7; row++) {
+						for(int collumn = 0; collumn < 6; collumn ++ ) {
+							tempField[row][collumn] = Integer.parseInt(field[counter]);
+							counter++;
+						}
+					}
 					break;
 					
 				case "~~32": // Turn-Response
