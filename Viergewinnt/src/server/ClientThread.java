@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Kleine Thread-Klasse, die den Clienten nach dem Namen fragt und ihn dann in
@@ -15,95 +18,111 @@ import java.net.Socket;
  */
 public class ClientThread extends Thread {
 
-	Socket clientSocket; // Monentane TimeOutZeit: 30sek
-	String clientName;
+	Player client;
 	Lobby lobby;
+	ExecutorService tPool;
 	boolean running;
 	BufferedReader input;
 	PrintStream output;
+	
 
-	public ClientThread(Socket clientSocket, Lobby lobby) {
-		this.clientSocket = clientSocket;
-		this.clientName = null;
+	public ClientThread(Socket clientSocket, Lobby lobby, ExecutorService tPool) {
+		this.client.socket = clientSocket;
 		this.lobby = lobby;
+		this.tPool = tPool;
 		this.running = true;
-		
+
 	}
 
 	@Override
 	public void run() {
 		System.out.println("ClientThread gestartet.");
-		
+
 		// IO deklarieren für Lebenszeit des Threads
-		try (BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-				PrintStream output = new PrintStream(clientSocket.getOutputStream());) {
+		try (BufferedReader input = new BufferedReader(new InputStreamReader(client.socket.getInputStream()));
+				PrintStream output = new PrintStream(client.socket.getOutputStream());) {
+
 			this.input = input;
 			this.output = output;
 
-		// Besorge Namen für Spieler
-		askForPlayerName();
 
-		// In die Lobby einfügen
-		lobby.addUser(clientSocket, clientName);
+			// SocketTimeout setzen
+			client.socket.setSoTimeout(15_000);
 
-		// jetzt die Kommunikation regeln
-		listenToClient();
+			// Besorge Namen für Spieler
+			askForPlayerName();
+
+			// In die Lobby einfügen
+			lobby.addUser(client.socket, client.name);
+
+			// jetzt die Kommunikation regeln
+			listenToClient();
 
 		} catch (IOException ioe) {
 			System.out.println("ERROR: Verbindung mit Clienten verloren!");
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("ERROR: ClientThread abgestürzt!");
 		}
 	}
 
 	private void listenToClient() {
 		// TODO: darauf warten, dass der Client eine Aktion in der Lobby ausführen will
-		String msg = "";
-		int tryCount = 0; 
-		while (running && tryCount < 3) {
+		String msg = null;
+		int tryCount = 1;
+		int pingCount = 1;
+		while (running && tryCount <= 3) {
 			try {
-				
-				// TODO: Marshalling  - erste 4 Bytes (Befehlscode) anschauen.
+
+				// TODO: Marshalling - erste 4 Bytes (Befehlscode) anschauen.
 				msg = input.readLine(); // TODO: bricht leider nach ein paar Sek ab, wenn keine Meldung kommt
-				
+
 				switch (msg) {
 				case "~~51": // z.B. Starte eigene SpielLobby
+					
 					break;
 
 				case "~~52": // z.B. join anderer SpielLobby
 					break;
-					
+
+				case "~~99":
+					pingCount = 1; // zurücksetzen
+					break;
 				default:
 					break;
 				}
-				
-				
+
+			} catch (SocketTimeoutException stoe) {
+				if (pingCount <= 3) {
+					System.out.println("Pinge Clienten an. Versuch: " + pingCount);
+					this.output.println("~~49"); // Pinge Clienten an
+					pingCount++;
+				} else {
+					running = false;
+				}
 			} catch (IOException ioe) {
 				tryCount++;
-				System.out.println("ERROR: EmpfangsThread hat Verbindung zum Clienten verloren.");
-				//ioe.printStackTrace();
+				System.out.println("ERROR: keine Antwort von Client. Versuch: " + tryCount);
+				// ioe.printStackTrace();
 			}
 		}
 
 	}
 
 	/**
-	 * Client wird angefragt mit Befehlscode (TODO) "~~0" einen SpielerNamen
-	 * auszusuchen.
+	 * Client wird angefragt mit Befehlscode "~~00" einen SpielerNamen auszusuchen.
 	 */
 	private void askForPlayerName() throws IOException {
 		boolean done = false;
 		String newName = null;
-		int trycount = 0;
+		int trycount = 1;
 
-		while (!done && trycount < 3) {
+		while (!done && trycount <= 3) {
 			try {
 
-				// TODO: Befehlscode für NamensAnforderung
-				output.println("~~0");
+				// Namen Anfordern
+				output.println("~~00");
 				// output.flush();
-				System.out.println("Client angefragt - Code: ~~0");
+				System.out.println("Client nach Name gefragt (~~00)");
 
 				// TODO: Namen empfangen / Marshalling + DeMarshalling in extra Methoden
 				newName = input.readLine();
@@ -111,30 +130,42 @@ public class ClientThread extends Thread {
 
 				// neuen Namen überprüfen
 				if (newName != null && newName.length() > 2 && newName.length() < 15) {
-					
+
 					// Schauen, ob der Name schon vorhanden ist
-					if(lobby.containsPlayer(newName)) {
-						output.println("~~01"); // Name schon vorhanden	
+					if (lobby.containsPlayer(newName)) {
+						output.println("~~02"); // Name schon vorhanden
 						trycount = 0;
-						
+
 					} else {
-						this.clientName = newName;
-						output.println("~~00"); // Name ist gültig
-						done = true;						
+						this.client.name = newName;
+						output.println("~~01"); // Name ist gültig
+						done = true;
 					}
 				} else {
-					output.println("~~02"); // Ungültiger Name
+					output.println("~~03"); // Ungültiger Name
 					trycount = 0;
 				}
-				
+
 			} catch (Exception e) {
-				System.out.println("ERROR: Abfragen des ClientNamens fehlgeschlagen!");
+				System.out.println("ERROR: Abfragen des ClientNamens fehlgeschlagen! Versuch: " + trycount);
 				trycount++;
 			}
 		} // end While
-		
-		if(trycount == 3) { // Falls sich der Client nicht mehr gemeldet hat
+
+		if (trycount > 3) { // Falls sich der Client nicht mehr gemeldet hat
 			throw new IOException();
 		}
+	}
+	
+	private void formatPlayerList (List<Player> list) {
+
+		StringBuilder sb = new StringBuilder("");
+		
+		for(Player p : list) {
+			sb.append(p.name + "; ");
+		}
+		sb.substring(2);  // letzte zwei Zeichen (; ) löschen.
+		
+	
 	}
 }

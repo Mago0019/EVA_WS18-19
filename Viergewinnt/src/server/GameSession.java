@@ -2,39 +2,23 @@ package server;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class GameSession extends Thread
-{
+public class GameSession {
+
 	Player player1;
 	Player player2;
 	String gameName;
 	GameField gameField;
+	int playerTurn;
 	
 	
-	public GameSession(Player player1, Player player2, String gameName, int width, int hight)
+	public GameSession(Player player1)
 	{
 		this.player1 = player1;
-		this.player2 = player2;
-		this.gameName = gameName;
-		this.gameField = new GameField(width, hight);
+		this.gameName = player1.name + "'s Game";
+		this.gameField = new GameField();
+		this.playerTurn = randomStart();
 	}
 	
-	public GameSession(Player player1, Player player2, String gameName)
-	{
-		this.player1 = player1;
-		this.player2 = player2;
-		this.gameName = gameName;
-		this.gameField = new GameField(); //nutzt default Größe fürs Spielfeld: Breite : 7, Höhe : 6
-	}
-	
-	@Override
-	public void run()
-	{
-		//TODO ...
-		
-		
-		// TODO: Beim Beenden des Spiels müssen die beiden Player wieder aus der "InGame"-LobbyListe ausgetragen werden.
-		
-	}
 	
 	
 	private int randomStart()

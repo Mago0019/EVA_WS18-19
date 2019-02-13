@@ -1,7 +1,6 @@
-package server;
+ package server;
 
-import java.net.Socket;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -16,13 +15,13 @@ public class Lobby {
 
 	private List<Player> lobbyList;
 	private List<Player> inGameList;
-	private int gameCount;
+	private List<GameSession> openGameList;
 	private static Lobby instance;
 
 	private Lobby() {	 // privater Konstruktor
-		this.lobbyList = new ArrayList<Player>();
-		this.inGameList = new ArrayList<Player>();
-		this.gameCount = 0;
+		this.lobbyList = new LinkedList<Player>();
+		this.inGameList = new LinkedList<Player>();
+		this.openGameList = new LinkedList<GameSession>();
 		
 		// TODO: NUR ZUM TESTEN: Füllen der Lobby
 		for(int i = 1; i<5; i++) {
@@ -37,57 +36,26 @@ public class Lobby {
 		return instance;
 	}
 
-	
-	/**
-	 * Fügt einen Clienten zur Lobby hinzu
-	 */
-	public void addUser(Socket socket, String name) {
-		Player pl = new Player();
-		pl.socket = socket;
-		pl.name = name;
-		this.lobbyList.add(pl);
+	public synchronized void addPlayer(Player player) {
+		this.lobbyList.add(player);
 	}
 	
-	/**
-	 * Wird von einem EmpfangsThread aufgerufen und verbindet beide Threads um während dem Spiel kommunizieren zu können.
-	 * @param player1 der Spieler des Threads, der die Methode aufruft
-	 * @param player2 der andere Spieler, mit dem sich verbunden werden soll
-	 */
-	public void startGameSession(Player player1, Player player2) {
-		gameCount++;
-		try {
-			String gameName = "Game " + gameCount;  // TODO: bessere Namensgenerierung
-			GameSession gs = new GameSession(player1, player2, gameName); 
-			gs.start();
-			
-			inGameList.add(player1);
-			inGameList.add(player2);
-			
-		} catch (Exception e) {
-			System.out.println("ERROR: StartGameSession fehlgeschlagen!");
-		}
+	
+	public synchronized void addGameSession(GameSession gs) {
+		this.openGameList.add(gs);
+//		this.inGameList.add(gs.player1);
 	}
 	
-	/**
-	 * Formattierte String ausgabe für alle Spieler in der Lobby und alle Spieler, die momentan in einem Spiel sind.
-	 * 
-	 * @return zwei-zeiliger String
-	 */
-	public String getLobbyList() {
-		StringBuilder sb = new StringBuilder("Lobby: ");
+	public List<Player> getLobbyList() {
+		return lobbyList;
+	}
+	
+	public List<GameSession> getOpenGames(){
+		return this.openGameList;
+	}
+	
+	public synchronized void addPlayerToLobby() {
 		
-		for(Player p : lobbyList) {
-			sb.append(p.name + "; ");
-		}
-		sb.substring(2);  // letzte zwei Zeichen (; ) löschen.
-		
-		sb.append("\nIn Game: ");
-		for(Player p : inGameList) {
-			sb.append(p.name);
-		}
-		sb.substring(2);  // letzte zwei Zeichen (; ) löschen.
-		
-		return sb.toString();
 	}
 	
 	public boolean containsPlayer(String name) { // Problem: Wenn ein spieler gerade ein spiel verlässt/startet

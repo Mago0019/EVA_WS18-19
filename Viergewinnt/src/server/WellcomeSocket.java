@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Thread der den ServerSocket verwaltet -> Clients annehmen und gleich an einen neuen EmpfangsThread übergeben.
+ * Thread der den ServerSocket verwaltet -> Clients annehmen und an einen neuen EmpfangsThread übergeben.
  */
 public class WellcomeSocket extends Thread {
 
@@ -24,6 +24,7 @@ public class WellcomeSocket extends Thread {
 		this.wellcomeSockRunning = true;
 		this.ADR = adr;
 		this.PORT = port;		
+		this.lobby = Lobby.getInstance(); 
 	}
 	
 	@Override
@@ -31,8 +32,8 @@ public class WellcomeSocket extends Thread {
 		try {
 			// Benötigte Werkzeuge generieren
 			empfangsSocket = new ServerSocket(PORT, 50, ADR);
-			tPool = Executors.newScheduledThreadPool(5); // CoreSize = 5 für EmpfangsThreads und GameSessions		
-			this.lobby = Lobby.getInstance(); 
+			tPool = Executors.newScheduledThreadPool(10); // CoreSize = 10 für EmpfangsThreads und GameSessions		
+			
 			
 		} catch (IOException e) {
 			System.out.println("ERROR (WellcomeSocket): Starten des ServerSockets fehlgeschlagen.");
@@ -43,10 +44,9 @@ public class WellcomeSocket extends Thread {
 			
 			try {
 				Socket newSocket = empfangsSocket.accept();
-				newSocket.setSoTimeout(30_000); //in ms
-
-				// TODO: Socket weitergeben an EmpfangsThread
-				tPool.execute( new ClientThread(newSocket, lobby) );
+				//newSocket.setSoTimeout(30_000); //in ms
+				
+				tPool.execute( new ClientThread(newSocket, lobby, tPool) );
 				
 			} catch (SocketException se) {
 				System.out.println("ERROR: SocketException / Timeout");
