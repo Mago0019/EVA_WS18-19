@@ -21,6 +21,8 @@ public class ClientThread extends Thread {
 	Player client;
 	Lobby lobby;
 	ExecutorService tPool;
+	GameSession gameSession;
+	
 	boolean running;
 	BufferedReader input;
 	PrintStream output;
@@ -53,7 +55,7 @@ public class ClientThread extends Thread {
 			askForPlayerName();
 
 			// In die Lobby einfügen
-			lobby.addUser(client.socket, client.name);
+			lobby.addPlayer(this.client);
 
 			// jetzt die Kommunikation regeln
 			listenToClient();
@@ -75,15 +77,32 @@ public class ClientThread extends Thread {
 
 				// TODO: Marshalling - erste 4 Bytes (Befehlscode) anschauen.
 				msg = input.readLine(); // TODO: bricht leider nach ein paar Sek ab, wenn keine Meldung kommt
-
+				
 				switch (msg) {
-				case "~~51": // z.B. Starte eigene SpielLobby
+				case "~~50": // z.B. Starte eigene SpielLobby
+					createGameSession();
+					break;
+
+				case "~~51": // Join anderer SpielLobby
+					break;
+
+				case "~~52": // Verlassen der SpielLobby
+					break;
+				
+				case "~~53": // Starten des Spiels
+					break;
+					
+				case "~~54": // Aufgeben des Spiels
+					break;
+
+				case"~~60": // Stein setzen
 					
 					break;
-
-				case "~~52": // z.B. join anderer SpielLobby
+					
+				case "~~98":
+					this.output.println("~~99");
 					break;
-
+					
 				case "~~99":
 					pingCount = 1; // zurücksetzen
 					break;
@@ -94,7 +113,7 @@ public class ClientThread extends Thread {
 			} catch (SocketTimeoutException stoe) {
 				if (pingCount <= 3) {
 					System.out.println("Pinge Clienten an. Versuch: " + pingCount);
-					this.output.println("~~49"); // Pinge Clienten an
+					this.output.println("~~98"); // Pinge Clienten an
 					pingCount++;
 				} else {
 					running = false;
@@ -108,9 +127,26 @@ public class ClientThread extends Thread {
 
 	}
 
-	/**
-	 * Client wird angefragt mit Befehlscode "~~00" einen SpielerNamen auszusuchen.
-	 */
+	private void createGameSession() {
+		this.gameSession = new GameSession(this.client);
+	}
+	
+	private void joinGameSession(String gameName) {
+		//this.lobby.getOpenGames().get
+	}
+	private void leaveGameSession() {
+		String spielName = this.gameSession.gameName;
+	// GameSession wieder in die openGames eintragen	
+	}
+	private void startGame() {
+		
+	}
+	
+	private void surrenderGame(){
+		
+	}
+	
+	
 	private void askForPlayerName() throws IOException {
 		boolean done = false;
 		String newName = null;
