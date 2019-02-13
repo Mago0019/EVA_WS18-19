@@ -53,7 +53,7 @@ public class ClientThread extends Thread {
 			askForPlayerName();
 
 			// In die Lobby einfügen
-			lobby.addUser(client.socket, client.name);
+			lobby.addPlayer(this.client);
 
 			// jetzt die Kommunikation regeln
 			listenToClient();

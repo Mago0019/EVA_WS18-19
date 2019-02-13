@@ -102,7 +102,7 @@ public class GameController
 	@FXML
 	public void createGame(ActionEvent klick) {
 		client.createGame();
-		yourGame_L.setText(client.getPlayerName() + "s Game");
+		yourGame_L.setText(client.getPlayerName() + "'s Game");
 		player1_TF.setText(client.getPlayerName());
 		player2_TF.setText(" - ");
 		openGames_VB.setVisible(false);
@@ -112,9 +112,10 @@ public class GameController
 	
 	@FXML
 	public void joinGame(ActionEvent klick) {
-		String player1 = client.joinGame();
-		yourGame_L.setText(player1 + "s Game");
-		player1_TF.setText(player1);
+		client.joinGame();
+		String gameName = openGames_LV.getSelectionModel().getSelectedItem();
+		yourGame_L.setText(gameName);
+		player1_TF.setText(gameName.substring(0, gameName.length() - 8));
 		player2_TF.setText(client.getPlayerName());
 		openGames_VB.setVisible(false);
 		yourGame_VB.setVisible(true);
@@ -138,7 +139,6 @@ public class GameController
 	@FXML
 	public void surrenderGame(ActionEvent klick) {
 		client.surrenderGame();
-		winLoose_L.setText("Sie haben Verloren :(");
 		winLoose_L.setVisible(true);
 		activeGame_VB.setVisible(false);
 		lobby_HB.setVisible(true);
@@ -146,13 +146,21 @@ public class GameController
 	
 	@FXML
 	public void setStone(ActionEvent klick) {
+		try {
 		int collumn = Integer.parseInt(insertTurn_TF.getText());
-		if(client.setStone(collumn)) {
+		this.client.setStone(collumn);
+		}catch (NumberFormatException nfe) {
+		this.info_TF.setText("Keine gültige Eingabe.");
+		}
+	}
+	
+	public void turnResponse(boolean correct) {
+		if(correct){
 			this.setStone_B.setDisable(true);
 			this.info_TF.setText("Gegner ist am Zug.");
 		}
 		else {
-			this.info_TF.setText("Ungültiger Zug. Bitte versuche einen anderen Zug.");
+			this.info_TF.setText("Ungültiger Zug.");
 		}
 	}
 	
@@ -173,9 +181,24 @@ public class GameController
 		this.startGame_B.setDisable(false);
 	}
 	
-	public void yourTurn() {
+	public void yourTurn(boolean yourTurn) {
+		if (yourTurn) {
 		this.setStone_B.setDisable(false);
 		this.info_TF.setText("Du bist am Zug.");
+		}
+		else {
+			this.setStone_B.setDisable(true);
+			this.info_TF.setText("Gegner ist am Zug.");
+		}
+	}
+	
+	public void winLoose(boolean win) {
+		if (win) {
+			winLoose_L.setText("Glückwunsch. Sie haben Gewonnen :)");
+		}
+		else {
+			winLoose_L.setText("Sie haben Verloren :(");
+		}
 	}
 	
 	public void updateGamefield( int[][] field) {
