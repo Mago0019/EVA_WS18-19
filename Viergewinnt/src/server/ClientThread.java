@@ -49,7 +49,10 @@ public class ClientThread extends Thread {
 		// jetzt die Kommunikation regeln
 		listenToClient();
 
-		} catch (Exception e) {
+		} catch (IOException ioe) {
+			System.out.println("ERROR: Verbindung mit Clienten verloren!");
+		} 
+		catch (Exception e) {
 			System.out.println("ERROR: ClientThread abgestürzt!");
 		}
 	}
@@ -65,10 +68,10 @@ public class ClientThread extends Thread {
 				msg = input.readLine(); // TODO: bricht leider nach ein paar Sek ab, wenn keine Meldung kommt
 				
 				switch (msg) {
-				case "~~5": // z.B. Starte eigene SpielLobby
+				case "~~51": // z.B. Starte eigene SpielLobby
 					break;
 
-				case "~~52": // z.B. join anderer Lobby
+				case "~~52": // z.B. join anderer SpielLobby
 					break;
 					
 				default:
@@ -78,7 +81,7 @@ public class ClientThread extends Thread {
 				
 			} catch (IOException ioe) {
 				tryCount++;
-				System.out.println("ERROR: EmpfangsThread hat Verbindung zum CLienten verloren.");
+				System.out.println("ERROR: EmpfangsThread hat Verbindung zum Clienten verloren.");
 				//ioe.printStackTrace();
 			}
 		}
@@ -89,14 +92,14 @@ public class ClientThread extends Thread {
 	 * Client wird angefragt mit Befehlscode (TODO) "~~0" einen SpielerNamen
 	 * auszusuchen.
 	 */
-	private void askForPlayerName() {
+	private void askForPlayerName() throws IOException {
 		boolean done = false;
 		String newName = null;
+		int trycount = 0;
 
-		while (!done) {
+		while (!done && trycount < 3) {
 			try {
 
-				// TODO: Befehlscode für NamensAnforderung
 				output.print("~~0 \n");
 				// output.flush();
 				System.out.println("Client angefragt - Code: ~~0");
@@ -110,19 +113,27 @@ public class ClientThread extends Thread {
 					
 					// Schauen, ob der Name schon vorhanden ist
 					if(lobby.containsPlayer(newName)) {
-						output.print("~~01"); // Name schon vorhanden
+						output.print("~~01"); // Name schon vorhanden	
+						trycount = 0;
 						
-					} else {
+					} else { 
 						this.clientName = newName;
-						done = true;						
+						done = true;
+						output.println("~~00");// Erfolgreich
 					}
 				} else {
 					output.print("~~02"); // Ungültiger Name
+					trycount = 0;
 				}
 				
 			} catch (Exception e) {
 				System.out.println("ERROR: Abfragen des ClientNamens fehlgeschlagen!");
+				trycount++;
 			}
 		} // end While
+		
+		if(trycount == 3) { // Falls sich der Client nicht mehr gemeldet hat
+			throw new IOException();
+		}
 	}
 }
