@@ -168,7 +168,12 @@ public class GameController
 			this.client.setStone(collumn);
 		} catch (NumberFormatException nfe)
 		{
+			nfe.printStackTrace();
 			this.info_TF.setText("Keine gültige Eingabe.");
+		}
+		catch (Exception e) {
+			System.out.println("Error bei set Stone");
+			e.printStackTrace();
 		}
 	}
 

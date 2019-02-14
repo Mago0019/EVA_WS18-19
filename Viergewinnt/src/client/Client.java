@@ -18,9 +18,9 @@ public class Client extends Thread
 	private String serverIP;
 	private int serverPort;
 	private String name;
-	private int[][] field; // positiv = player1; negativ = player2; 0 = leeres Feld
-	private int width; // falls es später dynamisch sein soll
-	private int hight;
+//	private int[][] field; // positiv = player1; negativ = player2; 0 = leeres Feld
+//	private int width; // falls es später dynamisch sein soll
+//	private int hight;
 	private int playerNumber; // positiv = player1; negativ = player2
 	private LinkedList<String> lobbyList;
 	private LinkedList<String> openGames;
@@ -72,7 +72,10 @@ public class Client extends Thread
 			try
 			{
 				socket.close();
-			} catch (IOException e)
+			} catch (IOException ioe)
+			{
+				ioe.printStackTrace();
+			}catch(Exception e)
 			{
 				e.printStackTrace();
 			}
