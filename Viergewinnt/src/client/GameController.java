@@ -2,6 +2,7 @@ package client;
 
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -256,11 +257,31 @@ public class GameController
 	}
 	
 	public void updateLobby(List<String> list) {
-		this.lobby.addAll(list);
+		Platform.runLater(new Runnable()
+		{
+
+			@Override
+			public void run()
+			{				
+				lobby.clear();
+				lobby.addAll(list);
+			}
+			
+		});
 	}
 	
 	public void updateOpenGames(List<String> list) {
-		this.openGames.addAll(list);
+		Platform.runLater(new Runnable()
+		{
+
+			@Override
+			public void run()
+			{				
+				openGames.clear();
+				openGames.addAll(list);
+			}
+			
+		});
 	}
 
 	public void setClient(Client client)
