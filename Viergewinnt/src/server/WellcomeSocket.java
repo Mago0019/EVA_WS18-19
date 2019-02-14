@@ -25,7 +25,6 @@ public class WellcomeSocket extends Thread {
 		this.wellcomeSockRunning = true;
 		this.ADR = adr;
 		this.PORT = port;		
-		this.lobby = Lobby.getInstance(); 
 	}
 	
 	@Override
@@ -34,7 +33,7 @@ public class WellcomeSocket extends Thread {
 			// Benötigte Werkzeuge generieren
 			empfangsSocket = new ServerSocket(PORT, 50, ADR);
 			tPool = Executors.newScheduledThreadPool(10); // CoreSize = 10 für EmpfangsThreads und GameSessions		
-			
+			this.lobby = Lobby.getInstance();
 			
 		} catch (IOException e) {
 			System.out.println("ERROR (WellcomeSocket): Starten des ServerSockets fehlgeschlagen.");
@@ -42,12 +41,11 @@ public class WellcomeSocket extends Thread {
 		}
 		
 		while(wellcomeSockRunning) {
-			
-			try {
+			try {				
 				Socket newSocket = empfangsSocket.accept();
 				//newSocket.setSoTimeout(30_000); //in ms
 				
-				tPool.execute( new ClientThread(newSocket, lobby, tPool) );
+				tPool.execute( new ClientThread(newSocket, lobby) );
 				
 			} catch (SocketException se) {
 				System.out.println("ERROR: SocketException / Timeout");
@@ -56,14 +54,5 @@ public class WellcomeSocket extends Thread {
 			}
 			
 		}
-	}
-	
-	public List<Player> getLobbyLists() {
-		if(lobby != null)
-			return lobby.getLobbyList();
-		return null;
-	}
-	public ExecutorService getThreadPool() {
-		return this.tPool;
 	}
 }
