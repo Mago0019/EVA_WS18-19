@@ -83,11 +83,16 @@ public class ClientThread extends Thread {
 				if (msg == null) {
 					continue;
 				}
-				System.out.println("Nachricht von C.: " + msg);
+				
 
 				order = msg.substring(0, 4);
 				content = msg.substring(4, msg.length());
 
+				// zun Debuggen:
+				if(!order.equals("~~99") && !order.equals("~~98"))
+					System.out.println("Nachricht von C.: " + msg);
+
+				
 				switch (msg) {
 				case "~~50": // z.B. Starte eigene SpielLobby
 					createGameSession();
@@ -142,7 +147,7 @@ public class ClientThread extends Thread {
 
 			} catch (SocketTimeoutException stoe) {
 				if (pingCount <= 3) {
-					System.out.println("Pinge Clienten an. Versuch: " + pingCount);
+					//System.out.println("Pinge Clienten an. Versuch: " + pingCount);
 					this.output.println("~~98"); // Pinge Clienten an
 					pingCount++;
 				} else {
@@ -176,6 +181,10 @@ public class ClientThread extends Thread {
 				this.gameSession = gs;
 				lobby.removeGameSession(gs);
 				this.iAmHost = false;
+				
+				System.out.println("join Game -> " + this.gameSession.gameName);
+				
+				this.gameSession.player1.output.println("~~20" + this.client.name); // Host mitteilen, dass gejoint wurde
 			}
 		}
 	}
@@ -183,14 +192,20 @@ public class ClientThread extends Thread {
 	private synchronized void leaveGameSession() {
 		try {
 			if (iAmHost) { // bin Host
-				this.gameSession.player2.output.println("~~52");
-				this.output.println("~~52");
+				if(this.gameSession.player2 != null) {
+					this.gameSession.player2.output.println("~~21");
+					this.gameSession.player2.gameSession = null;
+				} else {
+					lobby.removeGameSession(this.gameSession);
+				}
+			//	this.output.println("~~21");
+				this.gameSession = null;
 
 			} else { // bin zweiter Spieler
-				this.gameSession.player1.output.println("~~52");
+				this.gameSession.player1.output.println("~~21");
 				lobby.addGameSession(this.gameSession);
 				this.gameSession = null;
-				this.output.println("~~52");
+			//	this.output.println("~~21");
 			}
 		} catch (Exception e) { // Falls der Client schon geschlossen ist
 			if (e.getMessage() != null) {
