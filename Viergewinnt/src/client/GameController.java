@@ -305,7 +305,9 @@ public class GameController
 			@Override
 			public void run()
 			{
+				Node node = gameField_GP.getChildren().get(0);
 				gameField_GP.getChildren().clear();
+				gameField_GP.getChildren().add(0, node);
 				
 				for (int collumn = 0; collumn < field.length; collumn++)
 				{
@@ -328,7 +330,6 @@ public class GameController
 						}
 					}
 				}
-				gameField_GP.setGridLinesVisible(true);
 			}
 
 		});
