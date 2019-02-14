@@ -1,7 +1,5 @@
 package client;
 
-
-
 /**
  * EVA WS 18/19
  * Patrick Geerds
@@ -31,7 +29,8 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class JoinServerController {
+public class JoinServerController
+{
 
 	@FXML
 	private BorderPane root;
@@ -75,35 +74,43 @@ public class JoinServerController {
 	private Button joinServer_B;
 
 	@FXML
-	public void event_ChipEinwerfen(ActionEvent eventVSPressed) {
-		try {
+	public void event_ChipEinwerfen(ActionEvent eventVSPressed)
+	{
+		try
+		{
 			/*
 			 * TODO: - Textfeld für Zahleingabe - Button zum Abschicken - Überprüfen ob
 			 * Eingabe korrekt - an Server übermitteln, wo der Chip rein soll
 			 */
 
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			System.out.println("ERROR: Verschlüsseln fehgeschlagen!");
 			e.printStackTrace();
 		}
 	}
 
 	@FXML
-	public void event_updateField(ActionEvent eventSpielfeldUpdate) {
-		try {
+	public void event_updateField(ActionEvent eventSpielfeldUpdate)
+	{
+		try
+		{
 			/*
 			 * TODO: - Getriggert, wenn antwort vom Server - aktualisiert Spielfeld
 			 */
 
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
 			e.printStackTrace();
 		}
 	}
 
 	@FXML
-	public void event_Menue_Beenden(ActionEvent eventBeendenPressed) {
-		try {
+	public void event_Menue_Beenden(ActionEvent eventBeendenPressed)
+	{
+		try
+		{
 			// TODO: vll Fenster mit Abfrage, ob beendet werden soll / ob noch gespeichert
 			// werden soll.
 
@@ -111,15 +118,18 @@ public class JoinServerController {
 			Stage stage = (Stage) root.getScene().getWindow();
 			stage.close();
 
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			System.out.println("ERROR: Beenden fehgeschlagen!");
 			e.printStackTrace();
 		}
 	}
 
 	@FXML
-	public void event_Menue_Ueber(ActionEvent eventUeberPressed) {
-		try {
+	public void event_Menue_Ueber(ActionEvent eventUeberPressed)
+	{
+		try
+		{
 			System.out.println("Info-Dialog geöffnet.");
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Über");
@@ -128,15 +138,18 @@ public class JoinServerController {
 					"VierGewinnt 2D\nVersion 0.1  -  28.11.18\n\nGeschrieben von Patrick Geerds und Manuel Golz\nEntwicklung-Verteilter-Systeme im WS 18/19");
 			alert.show();
 
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			System.out.println("ERROR: Infofenster konnte nicht aufgerufen werden!");
 			e.printStackTrace();
 		}
 	}
 
 	@FXML
-	public void event_Menue_Hilfe(ActionEvent eventHilfePressed) {
-		try {
+	public void event_Menue_Hilfe(ActionEvent eventHilfePressed)
+	{
+		try
+		{
 			System.out.println("Info-Dialog geöffnet.");
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Hilfe");
@@ -145,18 +158,21 @@ public class JoinServerController {
 					"How To:\n- Chip in eine Spalte werfen (fallen immer bis nach unten) \n\nGewinnen: \n- Wer 4 Chips in einer Reihe/Spalte/Diagonale liegen hat, gewinnt.");
 			alert.show();
 
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			System.out.println("ERROR: Hilfe konnte nicht aufgerufen werden!");
 			e.printStackTrace();
 		}
 	}
 
 	@FXML
-	public void event_joinServer(ActionEvent klick) {
+	public void event_joinServer(ActionEvent klick)
+	{
 		// boolean verbindungErfolgreich = client.serverConnect(ServerIP_TF.getText(),
 		// Integer.parseInt(ServerPort_TF.getText()), SpielerName_TF.getText());
 
-		try {
+		try
+		{
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/GamePane.fxml"));
 			Pane mainPane = fxmlLoader.load();
 			Scene scene = new Scene(mainPane);
@@ -167,43 +183,56 @@ public class JoinServerController {
 			GameController gameC = fxmlLoader.getController();
 			gameC.initialize();
 			Client client = new Client(gameC);
-			
-			int verbindungErfolgreich = client.serverConnect(ServerIP_TF.getText(),
-					Integer.parseInt(ServerPort_TF.getText()), SpielerName_TF.getText());
-
-			if (verbindungErfolgreich == 0) {
+			String spielerName = SpielerName_TF.getText();
+			int verbindungErfolgreich;
+			if (spielerName.contains(",") || spielerName.contains(";") || spielerName.contains("~"))
+			{
+				verbindungErfolgreich = 2;
+			} else
+			{
+				verbindungErfolgreich = client.serverConnect(ServerIP_TF.getText(),
+						Integer.parseInt(ServerPort_TF.getText()), SpielerName_TF.getText());
+			}
+			if (verbindungErfolgreich == 0)
+			{
 				client.start();
 				lobbyStage.setScene(scene);
 				lobbyStage.show();
-			} 
-			else {
-				switch (verbindungErfolgreich){
+			} else
+			{
+				switch (verbindungErfolgreich)
+				{
 				case 1: // Name schon vorhanden
-					this.Error_TF.setText("Der Name ist schon vorhanden, bitte versuche es mit einem anderen Namen erneut.");
+					this.Error_TF
+							.setText("Der Name ist schon vorhanden, bitte versuche es mit einem anderen Namen erneut.");
 					this.Error_TF.setVisible(true);
 					break;
-				case 2: //ungültiger Name
-					this.Error_TF.setText("Der Name ist zu kurz/zu lang.(min 3; max 14 Zeichen)");
+				case 2: // ungültiger Name
+					this.Error_TF.setText("Name ist ungültig.(3-14 Zeichen, Keine Sonderzeichen(z.B.: <,> <;> <~> ).)");
 					this.Error_TF.setVisible(true);
 					break;
-				case 3: //Verbindung konnte nicht aufgebaut werden
+				case 3: // Verbindung konnte nicht aufgebaut werden
 					this.Error_TF.setText("Die Verbindung zum Server konnte nicht aufgebaut werden.");
 					this.Error_TF.setVisible(true);
 				}
 			}
-			
-		} catch (NumberFormatException nfe) {
+
+		} catch (NumberFormatException nfe)
+		{
 			// Todo: entweder Alert starten, oder ein Textfeld mit einer Errormeldung füllen
 			this.Error_TF.setText("Der Port enthält ungültige Zeichen!");
 			this.Error_TF.setVisible(true);
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			// Diese Errormeldung könnte auch vom Clienten geworfen werden.
 			this.Error_TF.setText("Die Verbindung zum Server konnte nicht aufgebaut werden.");
 			this.Error_TF.setVisible(true);
 		}
 
 	}
-	private void closeWindowEvent(WindowEvent event) {
-		
+
+	private void closeWindowEvent(WindowEvent event)
+	{
+
 	}
 }
