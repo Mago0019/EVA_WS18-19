@@ -208,7 +208,7 @@ public class JoinServerController
 					this.Error_TF.setVisible(true);
 					break;
 				case 2: // ungültiger Name
-					this.Error_TF.setText("Name ist ungültig.(3-14 Zeichen, Keine Sonderzeichen(z.B.: <,> <;> <~> ).)");
+					this.Error_TF.setText("Name ist ungültig.(3-14 Zeichen, Keine Sonderzeichen)");
 					this.Error_TF.setVisible(true);
 					break;
 				case 3: // Verbindung konnte nicht aufgebaut werden
