@@ -111,9 +111,7 @@ public class Client extends Thread
 			PrintStream output = new PrintStream(socket.getOutputStream());
 			while (!done)
 			{
-				System.out.println("Warte auf Anfrage vom Server");
 				String serverNachricht = input.readLine();
-				System.out.println("Nachricht vom Server erhalten: " + serverNachricht);
 				switch (serverNachricht)
 				{
 				case "~~00":
@@ -181,7 +179,6 @@ public class Client extends Thread
 				LinkedList<String> tempList = new LinkedList<String>();
 				
 				if (!order.equals("~~99") && !order.equals("~~98"))
-					System.out.println("Nachricht vom Server - Order:<" + order + "> Content:<" + content + ">");
 				
 				switch (order)
 				{
@@ -247,8 +244,6 @@ public class Client extends Thread
 
 				case "~~98":
 					output.println("~~99");
-
-//					System.out.println("Schicke Nachricht an Server: ~~99");
 					break;
 
 				case "~~99":
@@ -262,9 +257,6 @@ public class Client extends Thread
 			{
 				if (pingCount <= 3)
 				{
-//					System.out.println("Pinge Server an. Versuch: " + pingCount);
-//
-//					System.out.println("Schicke Nachricht an Server: ~~98");
 					this.output.println("~~98"); // Pinge Server an
 					pingCount++;
 				} else
@@ -288,9 +280,7 @@ public class Client extends Thread
 	public void updateLists()
 	{
 		this.output.println("~~70");
-		System.out.println("Nachricht an Server geschickt: ~~70");
 		this.output.println("~~71");
-		System.out.println("Nachricht an Server geschickt: ~~71");
 	}
 
 	public String getPlayerName()
@@ -309,7 +299,6 @@ public class Client extends Thread
 	{
 		this.playerNumber = 1;
 		this.output.println("~~50");
-		System.out.println("Nachricht an Server geschickt: ~~50");
 	}
 
 	/**
@@ -323,7 +312,6 @@ public class Client extends Thread
 	{
 		this.playerNumber = -1;
 		this.output.println("~~51" + gameName);
-		System.out.println("Nachricht an Server geschickt: ~~51" + gameName);
 
 	}
 
@@ -334,31 +322,26 @@ public class Client extends Thread
 	public void leaveYourGame()
 	{
 		this.output.println("~~52");
-		System.out.println("Nachricht an Server geschickt: ~~52");
 	}
 
 	public void startGame()
 	{
 		this.output.println("~~53");
-		System.out.println("Nachricht an Server geschickt: ~~53");
 	}
 
 	public void surrenderGame()
 	{
 		this.output.println("~~54");
-		System.out.println("Nachricht an Server geschickt: ~~54");
 	}
 
 	public void setStone(int collumn)
 	{
 		this.output.println("~~60" + collumn);
-		System.out.println("Nachricht an Server geschickt: ~~60" + collumn);
 	}
 
 	public void logout()
 	{
 		this.output.println("~~80");
-		System.out.println("Nachricht an Server geschickt: ~~80");
 
 	}
 
