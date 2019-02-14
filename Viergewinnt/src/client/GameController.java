@@ -174,90 +174,153 @@ public class GameController
 
 	public void turnResponse(boolean correct)
 	{
-		if (correct)
+		Platform.runLater(new Runnable()
 		{
-			this.setStone_B.setDisable(true);
-			this.info_TF.setText("Gegner ist am Zug.");
-		} else
-		{
-			this.info_TF.setText("Ungültiger Zug.");
-		}
+
+			@Override
+			public void run()
+			{
+				if (correct)
+				{
+					setStone_B.setDisable(true);
+					info_TF.setText("Gegner ist am Zug.");
+				} else
+				{
+					info_TF.setText("Ungültiger Zug.");
+				}
+			}
+
+		});
 	}
 
 	public void otherPlayerLeftGame()
 	{
-		switch (this.client.getPlayerNumber())
+		Platform.runLater(new Runnable()
 		{
-		case -1:
-			yourGame_VB.setVisible(false);
-			openGames_VB.setVisible(true);
-			break;
-		case 1:
-			player2_TF.setText(" - ");
-			break;
-		}
+
+			@Override
+			public void run()
+			{
+				switch (client.getPlayerNumber())
+				{
+				case -1:
+					yourGame_VB.setVisible(false);
+					openGames_VB.setVisible(true);
+					break;
+				case 1:
+					player2_TF.setText(" - ");
+					break;
+				}
+			}
+
+		});
 
 	}
 
 	public void otherPlayerJoinedGame(String namePlayer2)
 	{
-		this.player2_TF.setText(namePlayer2);
-		this.startGame_B.setDisable(false);
+		Platform.runLater(new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				player2_TF.setText(namePlayer2);
+				startGame_B.setDisable(false);
+			}
+
+		});
 	}
 
 	public void yourTurn(boolean yourTurn)
 	{
-		if (yourTurn)
+		Platform.runLater(new Runnable()
 		{
-			this.setStone_B.setDisable(false);
-			this.info_TF.setText("Du bist am Zug.");
-		} else
-		{
-			this.setStone_B.setDisable(true);
-			this.info_TF.setText("Gegner ist am Zug.");
-		}
+
+			@Override
+			public void run()
+			{
+				if (yourTurn)
+				{
+					setStone_B.setDisable(false);
+					info_TF.setText("Du bist am Zug.");
+				} else
+				{
+					setStone_B.setDisable(true);
+					info_TF.setText("Gegner ist am Zug.");
+				}
+			}
+
+		});
 	}
 
 	public void winLoose(boolean win)
 	{
-		if (win)
+		Platform.runLater(new Runnable()
 		{
-			winLoose_L.setText("Glückwunsch. Sie haben Gewonnen :)");
-		} else
-		{
-			winLoose_L.setText("Sie haben Verloren :(");
-		}
+
+			@Override
+			public void run()
+			{
+				if (win)
+				{
+					winLoose_L.setText("Glückwunsch. Sie haben Gewonnen :)");
+				} else
+				{
+					winLoose_L.setText("Sie haben Verloren :(");
+				}
+			}
+
+		});
 	}
 
 	public void startGame()
 	{
-		lobby_HB.setVisible(false);
-		activeGame_VB.setVisible(true);
+		Platform.runLater(new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				lobby_HB.setVisible(false);
+				activeGame_VB.setVisible(true);
+			}
+
+		});
 	}
 
 	public void updateGamefield(int[][] field)
 	{
-		gameField_GP.getChildren().clear();
-
-		for (int row = 0; row <= field.length; row++)
+		Platform.runLater(new Runnable()
 		{
-			for (int collumn = 0; collumn <= field[0].length; collumn++)
-			{
-				Circle stone = new Circle();
-				stone.setRadius(30.0);
-				if (field[row][collumn] > 0)
-				{
-					stone.setFill(Paint.valueOf("RED"));
-				} else
-				{
-					stone.setFill(Paint.valueOf("BLUE"));
-				}
 
-				gameField_GP.add(stone, collumn, row);
-				gameField_GP.setValignment(stone, VPos.CENTER);
-				gameField_GP.setHalignment(stone, HPos.CENTER);
+			@Override
+			public void run()
+			{
+				gameField_GP.getChildren().clear();
+				
+				for (int row = 0; row <= field.length; row++)
+				{
+					for (int collumn = 0; collumn <= field[0].length; collumn++)
+					{
+						Circle stone = new Circle();
+						stone.setRadius(30.0);
+						if (field[row][collumn] > 0)
+						{
+							stone.setFill(Paint.valueOf("RED"));
+						} else
+						{
+							stone.setFill(Paint.valueOf("BLUE"));
+						}
+						
+						gameField_GP.add(stone, collumn, row);
+						gameField_GP.setValignment(stone, VPos.CENTER);
+						gameField_GP.setHalignment(stone, HPos.CENTER);
+					}
+				}
 			}
-		}
+
+		});
 	}
 
 	public void updateLobby(List<String> list)
