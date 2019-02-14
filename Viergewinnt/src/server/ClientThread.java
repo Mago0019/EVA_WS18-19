@@ -90,15 +90,18 @@ public class ClientThread extends Thread {
 
 				// zun Debuggen:
 				if(!order.equals("~~99") && !order.equals("~~98"))
-					System.out.println("Nachricht von C.: " + msg);
+					System.out.println("- " + this.client.name + " -> Order:<" + order + "> content:<" + content + ">");
+					//System.out.println("Nachricht von C.: " + msg);
 
 				
-				switch (msg) {
+				switch (order) {
+				
 				case "~~50": // z.B. Starte eigene SpielLobby
 					createGameSession();
 					break;
 
 				case "~~51": // Join anderer SpielLobby
+					System.out.println("Anfage nach Join -> " + content);
 					joinGameSession(content);
 					break;
 
@@ -175,14 +178,22 @@ public class ClientThread extends Thread {
 		this.iAmHost = true;
 	}
 
-	private void joinGameSession(String gameName) {
+	private void joinGameSession(String gameName) { // ich bin Spieler 2 und joine einem Spiel
+		System.out.println("Wird Join aufgerufen?");
 		for (GameSession gs : lobby.getOpenGames()) {
 			if (gs.gameName.equals(gameName)) {
+				
+				System.out.println("join Game -> " + gameName);
+
 				this.gameSession = gs;
+				this.gameSession.player2 = this;
+				System.out.println("This.gameS: " + this.gameSession.player2.client.name);
+				System.out.println("gs gameS: " + gs.player2.client.name);
+				
+				
 				lobby.removeGameSession(gs);
 				this.iAmHost = false;
 				
-				System.out.println("join Game -> " + this.gameSession.gameName);
 				
 				this.gameSession.player1.output.println("~~20" + this.client.name); // Host mitteilen, dass gejoint wurde
 			}

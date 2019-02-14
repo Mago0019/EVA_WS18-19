@@ -25,6 +25,12 @@ public class GameField {
 	}
 
 	public boolean setStone(int collumn, int player) {
+		if(collumn < 1 || collumn > this.width) {
+			return false;
+		}
+		
+		collumn--;
+		
 		for (int i = this.hight - 1; i >= 0; i--) {
 			if (this.field[i][collumn] == 0) {
 				this.field[i][collumn] = player;
