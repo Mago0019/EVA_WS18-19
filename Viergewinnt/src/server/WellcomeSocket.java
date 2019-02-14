@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -57,7 +58,7 @@ public class WellcomeSocket extends Thread {
 		}
 	}
 	
-	public String getLobbyLists() {
+	public List<Player> getLobbyLists() {
 		if(lobby != null)
 			return lobby.getLobbyList();
 		return null;

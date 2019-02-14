@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.LinkedList;
 
 /**
@@ -23,7 +24,7 @@ public class Client extends Thread
 	private int playerNumber; // positiv = player1; negativ = player2
 	private LinkedList<String> lobbyList;
 	private LinkedList<String> openGames;
-	private boolean yourTurn;
+	private boolean running;
 
 	// ---- UI ------
 	private GameController gameController;
@@ -39,6 +40,7 @@ public class Client extends Thread
 		lobbyList = new LinkedList<String>();
 		openGames = new LinkedList<String>();
 		gameController.setClient(this);
+		running = true;
 //		lobbyList.add("Manuel");		//eine defaultliste zum testen
 //		lobbyList.add("Patrick");
 //		lobbyList.add("Andi");
@@ -48,16 +50,17 @@ public class Client extends Thread
 	}
 	
 	@Override
-	public synchronized void start() {
+	public synchronized void run() {
 		// Output übernimmt der Controller, der Input vom Server wird hier verarbeitet.
 		try (BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				PrintStream output = new PrintStream(socket.getOutputStream()); ) {
 			this.input = input;
 			this.output = output;
 			
-			
+			listenToServer();
 			
 		} catch (Exception e) {
+			
 		}
 		
 	}
@@ -84,8 +87,6 @@ public class Client extends Thread
 				this.socket = new Socket(this.serverIP, this.serverPort); // TODO: vll Port ändern
 				// socket.setSoTimeout(2000);
 			}
-			input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			output = new PrintStream(socket.getOutputStream());
 			while (!done)
 			{
 				System.out.println("Warte auf Anfrage vom Server");
@@ -93,15 +94,15 @@ public class Client extends Thread
 				System.out.println("Nachricht vom Server: " + serverNachricht);
 				switch (serverNachricht)
 				{
-				case "~~0":
-					output.println(this.name);
-					break;
 				case "~~00":
-					done = true;
+					output.println("~~00" + this.name);
 					break;
 				case "~~01":
-					return 1;
+					done = true;
+					break;
 				case "~~02":
+					return 1;
+				case "~~03":
 					return 2;
 				}
 			}
@@ -124,27 +125,99 @@ public class Client extends Thread
 		}
 
 	}
+	private void listenToServer() {
+		// TODO: darauf warten, dass der Client eine Aktion in der Lobby ausführen will
+		String msg = null;
+		int tryCount = 1;
+		int pingCount = 1;
+		while (running && tryCount <= 3) {
+			try {
 
-	public void setLobbyListView()
-	{
-		gameController.lobby.setAll(this.lobbyList);
-//		gameController.lobby_LV.setItems(gameController.lobby);
-	}
+				// TODO: Marshalling - erste 4 Bytes (Befehlscode) anschauen.
+				msg = input.readLine(); // TODO: bricht leider nach ein paar Sek ab, wenn keine Meldung kommt
+				String order = msg.substring(0, 4);
+				String content = msg.substring(4, msg.length());
+				LinkedList<String> tempList = new LinkedList<String>();
+				switch (order) {
+				
+				case "~~10": // update LobbyList
+						tempList.clear();
+					for(String s: content.split(",")){
+						tempList.add(s);
+					}
+					this.lobbyList = tempList;
+					setLobbyListView();
+					break;
 
-	public void setOpenGameView()
-	{
-		gameController.openGames.setAll(this.openGames);
-//		gameController.openGames_LV.setItems(gameController.openGames);
-	}
+				case "~~11": // update openGames
+					tempList.clear();
+					for(String s: content.split(",")){
+						tempList.add(s);
+					}
+					this.openGames = tempList;
+					setOpenGameView();
+					break;
 
-	public boolean setStone(int collumn)
-	{
-		// sende collumn an Server
-		return true;
-	}
-	
-	public void setYourTurn(boolean yourTurn) {
-		this.yourTurn= yourTurn;
+				case "~~20": // Player joined
+					playerJoinedGame(content);
+					break;
+					
+				case "~~21": // Player left
+					oponentLeftGame();
+					break;
+					
+				case "~~30": // Game started
+					gameHasStarted();
+					break;
+					
+				case "~~31": // yourTurn + update Field
+					int [][] tempField = new int [7][6];
+					String[] contents = content.split(";");
+					setYourTurn(Boolean.parseBoolean(contents[0]));
+					String[] field = contents[1].split(",");	
+					int counter = 0;
+					for(int row = 0; row < 7; row++) {
+						for(int collumn = 0; collumn < 6; collumn ++ ) {
+							tempField[row][collumn] = Integer.parseInt(field[counter]);
+							counter++;
+						}
+					}
+					break;
+					
+				case "~~32": // Turn-Response
+					turnResponse(Boolean.parseBoolean(content));
+					break;
+
+				case "~~33": // win/loose
+					win_loose(Boolean.parseBoolean(content));
+					break;
+					
+				case "~~98":
+					output.println("~~99");
+					break;
+					
+				case "~~99":
+					pingCount = 1; // zurücksetzen
+					
+				default:
+					break;
+				}
+
+			} catch (SocketTimeoutException stoe) {
+				if (pingCount <= 3) {
+					System.out.println("Pinge Server an. Versuch: " + pingCount);
+					this.output.println("~~98"); // Pinge Server an
+					pingCount++;
+				} else {
+					running = false;
+				}
+			} catch (IOException ioe) {
+				tryCount++;
+				System.out.println("ERROR: keine Antwort von Client. Versuch: " + tryCount);
+				// ioe.printStackTrace();
+			}
+		}
+
 	}
 	
 	public String getPlayerName() {
@@ -155,9 +228,12 @@ public class Client extends Thread
 		return this.playerNumber;
 	}
 	
+	/* ---Nachrichten an den Server--- */
+	
 	public void createGame()
 	{
 		this.playerNumber = 1;
+		this.output.println("~~50");
 	}
 	
 	/**
@@ -165,11 +241,10 @@ public class Client extends Thread
 	 * Der Server schickt einem dann einen String zurück, welcher den Namen des 1. Spielers beinhaltet.
 	 * @return Name Spieler 1
 	 */
-	public String joinGame()
+	public void joinGame()
 	{
-		playerNumber = -1;
-		String player1 ="";
-		return player1;
+		this.playerNumber = -1;
+		this.output.println("~~51");
 	}
 
 	/**
@@ -177,9 +252,36 @@ public class Client extends Thread
 	 */
 	public void leaveYourGame()
 	{
-
+		this.output.println("~~52");
 	}
 
+	public void startGame()
+	{
+		this.output.println("~~53");
+	}
+	
+	public void surrenderGame()
+	{
+		this.output.println("~~54");
+	}
+	
+	public void setStone(int collumn)
+	{
+		this.output.println("~~60" + collumn);
+	}
+	
+	/* ---Kommunikation mit dem GameController--- */
+	
+	public void setLobbyListView()
+	{
+		gameController.lobby.setAll(this.lobbyList);
+	}
+	
+	public void setOpenGameView()
+	{
+		gameController.openGames.setAll(this.openGames);
+	}
+	
 	/**
 	 * die Methode wird aufgerufen, wenn der Client vom Server benachrichtigt wird, dass der Gegenspieler das Spiel verlassen hat. 
 	 */
@@ -191,24 +293,23 @@ public class Client extends Thread
 	/**
 	 * in der Methode wird dem Gamecontroller den namen des 2. Spielers übergeben, den der Client zuvor vom Server erhalten hat.
 	 */
-	public void playerJoinedGame() {
-		this.gameController.otherPlayerJoinedGame("name");
+	public void playerJoinedGame(String name) {
+		this.gameController.otherPlayerJoinedGame(name);
 	}
 	
-	public void startGame()
-	{
-
-	}
-
-	public void surrenderGame()
-	{
-
+	public void setYourTurn(boolean yourTurn) {
+		this.gameController.yourTurn(yourTurn);
 	}
 	
-	public void yourTurn() {
-		this.yourTurn= true;
-		this.gameController.yourTurn();
+	public void turnResponse(boolean correct) {
+		this.gameController.turnResponse(correct);
 	}
 	
+	public void gameHasStarted() {
+		this.gameController.startGame();
+	}
 
+	public void win_loose(boolean win) {
+		this.gameController.winLoose(win);
+	}
 }
