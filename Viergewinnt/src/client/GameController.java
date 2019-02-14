@@ -1,5 +1,6 @@
 package client;
 
+import java.io.IOException;
 import java.util.List;
 
 import javafx.application.Platform;
@@ -8,8 +9,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -22,6 +26,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -118,7 +123,7 @@ public class GameController
 	@FXML
 	public void joinGame(ActionEvent klick)
 	{
-		client.joinGame();
+		client.joinGame(openGames_LV.getSelectionModel().getSelectedItem());
 		String gameName = openGames_LV.getSelectionModel().getSelectedItem();
 		yourGame_L.setText(gameName);
 		player1_TF.setText(gameName.substring(0, gameName.length() - 7));
@@ -347,6 +352,30 @@ public class GameController
 			System.out.println("ERROR: Hilfe konnte nicht aufgerufen werden!");
 			e.printStackTrace();
 		}
+	}
+	
+	public void backToLogin() {
+		Platform.runLater(new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				try {
+					FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/JoinServer.fxml"));
+					Pane mainPane = fxmlLoader.load();
+					Scene scene = new Scene(mainPane);
+					
+					scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+					Stage loginStage = (Stage) root.getScene().getWindow();
+					loginStage.setScene(scene);
+					loginStage.show();
+				}catch(IOException ioe) {
+					ioe.printStackTrace();			
+				}
+			}
+
+		});
 	}
 
 }
