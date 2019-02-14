@@ -3,6 +3,7 @@ package client;
 import java.util.List;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -99,6 +100,7 @@ public class GameController
 		openGames = FXCollections.observableArrayList();
 		this.lobby_LV.setItems(lobby);
 		this.openGames_LV.setItems(openGames);
+		joinGame_B.disableProperty().bind(Bindings.isEmpty(openGames_LV.getSelectionModel().getSelectedItems()));
 	}
 
 	@FXML
@@ -117,18 +119,15 @@ public class GameController
 	public void joinGame(ActionEvent klick)
 	{
 		client.joinGame();
-		if (openGames_LV.getSelectionModel().getSelectedItem() != null)
-		{
-			joinGame_B.setDisable(false);
-			String gameName = openGames_LV.getSelectionModel().getSelectedItem();
-			yourGame_L.setText(gameName);
-			player1_TF.setText(gameName.substring(0, gameName.length() - 7));
-			player2_TF.setText(client.getPlayerName());
-			openGames_VB.setVisible(false);
-			yourGame_VB.setVisible(true);
-			winLoose_L.setVisible(false);
-		}
+		String gameName = openGames_LV.getSelectionModel().getSelectedItem();
+		yourGame_L.setText(gameName);
+		player1_TF.setText(gameName.substring(0, gameName.length() - 7));
+		player2_TF.setText(client.getPlayerName());
+		openGames_VB.setVisible(false);
+		yourGame_VB.setVisible(true);
+		winLoose_L.setVisible(false);
 	}
+
 
 	@FXML
 	public void leaveYourGame(ActionEvent klick)
@@ -255,32 +254,34 @@ public class GameController
 			}
 		}
 	}
-	
-	public void updateLobby(List<String> list) {
+
+	public void updateLobby(List<String> list)
+	{
 		Platform.runLater(new Runnable()
 		{
 
 			@Override
 			public void run()
-			{				
+			{
 				lobby.clear();
 				lobby.addAll(list);
 			}
-			
+
 		});
 	}
-	
-	public void updateOpenGames(List<String> list) {
+
+	public void updateOpenGames(List<String> list)
+	{
 		Platform.runLater(new Runnable()
 		{
 
 			@Override
 			public void run()
-			{				
+			{
 				openGames.clear();
 				openGames.addAll(list);
 			}
-			
+
 		});
 	}
 
