@@ -225,14 +225,15 @@ public class Client extends Thread
 					setYourTurn(Boolean.parseBoolean(contents[0]));
 					String[] field = contents[1].split(",");
 					int counter = 0;
-					for (int row = 0; row < 7; row++)
+					for (int collumn = 0; collumn < 7; collumn++)
 					{
-						for (int collumn = 0; collumn < 6; collumn++)
+						for (int row = 0; row < 6; row++)
 						{
-							tempField[row][collumn] = Integer.parseInt(field[counter]);
+							tempField[collumn][row] = Integer.parseInt(field[counter]);
 							counter++;
 						}
 					}
+					updateField(tempField);
 					break;
 
 				case "~~32": // Turn-Response
@@ -408,6 +409,10 @@ public class Client extends Thread
 	public void win_loose(boolean win)
 	{
 		this.gameController.winLoose(win);
+	}
+	
+	public void updateField(int[][] field) {
+		this.gameController.updateGamefield(field);
 	}
 
 }

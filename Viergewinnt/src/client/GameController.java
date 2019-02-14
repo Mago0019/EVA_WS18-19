@@ -304,13 +304,13 @@ public class GameController
 			{
 				gameField_GP.getChildren().clear();
 				
-				for (int row = 0; row <= field.length; row++)
+				for (int collumn = 0; collumn <= field.length; collumn++)
 				{
-					for (int collumn = 0; collumn <= field[0].length; collumn++)
+					for (int row = 0; row <= field[0].length; row++)
 					{
 						Circle stone = new Circle();
 						stone.setRadius(30.0);
-						if (field[row][collumn] > 0)
+						if (field[collumn][row] > 0)
 						{
 							stone.setFill(Paint.valueOf("RED"));
 						} else

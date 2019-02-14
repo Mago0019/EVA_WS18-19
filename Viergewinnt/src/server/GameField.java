@@ -11,18 +11,18 @@ public class GameField {
 		this.hight = 6;
 	}
 
-	public GameField(int width, int hight) {
-		if (width < 16 && hight < 16) {
-			this.field = new int[width][hight];
-			this.width = width;
-			this.hight = hight;
-		} else {
-			this.field = new int[15][15];
-			this.width = 15;
-			this.hight = 15;
-		}
-
-	}
+//	public GameField(int width, int hight) {
+//		if (width < 16 && hight < 16) {
+//			this.field = new int[width][hight];
+//			this.width = width;
+//			this.hight = hight;
+//		} else {
+//			this.field = new int[15][15];
+//			this.width = 15;
+//			this.hight = 15;
+//		}
+//
+//	}
 
 	public boolean setStone(int collumn, int player) {
 		if(collumn < 1 || collumn > this.width) {
@@ -32,8 +32,8 @@ public class GameField {
 		collumn--;
 		
 		for (int i = this.hight - 1; i >= 0; i--) {
-			if (this.field[i][collumn] == 0) {
-				this.field[i][collumn] = player;
+			if (this.field[collumn][i] == 0) {
+				this.field[collumn][i] = player;
 				return true;
 			}
 
@@ -46,12 +46,13 @@ public class GameField {
 	}
 
 	public boolean checkWin(int collumn, int player) {
-		int row = hight - 1;
+		int row = 0;
 		int counter = 0;
 
-		for (int i = this.hight - 1; i >= 0; i--) {
-			if (this.field[i][collumn] == 0) {
-				row = i + 1;
+		for (int i = 0; i < hight; i++) {
+			if (this.field[collumn][i] == player) {
+				row = i;
+				break;
 			}
 		}
 
@@ -59,7 +60,7 @@ public class GameField {
 
 		for (int i = this.hight - 1; i >= 0; i--) {
 
-			if (this.field[i][collumn] == player) {
+			if (this.field[collumn][i] == player) {
 				counter++;
 				if (counter == 4) {
 					return true;
@@ -68,12 +69,14 @@ public class GameField {
 				counter = 0;
 			}
 		}
-
+		
+		counter = 0;
 		// Waagrechte überprüfen
 
-		for (int i = 0; i <= this.width; i++) {
+		
+		for (int i = 0; i < this.width; i++) {
 
-			if (this.field[row][i] == player) {
+			if (this.field[i][row] == player) {
 				counter++;
 				if (counter == 4) {
 					return true;
@@ -82,70 +85,51 @@ public class GameField {
 				counter = 0;
 			}
 		}
-
+		
+		counter = 0;
 		// Diagonale von links-unten nach rechts-oben prüfen
-
-		if (collumn + row < hight) // sorgt dafür, das der Start nicht nach links raus läuft
-		{
-			for (int i = row + collumn; i >= 0; i--) {
-				for (int j = 0; j <= this.width - 1; i++) {
-					if (this.field[i][j] == player) {
-						counter++;
-						if (counter == 4) {
-							return true;
-						} else {
-							counter = 0;
-						}
-					}
-				}
-			}
-		} else // sorgt dafür dass der Start nicht nach unten raus läuft
-		{
-			for (int i = row + (this.hight - 1 - row); i >= 0; i--) {
-				for (int j = collumn - (this.hight - 1 - row); j <= this.width - 1; i++) {
-					if (this.field[i][j] == player) {
-						counter++;
-						if (counter == 4) {
-							return true;
-						} else {
-							counter = 0;
-						}
-					}
-				}
-			}
+		
+		int startCol = collumn;
+		int startRow = row;
+		
+		while(startCol != 0 || startRow != hight-1) {
+			startCol--;
+			startRow++;
 		}
-
+		
+		while(startCol != width-1 || startRow != 0) {
+			if(field[startCol][startRow] == player) {
+				counter++;
+				if (counter == 4) {
+					return true;
+				}
+			}
+			startCol++;
+			startRow--;			
+		}
+		
+		counter = 0;
 		// Diagonale von links-oben nach rechts-unten prüfen
 
-		if (collumn - row >= 0) // sorgt dafür, das der Start nicht nach oben raus läuft
-		{
-			for (int i = 0; i <= this.hight - 1; i++) {
-				for (int j = collumn - row; j <= this.width - 1; i++) {
-					if (this.field[i][j] == player) {
-						counter++;
-						if (counter == 4) {
-							return true;
-						} else {
-							counter = 0;
-						}
-					}
-				}
-			}
-		} else // sorgt dafür dass der Start nicht nach links raus läuft
-		{
-			for (int i = row - collumn; i >= 0; i--) {
-				for (int j = 0; j <= this.width - 1; i++) {
-					if (this.field[i][j] == player) {
-						counter++;
-						if (counter == 4) {
-							return true;
-						} else {
-							counter = 0;
-						}
-					}
-				}
-			}
+		startCol = collumn;
+		startRow = row;
+		
+		while(startCol != 0 || startRow != 0) {
+			startCol--;
+			startRow--;
 		}
+		
+		while(startCol != width-1 || startRow != hight-1) {
+			if(field[startCol][startRow] == player) {
+				counter++;
+				if (counter == 4) {
+					return true;
+				}
+			}
+			startCol++;
+			startRow++;			
+		}
+		
 
 		return false;
 	}
