@@ -55,7 +55,9 @@ public class GameField {
 				break;
 			}
 		}
-
+		
+		System.out.println("CheckWin - col=" + collumn + " row="+row);
+		
 		// Senkrechte prüfen
 
 		for (int i = this.hight - 1; i >= 0; i--) {
@@ -69,6 +71,7 @@ public class GameField {
 				counter = 0;
 			}
 		}
+		System.out.println("CheckWin - Senkrechte geprüft counter="+counter);
 		
 		counter = 0;
 		// Waagrechte überprüfen
@@ -85,6 +88,7 @@ public class GameField {
 				counter = 0;
 			}
 		}
+		System.out.println("CheckWin - Waagrechte geprüft counter="+counter);
 		
 		counter = 0;
 		// Diagonale von links-unten nach rechts-oben prüfen
@@ -92,12 +96,14 @@ public class GameField {
 		int startCol = collumn;
 		int startRow = row;
 		
-		while(startCol != 0 || startRow != hight-1) {
+		while(startCol <= 0 && startRow <= hight-1) {
 			startCol--;
 			startRow++;
 		}
 		
-		while(startCol != width-1 || startRow != 0) {
+		System.out.println("CheckWin - found StartTile:["+startCol+"]["+startRow+"]");
+		
+		while(startCol <= width-1 && startRow <= 0) {
 			if(field[startCol][startRow] == player) {
 				counter++;
 				if (counter == 4) {
@@ -107,19 +113,21 @@ public class GameField {
 			startCol++;
 			startRow--;			
 		}
-		
+		System.out.println("CheckWin - erste Diagonale geprüft counter="+counter);
 		counter = 0;
 		// Diagonale von links-oben nach rechts-unten prüfen
 
 		startCol = collumn;
 		startRow = row;
 		
-		while(startCol != 0 || startRow != 0) {
+		while(startCol >= 0 && startRow >= 0) { // gehe nach links oben
 			startCol--;
 			startRow--;
 		}
 		
-		while(startCol != width-1 || startRow != hight-1) {
+		System.out.println("CheckWin - found StartTile:["+startCol+"]["+startRow+"]");
+		
+		while(startCol <= width-1 && startRow <= hight-1) {
 			if(field[startCol][startRow] == player) {
 				counter++;
 				if (counter == 4) {
@@ -129,7 +137,7 @@ public class GameField {
 			startCol++;
 			startRow++;			
 		}
-		
+		System.out.println("CheckWin - zweite Diagonale geprüft counter="+counter);
 
 		return false;
 	}
