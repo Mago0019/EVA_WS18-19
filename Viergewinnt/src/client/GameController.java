@@ -269,7 +269,7 @@ public class GameController
 			{
 				if (win)
 				{
-					winLoose_L.setText("Glückwunsch. Sie haben Gewonnen :)");
+					winLoose_L.setText("Sie haben Gewonnen :)");
 				} else
 				{
 					winLoose_L.setText("Sie haben Verloren :(");
@@ -304,23 +304,25 @@ public class GameController
 			{
 				gameField_GP.getChildren().clear();
 				
-				for (int collumn = 0; collumn <= field.length; collumn++)
+				for (int collumn = 0; collumn < field.length; collumn++)
 				{
-					for (int row = 0; row <= field[0].length; row++)
+					for (int row = 0; row < field[0].length; row++)
 					{
 						Circle stone = new Circle();
 						stone.setRadius(30.0);
 						if (field[collumn][row] > 0)
 						{
 							stone.setFill(Paint.valueOf("RED"));
-						} else
+							gameField_GP.add(stone, collumn, row);
+							gameField_GP.setValignment(stone, VPos.CENTER);
+							gameField_GP.setHalignment(stone, HPos.CENTER);
+						} else if(field[collumn][row] < 0)
 						{
 							stone.setFill(Paint.valueOf("BLUE"));
+							gameField_GP.add(stone, collumn, row);
+							gameField_GP.setValignment(stone, VPos.CENTER);
+							gameField_GP.setHalignment(stone, HPos.CENTER);
 						}
-						
-						gameField_GP.add(stone, collumn, row);
-						gameField_GP.setValignment(stone, VPos.CENTER);
-						gameField_GP.setHalignment(stone, HPos.CENTER);
 					}
 				}
 			}
