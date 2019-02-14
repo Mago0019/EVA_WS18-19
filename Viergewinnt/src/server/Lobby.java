@@ -41,7 +41,6 @@ public class Lobby {
 
 	public synchronized void addPlayer(Player player) {
 		this.lobbyList.add(player);
-		System.out.println("addPlayer der Lobby aufgerufen");
 		// Alle anderen Spieler informieren
 		for (Player p : lobbyList) {
 			// System.out.println("Player: " + p.name);
