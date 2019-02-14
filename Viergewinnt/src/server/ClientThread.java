@@ -62,8 +62,10 @@ public class ClientThread extends Thread {
 		} catch (IOException ioe) {
 			System.out.println("ERROR: Verbindung mit Clienten verloren!");
 		} catch (Exception e) {
-			System.out.println("ERROR: ClientThread abgestürzt!");
+			System.out.println("ERROR: ClientThread abgestürzt -> " + e.getMessage());
+			e.printStackTrace();
 		} finally {
+			System.out.println("- " + this.client.name + " -> Baue Verbindung ab.");
 			logoutClient(); // Wenn es keine Kommunikation mehr gibt -> Client vom Server entfernen
 		}
 	}
@@ -84,14 +86,12 @@ public class ClientThread extends Thread {
 					continue;
 				}
 				
-
 				order = msg.substring(0, 4);
 				content = msg.substring(4, msg.length());
 
 				// zun Debuggen:
 				if(!order.equals("~~99") && !order.equals("~~98"))
-					System.out.println("- " + this.client.name + " -> Order:<" + order + "> content:<" + content + ">");
-					//System.out.println("Nachricht von C.: " + msg);
+					System.out.println("- " + this.client.name + " -> Order:<" + order + "> Content:<" + content + ">");
 
 				
 				switch (order) {
@@ -121,6 +121,7 @@ public class ClientThread extends Thread {
 					try {
 						setStone(Integer.parseInt(content));
 					} catch (NumberFormatException e) {
+						System.out.println("ERROR: Das hätte nicht passieren sollen. Die Spalteneingabe ist keine Zahl gewesen!");
 						// Sollte nicht auftreten, da die Client-UI auf Fehleingaben prüft
 					}
 					break;
@@ -234,10 +235,10 @@ public class ClientThread extends Thread {
 		// Gebe Startspieler und Spielfeld (leer) an
 		if (gameSession.playerTurn > 0 && iAmHost) {
 			this.output.println("~~31true;" + gameSession.gameFieldToString());
-			this.gameSession.player2.output.println("~~31true;" + gameSession.gameFieldToString());
+			this.gameSession.player2.output.println("~~31false;" + gameSession.gameFieldToString());
 		} else if (gameSession.playerTurn < 0 && !iAmHost) {
 			this.output.println("~~31true;" + gameSession.gameFieldToString());
-			this.gameSession.player1.output.println("~~31true;" + gameSession.gameFieldToString());
+			this.gameSession.player1.output.println("~~31false;" + gameSession.gameFieldToString());
 		} else {
 			if (iAmHost) {
 				this.output.println("~~31false;" + gameSession.gameFieldToString());
@@ -332,7 +333,7 @@ public class ClientThread extends Thread {
 			}
 			leaveGameSession(); // verlasse GameLobby
 		}
-		this.lobby.removePlayer(this.client);
+		this.lobby.removePlayer(this.client); // aus Lobby austragen
 
 	}
 
