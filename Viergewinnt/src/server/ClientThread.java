@@ -9,6 +9,8 @@ import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import sun.nio.cs.Surrogate;
+
 /**
  * Kleine Thread-Klasse, die den Clienten nach dem Namen fragt und ihn dann in
  * die Lobby einträgt. Danach wird die Kommunikation mit der Lobby geregelt.
@@ -20,7 +22,6 @@ public class ClientThread extends Thread {
 
 	Player client;
 	Lobby lobby;
-	ExecutorService tPool;
 	GameSession gameSession;
 	boolean iAmHost;
 
@@ -28,16 +29,16 @@ public class ClientThread extends Thread {
 	BufferedReader input;
 	PrintStream output;
 
-	public ClientThread(Socket clientSocket, Lobby lobby, ExecutorService tPool) {
-		this.client.socket = clientSocket;
+	public ClientThread(Socket clientSocket, Lobby lobby) {
+		client = new Player("", clientSocket);
+		// this.client.socket = clientSocket;
 		this.lobby = lobby;
-		this.tPool = tPool;
 		this.running = true;
 	}
 
 	@Override
 	public void run() {
-		System.out.println("ClientThread gestartet.");
+		System.out.println("\nClientThread gestartet.");
 
 		// IO deklarieren für Lebenszeit des Threads
 		try (BufferedReader input = new BufferedReader(new InputStreamReader(client.socket.getInputStream()));
@@ -62,21 +63,28 @@ public class ClientThread extends Thread {
 			System.out.println("ERROR: Verbindung mit Clienten verloren!");
 		} catch (Exception e) {
 			System.out.println("ERROR: ClientThread abgestürzt!");
+		} finally {
+			logoutClient(); // Wenn es keine Kommunikation mehr gibt -> Client vom Server entfernen
 		}
 	}
 
 	private void listenToClient() {
-		// TODO: darauf warten, dass der Client eine Aktion in der Lobby ausführen will
+		// darauf warten, dass der Client eine Aktion in der Lobby ausführen will
 		String msg = null;
 		String order, content;
 		int tryCount = 1;
 		int pingCount = 1;
-
 		while (running && tryCount <= 3) {
 			try {
 
-				// TODO: Marshalling - erste 4 Bytes (Befehlscode) anschauen.
-				msg = input.readLine(); // TODO: bricht leider nach ein paar Sek ab, wenn keine Meldung kommt
+				// Marshalling - erste 4 Bytes (Befehlscode) anschauen.
+				msg = input.readLine();
+
+				if (msg == null) {
+					continue;
+				}
+				System.out.println("Nachricht von C.: " + msg);
+
 				order = msg.substring(0, 4);
 				content = msg.substring(4, msg.length());
 
@@ -109,6 +117,18 @@ public class ClientThread extends Thread {
 					}
 					break;
 
+				case "~~70": // Client Fragt nach Lobbyliste
+					sendLobbyList();
+					break;
+
+				case "~~71": // Client Fragt nach GameListe
+					sendOpenGames();
+					break;
+
+				case "~~80": // logout Client
+					logoutClient();
+					break;
+
 				case "~~98":
 					this.output.println("~~99");
 					break;
@@ -129,16 +149,20 @@ public class ClientThread extends Thread {
 					running = false;
 				}
 			} catch (IOException ioe) {
+				String error = "-";
+				if (ioe.getMessage() != null) {
+					error = ioe.getMessage();
+				}
+				System.out.println("ERROR: keine Antwort von Client: " + error + ". Versuch: " + tryCount);
 				tryCount++;
-				System.out.println("ERROR: keine Antwort von Client. Versuch: " + tryCount);
 				// ioe.printStackTrace();
 			}
 		}
 
 	}
 
-	/*
-	 * *********** Methoden für Aufrufe vom Clienten
+	/************
+	 * Methoden für Aufrufe vom Clienten
 	 *************/
 	private void createGameSession() {
 		this.gameSession = new GameSession(this);
@@ -157,16 +181,21 @@ public class ClientThread extends Thread {
 	}
 
 	private synchronized void leaveGameSession() {
-		if (iAmHost) { // bin Host
-			this.output.println("~~52");
-			this.gameSession.player2.output.println("~~52");
+		try {
+			if (iAmHost) { // bin Host
+				this.gameSession.player2.output.println("~~52");
+				this.output.println("~~52");
 
-		} else { // bin zweiter Spieler
-			this.output.println("~~52");
-			this.gameSession.player1.output.println("~~52");
-
-			lobby.addGameSession(this.gameSession);
-			this.gameSession = null;
+			} else { // bin zweiter Spieler
+				this.gameSession.player1.output.println("~~52");
+				lobby.addGameSession(this.gameSession);
+				this.gameSession = null;
+				this.output.println("~~52");
+			}
+		} catch (Exception e) { // Falls der Client schon geschlossen ist
+			if (e.getMessage() != null) {
+				System.out.println("E: leaveGame -> " + e.getMessage());
+			}
 		}
 
 	}
@@ -195,13 +224,19 @@ public class ClientThread extends Thread {
 
 	}
 
-	private void win_lose(boolean win) { // ich habe aufgegeben
-		if (iAmHost) { // bin Host
-			this.output.println("~~33" + win);
-			this.gameSession.player2.output.println("~~33" + !win);
-		} else { // bin zweiter Spieler
-			this.output.println("~~33" + win);
-			this.gameSession.player1.output.println("~~33" + !win);
+	private void win_lose(boolean win) { // ich habe aufgegeben -> win = false
+		try {
+			if (iAmHost) { // bin Host
+				this.gameSession.player2.output.println("~~33" + !win);
+				this.output.println("~~33" + win);
+			} else { // bin zweiter Spieler
+				this.gameSession.player1.output.println("~~33" + !win);
+				this.output.println("~~33" + win);
+			}
+		} catch (Exception e) { // Falls der Client schon geschlossen ist
+			if (e.getMessage() != null) {
+				System.out.println("E: win_lose -> " + e.getMessage());
+			}
 		}
 	}
 
@@ -238,6 +273,43 @@ public class ClientThread extends Thread {
 
 	}
 
+	private void sendLobbyList() { // Antwort auf ~~70
+		StringBuilder sb = new StringBuilder("~~10");
+		for (Player p : this.lobby.getLobbyList()) {
+			sb.append(p.name + ",");
+		}
+		
+		if (sb.length() > 4) { // das Komma nur entfernen, wenn min ein Game angehängt wurde
+			sb.deleteCharAt(sb.length() - 1); 
+		}
+		
+		this.output.println(sb.toString() );
+	}
+
+	private void sendOpenGames() { // Antwort auf ~~71
+		StringBuilder sb = new StringBuilder("~~11");
+		for (GameSession gs : this.lobby.getOpenGames()) {
+			sb.append(gs.gameName + ",");
+		}
+		if (sb.length() > 4) { // das Komma nur entfernen, wenn min ein Game angehängt wurde
+			sb.deleteCharAt(sb.length() - 1); 
+		}
+		System.out.println("Info: sendOpenGames -> " + sb.toString());
+		this.output.println(sb.toString());
+	}
+
+	private void logoutClient() {
+
+		if (this.gameSession != null) { // bin min in der Lobby
+			if (this.gameSession.playerTurn != 0) { // Spiel hat schon angefangen
+				win_lose(false); // gebe auf
+			}
+			leaveGameSession(); // verlasse GameLobby
+		}
+		this.lobby.removePlayer(this.client);
+
+	}
+
 	private void askForPlayerName() throws IOException {
 		boolean done = false;
 		String newName = null;
@@ -253,6 +325,9 @@ public class ClientThread extends Thread {
 
 				// TODO: Namen empfangen / Marshalling + DeMarshalling in extra Methoden
 				String msg = input.readLine();
+
+				// System.out.println("DEBUG: msg: " + msg + " Code: " + msg.subSequence(0, 4));
+
 				if (msg.substring(0, 4).equals("~~00")) {
 					newName = msg.substring(4, msg.length());
 					System.out.println("Angefragter Name von Client: " + newName);
@@ -263,26 +338,36 @@ public class ClientThread extends Thread {
 
 					// Schauen, ob der Name schon vorhanden ist
 					if (lobby.containsPlayer(newName)) {
+						System.out.println("Name ist schon vergeben -> ~~02 an Client");
 						output.println("~~02"); // Name schon vorhanden
 						trycount = 0;
 
 					} else {
+						System.out.println("Name ist gültig -> ~~01 an Client");
 						this.client.name = newName;
 						output.println("~~01"); // Name ist gültig
 						done = true;
 					}
 				} else {
+					System.out.println("Name ist ungültig -> ~~03 an Client");
 					output.println("~~03"); // Ungültiger Name
 					trycount = 0;
 				}
 
 			} catch (Exception e) {
-				System.out.println("ERROR: Abfragen des ClientNamens fehlgeschlagen! Versuch: " + trycount);
+				String error = "-";
+				if (e.getMessage() != null) {
+					error = e.getMessage();
+				}
+				System.out.println(
+						"ERROR: Abfragen des ClientNamens fehlgeschlagen: " + error + ". Versuch: " + trycount);
 				trycount++;
 			}
 		} // end While
 
 		if (trycount > 3) { // Falls sich der Client nicht mehr gemeldet hat
+			// System.out.println("Error: Namen Abfragen fehlgeschlagen -> Trycount = " +
+			// trycount);
 			throw new IOException();
 		}
 	}

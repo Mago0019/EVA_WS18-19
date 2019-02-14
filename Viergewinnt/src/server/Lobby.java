@@ -27,11 +27,10 @@ public class Lobby {
 		// this.inGameList = new LinkedList<Player>();
 		this.openGameList = new LinkedList<GameSession>();
 
-		// TODO: NUR ZUM TESTEN: Füllen der Lobby
-		for (int i = 1; i < 5; i++) {
-			lobbyList.add(new Player("Dummy " + i, null));
-		}
-	}
+		/*
+		 * // TODO: NUR ZUM TESTEN: Füllen der Lobby for (int i = 1; i < 5; i++) {
+		 * lobbyList.add(new Player("Dummy " + i, null)); }
+		 */ }
 
 	public static synchronized Lobby getInstance() { // Synchronized, damit nicht ausversehen 2 Objekte erzeugt werden.
 		if (instance != null)
@@ -42,35 +41,49 @@ public class Lobby {
 
 	public synchronized void addPlayer(Player player) {
 		this.lobbyList.add(player);
+		System.out.println("addPlayer der Lobby aufgerufen");
 		// Alle anderen Spieler informieren
 		for (Player p : lobbyList) {
-			try (OutputStream os = p.socket.getOutputStream(); PrintStream ps = new PrintStream(os)) {
+			// System.out.println("Player: " + p.name);
+			try {
+				PrintStream ps = new PrintStream(p.socket.getOutputStream()); // darf nicht geschlossen werden
 				StringBuilder sb = new StringBuilder("~~10");
 				for (Player pl : lobbyList) {
 					sb.append(pl.name + ",");
 				}
+
+				if (sb.length() > 4) { // das Komma nur entfernen, wenn min ein Game angehängt wurde
+					sb.deleteCharAt(sb.length() - 1);
+				}
+
 				ps.println(sb.toString());
 
 			} catch (Exception e) {
 			}
 		}
 	}
-	
+
 	public synchronized void removePlayer(Player player) {
 		this.lobbyList.remove(player);
-		
-		// Alle anderen Spieler informieren
-				for (Player p : lobbyList) {
-					try (OutputStream os = p.socket.getOutputStream(); PrintStream ps = new PrintStream(os)) {
-						StringBuilder sb = new StringBuilder("~~10");
-						for (Player pl : lobbyList) {
-							sb.append(pl.name + ",");
-						}
-						ps.println(sb.toString());
 
-					} catch (Exception e) {
-					}
+		// Alle anderen Spieler informieren
+		for (Player p : lobbyList) {
+			try {
+				PrintStream ps = new PrintStream(p.socket.getOutputStream()); // darf nicht geschlossen werden
+				StringBuilder sb = new StringBuilder("~~10");
+				for (Player pl : lobbyList) {
+					sb.append(pl.name + ",");
 				}
+
+				if (sb.length() > 4) { // das Komma nur entfernen, wenn min ein Game angehängt wurde
+					sb.deleteCharAt(sb.length() - 1);
+				}
+
+				ps.println(sb.toString());
+
+			} catch (Exception e) {
+			}
+		}
 	}
 
 	public synchronized void addGameSession(GameSession gs) {
@@ -78,12 +91,13 @@ public class Lobby {
 
 		// Alle anderen Spieler informieren
 		for (Player p : lobbyList) {
-			try (OutputStream os = p.socket.getOutputStream(); PrintStream ps = new PrintStream(os)) {
+			try {
+				PrintStream ps = new PrintStream(p.socket.getOutputStream()); // darf nicht geschlossen werden
 				StringBuilder sb = new StringBuilder("~~11");
 				for (GameSession session : openGameList) {
 					sb.append(session.gameName + ",");
 				}
-				ps.println(sb.toString());
+				ps.println(sb.toString().substring(0, sb.length() - 1));
 
 			} catch (Exception e) {
 			}
@@ -95,7 +109,8 @@ public class Lobby {
 
 		// Alle anderen Spieler informieren
 		for (Player p : lobbyList) {
-			try (OutputStream os = p.socket.getOutputStream(); PrintStream ps = new PrintStream(os)) {
+			try {
+				PrintStream ps = new PrintStream(p.socket.getOutputStream()); // darf nicht geschlossen werden
 				StringBuilder sb = new StringBuilder("~~11");
 				for (GameSession session : openGameList) {
 					sb.append(session.gameName + ",");
@@ -115,15 +130,16 @@ public class Lobby {
 		return this.openGameList;
 	}
 
-	public synchronized void addPlayerToLobby() {
-
-	}
+//	public synchronized void addPlayerToLobby(Player player) {
+//		
+//	}
 
 	public boolean containsPlayer(String name) { // Problem: Wenn ein spieler gerade ein spiel verlässt/startet
-		if (this.lobbyList.contains(name)) {
-			return true;
-		} else {
-			return false;
+		for (Player p : lobbyList) {
+			if (p.name.equals(name)) {
+				return true;
+			}
 		}
+		return false;
 	}
 }
