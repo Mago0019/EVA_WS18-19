@@ -179,9 +179,10 @@ public class Client extends Thread
 				String order = msg.substring(0, 4);
 				String content = msg.substring(4, msg.length());
 				LinkedList<String> tempList = new LinkedList<String>();
-				if(!order.equals("~~98") || !order.equals("~~99")) {
-					System.out.println("Nachricht vom Server erhalten: " + msg);					
-				}
+				
+				if (!order.equals("~~99") && !order.equals("~~98"))
+					System.out.println("Nachricht vom Server - Order:<" + order + "> Content:<" + content + ">");
+				
 				switch (order)
 				{
 
