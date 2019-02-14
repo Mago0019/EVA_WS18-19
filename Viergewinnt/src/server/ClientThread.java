@@ -100,7 +100,6 @@ public class ClientThread extends Thread {
 					break;
 
 				case "~~51": // Join anderer SpielLobby
-					System.out.println("Anfage nach Join -> " + content);
 					joinGameSession(content);
 					break;
 
