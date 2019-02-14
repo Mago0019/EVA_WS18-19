@@ -66,7 +66,16 @@ public class Client extends Thread
 
 		} catch (Exception e)
 		{
-
+			e.printStackTrace();
+		}finally {
+			this.gameController.backToLogin();
+			try
+			{
+				socket.close();
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -185,7 +194,9 @@ public class Client extends Thread
 					tempList.clear();
 					for (String s : content.split(","))
 					{
+						if(!s.equals("")) {
 						tempList.add(s);
+						}
 					}
 					this.openGames = tempList;
 					setOpenGameView();
@@ -230,7 +241,7 @@ public class Client extends Thread
 				case "~~98":
 					output.println("~~99");
 
-					System.out.println("Schicke Nachricht an Server: ~~99");
+//					System.out.println("Schicke Nachricht an Server: ~~99");
 					break;
 
 				case "~~99":
@@ -244,9 +255,9 @@ public class Client extends Thread
 			{
 				if (pingCount <= 3)
 				{
-					System.out.println("Pinge Server an. Versuch: " + pingCount);
-
-					System.out.println("Schicke Nachricht an Server: ~~98");
+//					System.out.println("Pinge Server an. Versuch: " + pingCount);
+//
+//					System.out.println("Schicke Nachricht an Server: ~~98");
 					this.output.println("~~98"); // Pinge Server an
 					pingCount++;
 				} else
@@ -255,8 +266,8 @@ public class Client extends Thread
 				}
 			} catch (IOException ioe)
 			{
+				System.out.println("ERROR: keine Antwort von Server. Versuch: " + tryCount);
 				tryCount++;
-				System.out.println("ERROR: keine Antwort von Client. Versuch: " + tryCount);
 				// ioe.printStackTrace();
 			} catch (Exception e)
 			{
@@ -301,11 +312,11 @@ public class Client extends Thread
 	 * 
 	 * @return Name Spieler 1
 	 */
-	public void joinGame()
+	public void joinGame(String gameName)
 	{
 		this.playerNumber = -1;
-		this.output.println("~~51");
-		System.out.println("Nachricht an Server geschickt: ~~51");
+		this.output.println("~~51" + gameName);
+		System.out.println("Nachricht an Server geschickt: ~~51" + gameName);
 
 	}
 
