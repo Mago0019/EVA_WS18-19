@@ -374,7 +374,6 @@ public class ClientThread extends Thread
 		{ // das Komma nur entfernen, wenn min ein Game angehängt wurde
 			sb.deleteCharAt(sb.length() - 1);
 		}
-		System.out.println("Info: sendOpenGames -> " + sb.toString());
 		this.output.println(sb.toString());
 	}
 
