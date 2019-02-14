@@ -154,9 +154,6 @@ public class GameController
 	public void surrenderGame(ActionEvent klick)
 	{
 		client.surrenderGame();
-		winLoose_L.setVisible(true);
-		activeGame_VB.setVisible(false);
-		lobby_HB.setVisible(true);
 	}
 
 	@FXML
@@ -270,9 +267,15 @@ public class GameController
 				if (win)
 				{
 					winLoose_L.setText("Sie haben Gewonnen :)");
+					winLoose_L.setVisible(true);
+					activeGame_VB.setVisible(false);
+					lobby_HB.setVisible(true);
 				} else
 				{
 					winLoose_L.setText("Sie haben Verloren :(");
+					winLoose_L.setVisible(true);
+					activeGame_VB.setVisible(false);
+					lobby_HB.setVisible(true);
 				}
 			}
 
@@ -325,6 +328,7 @@ public class GameController
 						}
 					}
 				}
+				gameField_GP.setGridLinesVisible(true);
 			}
 
 		});
