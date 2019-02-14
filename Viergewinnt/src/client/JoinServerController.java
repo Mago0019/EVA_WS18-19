@@ -74,39 +74,6 @@ public class JoinServerController
 	private Button joinServer_B;
 
 	@FXML
-	public void event_ChipEinwerfen(ActionEvent eventVSPressed)
-	{
-		try
-		{
-			/*
-			 * TODO: - Textfeld für Zahleingabe - Button zum Abschicken - Überprüfen ob
-			 * Eingabe korrekt - an Server übermitteln, wo der Chip rein soll
-			 */
-
-		} catch (Exception e)
-		{
-			System.out.println("ERROR: Verschlüsseln fehgeschlagen!");
-			e.printStackTrace();
-		}
-	}
-
-	@FXML
-	public void event_updateField(ActionEvent eventSpielfeldUpdate)
-	{
-		try
-		{
-			/*
-			 * TODO: - Getriggert, wenn antwort vom Server - aktualisiert Spielfeld
-			 */
-
-		} catch (Exception e)
-		{
-			System.out.println("ERROR: Entschlüsseln fehgeschlagen!");
-			e.printStackTrace();
-		}
-	}
-
-	@FXML
 	public void event_Menue_Beenden(ActionEvent eventBeendenPressed)
 	{
 		try

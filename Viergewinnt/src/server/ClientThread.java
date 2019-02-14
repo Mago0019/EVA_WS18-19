@@ -260,6 +260,7 @@ public class ClientThread extends Thread {
 
 	private void setStone(int collumn) {
 		boolean correct = this.gameSession.setStone(collumn, this.client);
+		System.out.println("Setstone - Collumn="+collumn + " correct="+correct);
 
 		if (correct) {
 			this.output.println("~~32true"); // Stein-setzen hat geklappt
@@ -269,11 +270,16 @@ public class ClientThread extends Thread {
 			} else {
 				playerNr = -1;
 			}
-
+			
+			System.out.println("Setstone - currentPlayerNr:"+playerNr + " . Prüfe ob gewonnen...");
+			
 			if (this.gameSession.gameField.checkWin(collumn, playerNr)) { // Überprüfen, ob ich gewonnen hab
 				win_lose(true);
+				System.out.println("Setstone - sollte jetzt gewonnen haben.");
 
 			} else {
+				System.out.println("Setstone - leider nicht gewonnen.");
+				
 				this.output.println("~~31false" + ";" + gameSession.gameFieldToString());
 				if (iAmHost) { // anderem Clienten bescheid geben, wer am Zug ist
 					this.gameSession.player2.output.println("~~31true" + ";" + gameSession.gameFieldToString());
@@ -282,6 +288,8 @@ public class ClientThread extends Thread {
 				}
 			}
 		} else {
+			System.out.println("Setstone - Steinsetzen fehlgeschlagen!"); // TODO: ausgaben entfernen
+			
 			this.output.println("~~32false"); // Stein-setzen hat nicht geklappt
 		}
 

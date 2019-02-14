@@ -78,7 +78,7 @@
                      </padding>
                   </Label>
                   <TextField fx:id="SpielerName_TF" alignment="CENTER" text="Name" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                  <TextField fx:id="ServerIP_TF" alignment="CENTER" text="127.0.0.1" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                  <TextField fx:id="ServerIP_TF" alignment="CENTER" text="192.168.178.104" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <TextField fx:id="ServerPort_TF" alignment="CENTER" text="19009" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                   <Label fx:id="ServerPort_L" text="Server Port" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                      <GridPane.margin>
