@@ -76,7 +76,7 @@
                               <ListView fx:id="openGames_LV" prefHeight="471.0" prefWidth="248.0" />
                               <HBox alignment="CENTER">
                                  <children>
-                                    <Button fx:id="joinGame_B" mnemonicParsing="false" onAction="#joinGame" text="trete Spiel bei">
+                                    <Button fx:id="joinGame_B" disable="true" mnemonicParsing="false" onAction="#joinGame" text="trete Spiel bei">
                                        <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </HBox.margin>

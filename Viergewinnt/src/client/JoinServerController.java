@@ -1,5 +1,7 @@
 package client;
 
+
+
 /**
  * EVA WS 18/19
  * Patrick Geerds
@@ -27,6 +29,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class JoinServerController {
 
@@ -164,11 +167,12 @@ public class JoinServerController {
 			GameController gameC = fxmlLoader.getController();
 			gameC.initialize();
 			Client client = new Client(gameC);
-
+			
 			int verbindungErfolgreich = client.serverConnect(ServerIP_TF.getText(),
 					Integer.parseInt(ServerPort_TF.getText()), SpielerName_TF.getText());
 
 			if (verbindungErfolgreich == 0) {
+				client.start();
 				lobbyStage.setScene(scene);
 				lobbyStage.show();
 			} 
@@ -198,5 +202,8 @@ public class JoinServerController {
 			this.Error_TF.setVisible(true);
 		}
 
+	}
+	private void closeWindowEvent(WindowEvent event) {
+		
 	}
 }

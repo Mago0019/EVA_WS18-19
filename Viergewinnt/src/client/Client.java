@@ -48,33 +48,41 @@ public class Client extends Thread
 //		openGames.add("Patricks Game");
 //		openGames.add("Manuels Game");
 	}
-	
+
 	@Override
-	public synchronized void run() {
+	public synchronized void run()
+	{
 		// Output übernimmt der Controller, der Input vom Server wird hier verarbeitet.
-		try (BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				PrintStream output = new PrintStream(socket.getOutputStream()); ) {
-			this.input = input;
-			this.output = output;
-			
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				PrintStream out = new PrintStream(socket.getOutputStream());)
+		{
+
+			this.input = in;
+			this.output = out;
+
+			updateLists();
+
 			listenToServer();
-			
-		} catch (Exception e) {
-			
+
+		} catch (Exception e)
+		{
+
 		}
-		
 	}
-	
+
 	/**
-	 * Erste Verbindung mit dem Server wird aufgebaut und IO deklariert.
-	 * Wird vom JoinServerController aufgerufen.
-	 * @param serverIP IP-Adresse des Servers
-	 * @param serverPort Port des Servers
+	 * Erste Verbindung mit dem Server wird aufgebaut und IO deklariert. Wird vom
+	 * JoinServerController aufgerufen.
+	 * 
+	 * @param serverIP    IP-Adresse des Servers
+	 * @param serverPort  Port des Servers
 	 * @param spielerName gewünschter Name
 	 * @return
 	 */
-	public int serverConnect(String serverIP, int serverPort, String spielerName) { 
-		try {
+	public int serverConnect(String serverIP, int serverPort, String spielerName)
+	{
+		try
+		{
 			this.serverIP = serverIP;
 			this.serverPort = serverPort;
 			this.name = spielerName;
@@ -85,13 +93,15 @@ public class Client extends Thread
 			if (this.socket == null)
 			{
 				this.socket = new Socket(this.serverIP, this.serverPort); // TODO: vll Port ändern
-				// socket.setSoTimeout(2000);
+				socket.setSoTimeout(15_000);
 			}
+			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			PrintStream output = new PrintStream(socket.getOutputStream());
 			while (!done)
 			{
 				System.out.println("Warte auf Anfrage vom Server");
 				String serverNachricht = input.readLine();
-				System.out.println("Nachricht vom Server: " + serverNachricht);
+				System.out.println("Nachricht vom Server erhalten: " + serverNachricht);
 				switch (serverNachricht)
 				{
 				case "~~00":
@@ -111,6 +121,8 @@ public class Client extends Thread
 
 		} catch (Exception e)
 		{
+			System.out.println("Exception e: ");
+			e.printStackTrace();
 			// Verbinden fehlgeschlagen
 			try
 			{
@@ -120,29 +132,49 @@ public class Client extends Thread
 				}
 			} catch (IOException e1)
 			{
+				System.out.println("IOException e1: ");
+				e1.printStackTrace();
+			} catch (Exception ex)
+			{
+				System.out.println("Allgemeine Exception beim Socket close");
+				ex.printStackTrace();
 			}
 			return 3;
 		}
 
 	}
-	private void listenToServer() {
+
+	private void listenToServer()
+	{
 		// TODO: darauf warten, dass der Client eine Aktion in der Lobby ausführen will
 		String msg = null;
 		int tryCount = 1;
 		int pingCount = 1;
-		while (running && tryCount <= 3) {
-			try {
-
+		if (this.socket.isClosed())
+		{
+			System.out.println("Client-Socket ist closed.");
+		}
+		while (running && tryCount <= 3)
+		{
+			try
+			{
 				// TODO: Marshalling - erste 4 Bytes (Befehlscode) anschauen.
 				msg = input.readLine(); // TODO: bricht leider nach ein paar Sek ab, wenn keine Meldung kommt
+				if (msg == null || msg.length() < 4)
+				{
+					continue;
+				}
 				String order = msg.substring(0, 4);
 				String content = msg.substring(4, msg.length());
 				LinkedList<String> tempList = new LinkedList<String>();
-				switch (order) {
-				
+				System.out.println("Nachricht vom Server erhalten: " + msg);
+				switch (order)
+				{
+
 				case "~~10": // update LobbyList
-						tempList.clear();
-					for(String s: content.split(",")){
+					tempList.clear();
+					for (String s : content.split(","))
+					{
 						tempList.add(s);
 					}
 					this.lobbyList = tempList;
@@ -151,7 +183,8 @@ public class Client extends Thread
 
 				case "~~11": // update openGames
 					tempList.clear();
-					for(String s: content.split(",")){
+					for (String s : content.split(","))
+					{
 						tempList.add(s);
 					}
 					this.openGames = tempList;
@@ -161,29 +194,31 @@ public class Client extends Thread
 				case "~~20": // Player joined
 					playerJoinedGame(content);
 					break;
-					
+
 				case "~~21": // Player left
 					oponentLeftGame();
 					break;
-					
+
 				case "~~30": // Game started
 					gameHasStarted();
 					break;
-					
+
 				case "~~31": // yourTurn + update Field
-					int [][] tempField = new int [7][6];
+					int[][] tempField = new int[7][6];
 					String[] contents = content.split(";");
 					setYourTurn(Boolean.parseBoolean(contents[0]));
-					String[] field = contents[1].split(",");	
+					String[] field = contents[1].split(",");
 					int counter = 0;
-					for(int row = 0; row < 7; row++) {
-						for(int collumn = 0; collumn < 6; collumn ++ ) {
+					for (int row = 0; row < 7; row++)
+					{
+						for (int collumn = 0; collumn < 6; collumn++)
+						{
 							tempField[row][collumn] = Integer.parseInt(field[counter]);
 							counter++;
 						}
 					}
 					break;
-					
+
 				case "~~32": // Turn-Response
 					turnResponse(Boolean.parseBoolean(content));
 					break;
@@ -191,125 +226,172 @@ public class Client extends Thread
 				case "~~33": // win/loose
 					win_loose(Boolean.parseBoolean(content));
 					break;
-					
+
 				case "~~98":
 					output.println("~~99");
+
+					System.out.println("Schicke Nachricht an Server: ~~99");
 					break;
-					
+
 				case "~~99":
 					pingCount = 1; // zurücksetzen
-					
+
 				default:
 					break;
 				}
 
-			} catch (SocketTimeoutException stoe) {
-				if (pingCount <= 3) {
+			} catch (SocketTimeoutException stoe)
+			{
+				if (pingCount <= 3)
+				{
 					System.out.println("Pinge Server an. Versuch: " + pingCount);
+
+					System.out.println("Schicke Nachricht an Server: ~~98");
 					this.output.println("~~98"); // Pinge Server an
 					pingCount++;
-				} else {
+				} else
+				{
 					running = false;
 				}
-			} catch (IOException ioe) {
+			} catch (IOException ioe)
+			{
 				tryCount++;
 				System.out.println("ERROR: keine Antwort von Client. Versuch: " + tryCount);
 				// ioe.printStackTrace();
+			} catch (Exception e)
+			{
+				System.out.println("DEBUG: Allgemeine Exceptionn: ");
+				e.printStackTrace();
 			}
 		}
 
 	}
-	
-	public String getPlayerName() {
+
+	public void updateLists()
+	{
+		this.output.println("~~70");
+		System.out.println("Nachricht an Server geschickt: ~~70");
+		this.output.println("~~71");
+		System.out.println("Nachricht an Server geschickt: ~~71");
+	}
+
+	public String getPlayerName()
+	{
 		return this.name;
 	}
-	
-	public int getPlayerNumber() {
+
+	public int getPlayerNumber()
+	{
 		return this.playerNumber;
 	}
-	
+
 	/* ---Nachrichten an den Server--- */
-	
+
 	public void createGame()
 	{
 		this.playerNumber = 1;
 		this.output.println("~~50");
+		System.out.println("Nachricht an Server geschickt: ~~50");
 	}
-	
+
 	/**
 	 * Die Methode schickt dem Server, dass man einem offenem Spiel beitreten will.
-	 * Der Server schickt einem dann einen String zurück, welcher den Namen des 1. Spielers beinhaltet.
+	 * Der Server schickt einem dann einen String zurück, welcher den Namen des 1.
+	 * Spielers beinhaltet.
+	 * 
 	 * @return Name Spieler 1
 	 */
 	public void joinGame()
 	{
 		this.playerNumber = -1;
 		this.output.println("~~51");
+		System.out.println("Nachricht an Server geschickt: ~~51");
+
 	}
 
 	/**
-	 * Die Methode schickt dem Server eine Nachricht, dass der Client das Spiel verlassen hat
+	 * Die Methode schickt dem Server eine Nachricht, dass der Client das Spiel
+	 * verlassen hat
 	 */
 	public void leaveYourGame()
 	{
 		this.output.println("~~52");
+		System.out.println("Nachricht an Server geschickt: ~~52");
 	}
 
 	public void startGame()
 	{
 		this.output.println("~~53");
+		System.out.println("Nachricht an Server geschickt: ~~53");
 	}
-	
+
 	public void surrenderGame()
 	{
 		this.output.println("~~54");
+		System.out.println("Nachricht an Server geschickt: ~~54");
 	}
-	
+
 	public void setStone(int collumn)
 	{
 		this.output.println("~~60" + collumn);
+		System.out.println("Nachricht an Server geschickt: ~~60" + collumn);
 	}
-	
+
+	public void logout()
+	{
+		this.output.println("~~80");
+		System.out.println("Nachricht an Server geschickt: ~~80");
+
+	}
+
 	/* ---Kommunikation mit dem GameController--- */
-	
+
 	public void setLobbyListView()
 	{
-		gameController.lobby.setAll(this.lobbyList);
+		gameController.updateLobby(this.lobbyList);
 	}
-	
+
 	public void setOpenGameView()
 	{
-		gameController.openGames.setAll(this.openGames);
+		gameController.updateOpenGames(this.openGames);
 	}
-	
+
 	/**
-	 * die Methode wird aufgerufen, wenn der Client vom Server benachrichtigt wird, dass der Gegenspieler das Spiel verlassen hat. 
+	 * die Methode wird aufgerufen, wenn der Client vom Server benachrichtigt wird,
+	 * dass der Gegenspieler das Spiel verlassen hat.
 	 */
 	public void oponentLeftGame()
 	{
 		this.gameController.otherPlayerLeftGame();
 	}
-	
+
 	/**
-	 * in der Methode wird dem Gamecontroller den namen des 2. Spielers übergeben, den der Client zuvor vom Server erhalten hat.
+	 * in der Methode wird dem Gamecontroller den namen des 2. Spielers übergeben,
+	 * den der Client zuvor vom Server erhalten hat.
 	 */
-	public void playerJoinedGame(String name) {
+	public void playerJoinedGame(String name)
+	{
 		this.gameController.otherPlayerJoinedGame(name);
 	}
-	
-	public void setYourTurn(boolean yourTurn) {
+
+	public void setYourTurn(boolean yourTurn)
+	{
 		this.gameController.yourTurn(yourTurn);
 	}
-	
-	public void turnResponse(boolean correct) {
+
+	public void turnResponse(boolean correct)
+	{
 		this.gameController.turnResponse(correct);
 	}
-	
-	public void gameHasStarted() {
+
+	public void gameHasStarted()
+	{
 		this.gameController.startGame();
 	}
 
-	public void win_loose(boolean win) {
+	public void win_loose(boolean win)
+	{
 		this.gameController.winLoose(win);
 	}
+
 }
