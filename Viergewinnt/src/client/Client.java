@@ -311,6 +311,10 @@ public class Client extends Thread
 	{
 		return this.playerNumber;
 	}
+	
+	public GameController getGameController() {
+		return this.gameController;
+	}
 
 	/* ---Nachrichten an den Server--- */
 

@@ -31,6 +31,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class GameController
 {
@@ -99,6 +100,7 @@ public class GameController
 	ObservableList<String> lobby;
 	ObservableList<String> openGames;
 
+	
 	public void initialize()
 	{
 		lobby = FXCollections.observableArrayList();
@@ -451,6 +453,13 @@ public class GameController
 			}
 
 		});
+	}
+	
+	public void closeWindowEvent(WindowEvent event) {
+		this.client.logout();
+	}
+	public void setCloseWindowEvent() {
+		root.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::closeWindowEvent);
 	}
 
 }
