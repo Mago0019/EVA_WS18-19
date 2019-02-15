@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.List;
 
+import com.sun.xml.internal.bind.v2.runtime.Name;
+
 /**
  * Kleine Thread-Klasse, die den Clienten nach dem Namen fragt und ihn dann in
  * die Lobby einträgt. Danach wird die Kommunikation mit der Lobby geregelt.
@@ -32,7 +34,7 @@ public class ClientThread extends Thread {
 		// this.client.socket = clientSocket;
 		this.lobby = lobby;
 		this.running = true;
-		this.debugMode = false;
+		this.debugMode = true;
 	}
 
 	@Override
@@ -60,7 +62,10 @@ public class ClientThread extends Thread {
 			// jetzt die Kommunikation regeln
 			listenToClient();
 
-		} catch (IOException ioe) {
+		} catch (NameException ne) {
+			// nix tun -> Client wird sich nochmal melden
+		} 
+		catch (IOException ioe) {
 			System.out.println("ERROR: Verbindung mit Clienten verloren!");
 		} catch (Exception e) {
 			System.out.println("ERROR: ClientThread abgestürzt -> " + e.getMessage() );
@@ -344,10 +349,11 @@ public class ClientThread extends Thread {
 
 	}
 
-	private void askForPlayerName() throws IOException {
+	private void askForPlayerName() throws IOException, NameException {
 		boolean done = false;
 		String newName = null;
 		int trycount = 1;
+	//	String err = null;
 
 		while (!done && trycount <= 3) {
 			try {
@@ -376,6 +382,8 @@ public class ClientThread extends Thread {
 							System.out.println("Name ist schon vergeben -> ~~02 an Client");
 						output.println("~~02"); // Name schon vorhanden
 						trycount = 0;
+			//			err = "Name alredy used ~~02";
+			//			break;
 
 					} else {
 						if (debugMode)
@@ -389,6 +397,9 @@ public class ClientThread extends Thread {
 						System.out.println("Name ist ungültig -> ~~03 an Client");
 					output.println("~~03"); // Ungültiger Name
 					trycount = 0;
+		//			err = "Name invalid ~~03";
+		//			break;
+					
 				}
 
 			} catch (Exception e) {
@@ -404,10 +415,11 @@ public class ClientThread extends Thread {
 		} // end While
 
 		if (trycount > 3) { // Falls sich der Client nicht mehr gemeldet hat
-							// System.out.println("Error: Namen Abfragen fehlgeschlagen -> Trycount = " +
-							// trycount);
 			throw new IOException();
 		}
+//		if (err != null) {
+//			throw new NameException(err);
+//		}
 	}
 	
 	public void setDebugMode(boolean dm) {
@@ -423,5 +435,14 @@ public class ClientThread extends Thread {
 		}
 		sb.substring(2); // letzte zwei Zeichen (; ) löschen.
 
+	}
+	
+	private class NameException extends Exception{
+		public NameException() {
+			super("NameException");
+		}
+		public NameException(String errMsg) {
+			super(errMsg);
+		}
 	}
 }

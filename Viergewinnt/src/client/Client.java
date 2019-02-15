@@ -112,7 +112,7 @@ public class Client extends Thread
 				System.out.println("Alte serverInetAdress: " + this.socket.getInetAddress().toString());
 				StringBuilder sb = new StringBuilder(this.socket.getInetAddress().toString());
 				sb.deleteCharAt(0);
-				if (!sb.toString().equals(this.serverIP) || this.socket.getPort() != this.serverPort)
+				if (!sb.toString().equals(this.serverIP) || this.socket.getPort() != this.serverPort) // falls jetzt eine neue IP oder ein neuer Port angegeben wurde
 				{
 					this.socket.close();
 					this.socket = new Socket(this.serverIP, this.serverPort);
@@ -143,9 +143,8 @@ public class Client extends Thread
 
 		} catch (Exception e)
 		{
-			System.out.println("Exception e: ");
-			e.printStackTrace();
-			// Verbinden fehlgeschlagen
+			System.out.println("ERROR: Server connect fehlgeschlagen -> " +e + " : " + e.getMessage());
+			//e.printStackTrace();
 			try
 			{
 				if (socket != null)
