@@ -15,7 +15,8 @@ public class Server {
 
 			// SERVER-DATEN
 			int PORT = 19009;
-			InetAddress ADR = InetAddress.getLocalHost();
+			//InetAddress ADR = InetAddress.getLocalHost();
+			InetAddress ADR = InetAddress.getByName("10.0.3.36");
 			System.out.println("Server IP: " + ADR.getHostAddress() + ":" + PORT + "\n");
 			
 			WellcomeSocket wellcomeSocket = new WellcomeSocket(ADR, PORT);
@@ -66,8 +67,8 @@ public class Server {
 
 	private static void b_showCommands() {
 		System.out.println("-------------------------------------------");
-		System.out.printf("ServerCommands: %s %s %s", "?/help - show Commands", "stop/shutdown - shutdown entire server",
-				"lobby - show the players current online");
+		System.out.printf("ServerCommands: %s %s %s", "?/help - show Commands\n", "stop/shutdown - shutdown entire server\n",
+				"lobby - show the players current online\n");
 		System.out.println("-------------------------------------------");
 	}
 	

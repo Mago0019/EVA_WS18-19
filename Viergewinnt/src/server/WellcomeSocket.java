@@ -36,7 +36,7 @@ public class WellcomeSocket extends Thread {
 			this.lobby = Lobby.getInstance();
 			
 		} catch (IOException e) {
-			System.out.println("ERROR (WellcomeSocket): Starten des ServerSockets fehlgeschlagen.");
+			System.out.println("ERROR (WellcomeSocket): Starten des ServerSockets fehlgeschlagen -> " + e);
 			wellcomeSockRunning = false; // der Rest darf nun nicht mehr ausgeführt werden.
 		}
 		

@@ -25,6 +25,7 @@ public class Client extends Thread
 	private LinkedList<String> lobbyList;
 	private LinkedList<String> openGames;
 	private boolean running;
+	private boolean debugMode;
 
 	// ---- UI ------
 	private GameController gameController;
@@ -41,6 +42,7 @@ public class Client extends Thread
 		openGames = new LinkedList<String>();
 		gameController.setClient(this);
 		running = true;
+		
 //		lobbyList.add("Manuel");		//eine defaultliste zum testen
 //		lobbyList.add("Patrick");
 //		lobbyList.add("Andi");
