@@ -67,7 +67,8 @@ public class Client extends Thread
 		} catch (Exception e)
 		{
 			e.printStackTrace();
-		}finally {
+		} finally
+		{
 			this.gameController.backToLogin();
 			try
 			{
@@ -75,7 +76,7 @@ public class Client extends Thread
 			} catch (IOException ioe)
 			{
 				ioe.printStackTrace();
-			}catch(Exception e)
+			} catch (Exception e)
 			{
 				e.printStackTrace();
 			}
@@ -106,14 +107,23 @@ public class Client extends Thread
 			{
 				this.socket = new Socket(this.serverIP, this.serverPort); // TODO: vll Port ändern
 				socket.setSoTimeout(15_000);
+			} else
+			{
+				System.out.println("Alte serverInetAdress: " + this.socket.getInetAddress().toString());
+				StringBuilder sb = new StringBuilder(this.socket.getInetAddress().toString());
+				sb.deleteCharAt(0);
+				if (!sb.toString().equals(this.serverIP) || this.socket.getPort() != this.serverPort)
+				{
+					this.socket.close();
+					this.socket = new Socket(this.serverIP, this.serverPort);
+				}
 			}
+
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			PrintStream output = new PrintStream(socket.getOutputStream());
 			while (!done)
 			{
-				System.out.println("Warte auf Anfrage vom Server");
 				String serverNachricht = input.readLine();
-				System.out.println("Nachricht vom Server erhalten: " + serverNachricht);
 				switch (serverNachricht)
 				{
 				case "~~00":
@@ -179,92 +189,87 @@ public class Client extends Thread
 				String order = msg.substring(0, 4);
 				String content = msg.substring(4, msg.length());
 				LinkedList<String> tempList = new LinkedList<String>();
-				
+
 				if (!order.equals("~~99") && !order.equals("~~98"))
-					System.out.println("Nachricht vom Server - Order:<" + order + "> Content:<" + content + ">");
-				
-				switch (order)
-				{
 
-				case "~~10": // update LobbyList
-					tempList.clear();
-					for (String s : content.split(","))
+					switch (order)
 					{
-						tempList.add(s);
-					}
-					this.lobbyList = tempList;
-					setLobbyListView();
-					break;
 
-				case "~~11": // update openGames
-					tempList.clear();
-					for (String s : content.split(","))
-					{
-						if(!s.equals("")) {
-						tempList.add(s);
-						}
-					}
-					this.openGames = tempList;
-					setOpenGameView();
-					break;
-
-				case "~~20": // Player joined
-					playerJoinedGame(content);
-					break;
-
-				case "~~21": // Player left
-					oponentLeftGame();
-					break;
-
-				case "~~30": // Game started
-					gameHasStarted();
-					break;
-
-				case "~~31": // yourTurn + update Field
-					int[][] tempField = new int[7][6];
-					String[] contents = content.split(";");
-					setYourTurn(Boolean.parseBoolean(contents[0]));
-					String[] field = contents[1].split(",");
-					int counter = 0;
-					for (int collumn = 0; collumn < 7; collumn++)
-					{
-						for (int row = 0; row < 6; row++)
+					case "~~10": // update LobbyList
+						tempList.clear();
+						for (String s : content.split(","))
 						{
-							tempField[collumn][row] = Integer.parseInt(field[counter]);
-							counter++;
+							tempList.add(s);
 						}
+						this.lobbyList = tempList;
+						setLobbyListView();
+						break;
+
+					case "~~11": // update openGames
+						tempList.clear();
+						for (String s : content.split(","))
+						{
+							if (!s.equals(""))
+							{
+								tempList.add(s);
+							}
+						}
+						this.openGames = tempList;
+						setOpenGameView();
+						break;
+
+					case "~~20": // Player joined
+						playerJoinedGame(content);
+						break;
+
+					case "~~21": // Player left
+						oponentLeftGame();
+						break;
+
+					case "~~30": // Game started
+						gameHasStarted();
+						break;
+
+					case "~~31": // yourTurn + update Field
+						int[][] tempField = new int[7][6];
+						String[] contents = content.split(";");
+						setYourTurn(Boolean.parseBoolean(contents[0]));
+						String[] field = contents[1].split(",");
+						int counter = 0;
+						for (int collumn = 0; collumn < 7; collumn++)
+						{
+							for (int row = 0; row < 6; row++)
+							{
+								tempField[collumn][row] = Integer.parseInt(field[counter]);
+								counter++;
+							}
+						}
+						updateField(tempField);
+						break;
+
+					case "~~32": // Turn-Response
+						turnResponse(Boolean.parseBoolean(content));
+						break;
+
+					case "~~33": // win/loose
+						win_loose(Boolean.parseBoolean(content));
+						break;
+
+					case "~~98":
+						output.println("~~99");
+						break;
+
+					case "~~99":
+						pingCount = 1; // zurücksetzen
+
+					default:
+						break;
 					}
-					updateField(tempField);
-					break;
-
-				case "~~32": // Turn-Response
-					turnResponse(Boolean.parseBoolean(content));
-					break;
-
-				case "~~33": // win/loose
-					win_loose(Boolean.parseBoolean(content));
-					break;
-
-				case "~~98":
-					output.println("~~99");
-
-//					System.out.println("Schicke Nachricht an Server: ~~99");
-					break;
-
-				case "~~99":
-					pingCount = 1; // zurücksetzen
-
-				default:
-					break;
-				}
 
 			} catch (SocketTimeoutException stoe)
 			{
 				if (pingCount <= 3)
 				{
-//					System.out.println("Pinge Server an. Versuch: " + pingCount);
-//
-//					System.out.println("Schicke Nachricht an Server: ~~98");
 					this.output.println("~~98"); // Pinge Server an
 					pingCount++;
 				} else
@@ -288,9 +293,7 @@ public class Client extends Thread
 	public void updateLists()
 	{
 		this.output.println("~~70");
-		System.out.println("Nachricht an Server geschickt: ~~70");
 		this.output.println("~~71");
-		System.out.println("Nachricht an Server geschickt: ~~71");
 	}
 
 	public String getPlayerName()
@@ -309,7 +312,6 @@ public class Client extends Thread
 	{
 		this.playerNumber = 1;
 		this.output.println("~~50");
-		System.out.println("Nachricht an Server geschickt: ~~50");
 	}
 
 	/**
@@ -323,7 +325,6 @@ public class Client extends Thread
 	{
 		this.playerNumber = -1;
 		this.output.println("~~51" + gameName);
-		System.out.println("Nachricht an Server geschickt: ~~51" + gameName);
 
 	}
 
@@ -334,31 +335,26 @@ public class Client extends Thread
 	public void leaveYourGame()
 	{
 		this.output.println("~~52");
-		System.out.println("Nachricht an Server geschickt: ~~52");
 	}
 
 	public void startGame()
 	{
 		this.output.println("~~53");
-		System.out.println("Nachricht an Server geschickt: ~~53");
 	}
 
 	public void surrenderGame()
 	{
 		this.output.println("~~54");
-		System.out.println("Nachricht an Server geschickt: ~~54");
 	}
 
 	public void setStone(int collumn)
 	{
 		this.output.println("~~60" + collumn);
-		System.out.println("Nachricht an Server geschickt: ~~60" + collumn);
 	}
 
 	public void logout()
 	{
 		this.output.println("~~80");
-		System.out.println("Nachricht an Server geschickt: ~~80");
 
 	}
 
@@ -411,8 +407,9 @@ public class Client extends Thread
 	{
 		this.gameController.winLoose(win);
 	}
-	
-	public void updateField(int[][] field) {
+
+	public void updateField(int[][] field)
+	{
 		this.gameController.updateGamefield(field);
 	}
 
