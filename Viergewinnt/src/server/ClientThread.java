@@ -213,9 +213,10 @@ public class ClientThread extends Thread {
 				this.gameSession = null;
 
 			} else { // bin zweiter Spieler
-				this.gameSession.player1.output.println("~~21");
-				lobby.addGameSession(this.gameSession);
-				this.gameSession = null;
+				this.gameSession.player1.output.println("~~21"); // host benachrichtigen
+				this.gameSession.player2 = null; 		// gs vergisst player2
+				lobby.addGameSession(this.gameSession); // gs wieder in die Lobby eintragen
+				this.gameSession = null;				// ich vergesse die gs wieder
 				// this.output.println("~~21");
 			}
 		} catch (Exception e) { // Falls der Client schon geschlossen ist
