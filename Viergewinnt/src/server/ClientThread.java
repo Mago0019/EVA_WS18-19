@@ -27,19 +27,17 @@ public class ClientThread extends Thread {
 	boolean running;
 	BufferedReader input;
 	PrintStream output;
-	boolean debugMode;
 
 	public ClientThread(Socket clientSocket, Lobby lobby) {
 		client = new Player("", clientSocket);
 		// this.client.socket = clientSocket;
 		this.lobby = lobby;
 		this.running = true;
-		this.debugMode = true;
 	}
 
 	@Override
 	public void run() {
-		if (debugMode)
+		if (Lobby.debugMode)
 			System.out.println("\nNeuer ClientThread gestartet.");
 
 		// IO deklarieren für Lebenszeit des Threads
@@ -64,13 +62,17 @@ public class ClientThread extends Thread {
 
 		} catch (NameException ne) {
 			// nix tun -> Client wird sich nochmal melden
+			if(Lobby.debugMode)
+				System.out.println("Name war ungültig/vergeben -> schließe Socket <" + this.client.name + ">");
 		} 
 		catch (IOException ioe) {
-			System.out.println("ERROR: Verbindung mit Clienten verloren!");
-			ioe.printStackTrace();
+			if(Lobby.debugMode)
+				System.out.println("ERROR: Verbindung mit Clienten verloren -> " + ioe);
+			//ioe.printStackTrace();
 		} catch (Exception e) {
-			System.out.println("ERROR: ClientThread abgestürzt -> " + e.getMessage() );
-			e.printStackTrace();
+			if(Lobby.debugMode)
+				System.out.println("ERROR: ClientThread abgestürzt -> " + e.getMessage() );
+			//e.printStackTrace();
 		} finally {
 			System.out.println("- Client left: " + this.client.name + " -> close connection.");
 			logoutClient(); // Wenn es keine Kommunikation mehr gibt -> Client vom Server entfernen
@@ -97,7 +99,7 @@ public class ClientThread extends Thread {
 				content = msg.substring(4, msg.length());
 
 				// zun Debuggen:
-				if (debugMode && !order.equals("~~99") && !order.equals("~~98"))
+				if (Lobby.debugMode && !order.equals("~~99") && !order.equals("~~98"))
 					System.out.println("- " + this.client.name + " -> Order:<" + order + "> Content:<" + content + ">");
 
 				switch (order) {
@@ -161,12 +163,12 @@ public class ClientThread extends Thread {
 					this.output.println("~~98"); // Pinge Clienten an
 					pingCount++;
 				} else {
-					if(debugMode)
+					if(Lobby.debugMode)
 						System.out.println("ERROR: <" + this.client.name + "> antwortet nicht mehr - Pingcount: " + pingCount + " -> " + stoe + ": " + stoe.getMessage() );
 					running = false;
 				}
 			} catch (IOException ioe) {
-				if (debugMode)
+				if (Lobby.debugMode)
 					System.out.println("ERROR: keine Antwort von <" + this.client.name + "> : " + ioe + ". Versuch: "
 							+ tryCount);
 				tryCount++;
@@ -201,13 +203,12 @@ public class ClientThread extends Thread {
 
 	private synchronized void leaveGameSession() {
 		try {
-			if (iAmHost) { // bin Host
-				if (this.gameSession.player2 != null) {
+			if (iAmHost) {
+				if (this.gameSession.player2 != null) { // Spieler2 in der Lobby? -> rauswerfen
 					this.gameSession.player2.output.println("~~21");
 					this.gameSession.player2.gameSession = null;
-				} else {
-					lobby.removeGameSession(this.gameSession);
 				}
+				lobby.removeGameSession(this.gameSession);
 				// this.output.println("~~21");
 				this.gameSession = null;
 
@@ -218,7 +219,7 @@ public class ClientThread extends Thread {
 				// this.output.println("~~21");
 			}
 		} catch (Exception e) { // Falls der Client schon geschlossen ist
-			if (debugMode && e.getMessage() != null) {
+			if (Lobby.debugMode && e.getMessage() != null) {
 				System.out.println("E: leaveGame -> " + e.getMessage());
 			}
 		}
@@ -263,7 +264,7 @@ public class ClientThread extends Thread {
 				this.output.println("~~33" + win);
 			}
 		} catch (Exception e) { // Falls der Client schon geschlossen ist
-			if (debugMode && e.getMessage() != null) {
+			if (Lobby.debugMode && e.getMessage() != null) {
 				System.out.println("E: win_lose -> " + e.getMessage());
 			}
 		}
@@ -272,7 +273,7 @@ public class ClientThread extends Thread {
 	private void setStone(int collumn) {
 		boolean correct = this.gameSession.setStone(collumn, this.client);
 
-		if (debugMode)
+		if (Lobby.debugMode)
 			System.out.println("Setstone - Collumn=" + collumn + " correct=" + correct);
 
 		if (correct) {
@@ -289,11 +290,11 @@ public class ClientThread extends Thread {
 
 			if (this.gameSession.gameField.checkWin(collumn, playerNr)) { // Überprüfen, ob ich gewonnen hab
 				win_lose(true);
-				if (debugMode)
+				if (Lobby.debugMode)
 					System.out.println("Setstone - sollte jetzt gewonnen haben.");
 
 			} else {
-				if (debugMode)
+				if (Lobby.debugMode)
 					System.out.println("Setstone - leider nicht gewonnen.");
 
 				this.output.println("~~31false" + ";" + gameSession.gameFieldToString());
@@ -304,7 +305,7 @@ public class ClientThread extends Thread {
 				}
 			}
 		} else {
-			if (debugMode)
+			if (Lobby.debugMode)
 				System.out.println("Setstone - Steinsetzen fehlgeschlagen!");
 
 			this.output.println("~~32false"); // Stein-setzen hat nicht geklappt
@@ -351,7 +352,7 @@ public class ClientThread extends Thread {
 		boolean done = false;
 		String newName = null;
 		int trycount = 1;
-	//	String err = null;
+		String err = null;
 
 		while (!done && trycount <= 3) {
 			try {
@@ -359,14 +360,14 @@ public class ClientThread extends Thread {
 				// Namen Anfordern
 				output.println("~~00");
 
-				if (debugMode)
+				if (Lobby.debugMode)
 					System.out.println("Client nach Name gefragt (~~00)");
 
 				String msg = input.readLine();
 
 				if (msg.substring(0, 4).equals("~~00")) {
 					newName = msg.substring(4, msg.length());
-					if (debugMode)
+					if (Lobby.debugMode)
 						System.out.println("Angefragter Name von Client: " + newName);
 				} // im else-Fall -> newName bleibt null
 
@@ -375,28 +376,26 @@ public class ClientThread extends Thread {
 
 					// Schauen, ob der Name schon vorhanden ist
 					if (lobby.containsPlayer(newName)) {
-						if (debugMode)
+						if (Lobby.debugMode)
 							System.out.println("Name ist schon vergeben -> ~~02 an Client");
 						output.println("~~02"); // Name schon vorhanden
-						trycount = 0;
-			//			err = "Name alredy used ~~02";
-			//			break;
-
+						trycount = 1;
+						err = "Name alredy used ~~02";
+						break;
 					} else {
-						if (debugMode)
+						if (Lobby.debugMode)
 							System.out.println("Name ist gültig -> ~~01 an Client");
 						this.client.name = newName;
 						output.println("~~01"); // Name ist gültig
 						done = true;
 					}
 				} else {
-					if (debugMode)
+					if (Lobby.debugMode)
 						System.out.println("Name ist ungültig -> ~~03 an Client");
 					output.println("~~03"); // Ungültiger Name
-					trycount = 0;
-		//			err = "Name invalid ~~03";
-		//			break;
-					
+					trycount = 1;
+					err = "Name invalid ~~03";
+					break;
 				}
 
 			} catch (Exception e) {
@@ -404,7 +403,7 @@ public class ClientThread extends Thread {
 				if (e.getMessage() != null) {
 					error = e.getMessage();
 				}
-				if (debugMode)
+				if (Lobby.debugMode)
 					System.out.println(
 							"ERROR: Abfragen des ClientNamens fehlgeschlagen: " + error + ". Versuch: " + trycount);
 				trycount++;
@@ -414,13 +413,9 @@ public class ClientThread extends Thread {
 		if (trycount > 3) { // Falls sich der Client nicht mehr gemeldet hat
 			throw new IOException();
 		}
-//		if (err != null) {
-//			throw new NameException(err);
-//		}
-	}
-	
-	public void setDebugMode(boolean dm) {
-		this.debugMode = dm;
+		if (err != null) {
+			throw new NameException(err);
+		}
 	}
 
 	private void formatPlayerList(List<Player> list) {
@@ -438,6 +433,7 @@ public class ClientThread extends Thread {
 		public NameException() {
 			super("NameException");
 		}
+		
 		public NameException(String errMsg) {
 			super(errMsg);
 		}

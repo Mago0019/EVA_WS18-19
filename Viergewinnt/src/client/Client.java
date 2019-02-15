@@ -147,6 +147,8 @@ public class Client extends Thread
 					return 1;
 				case "~~03":
 					return 2;
+				case "~~40": // Server want to shutdown
+					return 4;
 				}
 			}
 			return 0; // Verbinden hat geklappt
@@ -178,7 +180,10 @@ public class Client extends Thread
 		if (this.socket.isClosed())
 		{
 			if (debugMode)
-				System.out.println("Client-Socket ist closed.");
+				System.out.println("Client-Socket ist closed -> back to login");
+			running = false;
+			this.gameController.backToLogin();
+			
 		}
 		while (running && tryCount <= 3)
 		{
@@ -260,6 +265,11 @@ public class Client extends Thread
 						win_loose(Boolean.parseBoolean(content));
 						break;
 
+					case "~~40": // Server want to shutdown
+						logout(); // selbst abmelden
+						this.gameController.backToLogin();
+						break;
+						
 					case "~~98":
 						output.println("~~99");
 						break;
@@ -365,7 +375,6 @@ public class Client extends Thread
 	public void logout()
 	{
 		this.output.println("~~80");
-
 	}
 
 	/* ---Kommunikation mit dem GameController--- */

@@ -5,7 +5,6 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,12 +18,14 @@ public class WellcomeSocket extends Thread {
 	private int PORT;
 	private Lobby lobby = null;
 	private ExecutorService tPool;
+	//private ThreadPoolExecutor tPoolExecutor; // Das wäre noch eine schöne Erweiterung um die Threads zu zählen
 	private ServerSocket empfangsSocket;
 
 	public WellcomeSocket(InetAddress adr, int port) {
 		this.wellcomeSockRunning = true;
 		this.ADR = adr;
 		this.PORT = port;		
+		this.lobby = Lobby.getInstance();
 	}
 	
 	@Override
@@ -33,10 +34,10 @@ public class WellcomeSocket extends Thread {
 			// Benötigte Werkzeuge generieren
 			empfangsSocket = new ServerSocket(PORT, 50, ADR);
 			tPool = Executors.newScheduledThreadPool(10); // CoreSize = 10 für EmpfangsThreads und GameSessions		
-			this.lobby = Lobby.getInstance();
-			
+						
 		} catch (IOException e) {
-			System.out.println("ERROR (WellcomeSocket): Starten des ServerSockets fehlgeschlagen -> " + e);
+			if(Lobby.debugMode)
+				System.out.println("ERROR (WellcomeSocket): Starten des ServerSockets fehlgeschlagen -> " + e);
 			wellcomeSockRunning = false; // der Rest darf nun nicht mehr ausgeführt werden.
 		}
 		
@@ -48,11 +49,22 @@ public class WellcomeSocket extends Thread {
 				tPool.execute( new ClientThread(newSocket, lobby) );
 				
 			} catch (SocketException se) {
-				System.out.println("ERROR: SocketException / Timeout");
+				if(Lobby.debugMode)
+					System.out.println("ERROR (WellcomeSocket): SocketException / Timeout");
 			} catch (IOException ioe) {
-				System.out.println();
+				if(Lobby.debugMode)
+					System.out.println("ERROR: (WellcomeSocket):" + ioe);
 			}
 			
-		}
+		} // end While
+	}
+	
+	public ExecutorService getThreadPool() {
+		return this.tPool;
+	}
+	
+	public void shutdown() {
+		this.wellcomeSockRunning = false;
+		this.interrupt();
 	}
 }

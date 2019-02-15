@@ -185,6 +185,8 @@ public class JoinServerController
 			case 3: // Verbindung konnte nicht aufgebaut werden
 				this.Error_TF.setText("Die Verbindung zum Server konnte nicht aufgebaut werden.");
 				this.Error_TF.setVisible(true);
+			case 4: // Server hat sich herunter gefahren.
+				serverShutdown();
 			}
 
 		} catch (
@@ -203,5 +205,15 @@ public class JoinServerController
 			e.printStackTrace();
 		}
 
+	}
+
+
+	public void serverShutdown() {
+		this.Error_TF.setText("Der Server hat sich heruntergefahren.");
+		this.Error_TF.setVisible(true);
+	}
+	
+	private void closeWindowEvent(WindowEvent event) { // momentan nicht benutzt
+		this.client.logout();
 	}
 }
