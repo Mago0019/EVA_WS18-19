@@ -73,6 +73,8 @@ public class JoinServerController
 	@FXML
 	private Button joinServer_B;
 
+	private Client client;
+	
 	@FXML
 	public void event_Menue_Beenden(ActionEvent eventBeendenPressed)
 	{
@@ -149,7 +151,10 @@ public class JoinServerController
 
 			GameController gameC = fxmlLoader.getController();
 			gameC.initialize();
-			Client client = new Client(gameC);
+			
+			if (this.client == null) {
+				this.client = new Client(gameC);
+			}
 			String spielerName = SpielerName_TF.getText();
 			int verbindungErfolgreich;
 			if (spielerName.contains(",") || spielerName.contains(";") || spielerName.contains("~"))
@@ -157,12 +162,12 @@ public class JoinServerController
 				verbindungErfolgreich = 2;
 			} else
 			{
-				verbindungErfolgreich = client.serverConnect(ServerIP_TF.getText(),
+				verbindungErfolgreich = this.client.serverConnect(ServerIP_TF.getText(),
 						Integer.parseInt(ServerPort_TF.getText()), SpielerName_TF.getText());
 			}
 			if (verbindungErfolgreich == 0)
 			{
-				client.start();
+				this.client.start();
 				lobbyStage.setScene(scene);
 				lobbyStage.show();
 			} else
