@@ -1,19 +1,12 @@
 package server;
 
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Thread-Klasse die alle aktiven Clients des Servers verwaltet. TODO: Lobby
- * statisch machen (falls es geht) -> Zugriff von überall möglich (singleton,
- * vll threadlos)
- * 
- * TODO(EVTL): Spieler ID Generieren lassen -> später vll interessant, falls
- * Spieler den gleichen Namen haben.
- * 
- * KRITISCHE KLASSE! MUSS THREADSAFE SEIN!
+ * Objekt das alle aktiven Clients und offenen Spiele des Servers verwaltet.
+ * (singleton) Bei Änderungen werden alle aktiven Spieler benachrichtigt
  */
 public class Lobby {
 
@@ -21,16 +14,13 @@ public class Lobby {
 	// private List<Player> inGameList;
 	private List<GameSession> openGameList;
 	private static Lobby instance;
+	public static volatile boolean debugMode = false;
 
 	private Lobby() { // privater Konstruktor
 		this.lobbyList = new LinkedList<Player>();
 		// this.inGameList = new LinkedList<Player>();
 		this.openGameList = new LinkedList<GameSession>();
-
-		/*
-		 * // TODO: NUR ZUM TESTEN: Füllen der Lobby for (int i = 1; i < 5; i++) {
-		 * lobbyList.add(new Player("Dummy " + i, null)); }
-		 */ }
+	}
 
 	public static synchronized Lobby getInstance() { // Synchronized, damit nicht ausversehen 2 Objekte erzeugt werden.
 		if (instance != null)
@@ -43,7 +33,6 @@ public class Lobby {
 		this.lobbyList.add(player);
 		// Alle anderen Spieler informieren
 		for (Player p : lobbyList) {
-			// System.out.println("Player: " + p.name);
 			try {
 				PrintStream ps = new PrintStream(p.socket.getOutputStream()); // darf nicht geschlossen werden
 				StringBuilder sb = new StringBuilder("~~10");
@@ -129,10 +118,6 @@ public class Lobby {
 		return this.openGameList;
 	}
 
-//	public synchronized void addPlayerToLobby(Player player) {
-//		
-//	}
-
 	public boolean containsPlayer(String name) { // Problem: Wenn ein spieler gerade ein spiel verlässt/startet
 		for (Player p : lobbyList) {
 			if (p.name.equals(name)) {
@@ -140,5 +125,22 @@ public class Lobby {
 			}
 		}
 		return false;
+	}
+	
+	public void disconnectAllPlayers() {
+		for(Player p : this.lobbyList) {
+			try {
+				PrintStream ps = new PrintStream(p.socket.getOutputStream()); // darf nicht geschlossen werden
+				ps.println("~~40"); //disconnect Client
+			} catch (Exception e) {}
+		}
+	}
+	
+	public void clearLobby() {
+		this.lobbyList.clear();
+		this.lobbyList = null;
+		this.openGameList.clear();
+		this.openGameList = null;
+		this.instance = null;
 	}
 }

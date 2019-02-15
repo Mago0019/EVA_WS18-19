@@ -375,8 +375,7 @@ public class GameController
 	{
 		try
 		{
-			// TODO: vll Fenster mit Abfrage, ob beendet werden soll / ob noch gespeichert
-			// werden soll.
+			// TODO: vll Fenster mit Abfrage, ob beendet werden soll
 			this.client.logout();
 			System.out.println("Programm beenden.");
 			Stage stage = (Stage) root.getScene().getWindow();
