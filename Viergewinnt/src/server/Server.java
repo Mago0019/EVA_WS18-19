@@ -46,20 +46,20 @@ public class Server {
 						break;
 
 					default:
-						System.out.println(" - wrong command -");
+							System.out.println(" - wrong command -");
 						break;
 					}
 
 				} catch (Exception e) {
-					e.printStackTrace();
-					System.out.println("ERROR: Verbindungsaufbau mit Clienten fehlgeschlagen.");
+					if(e.getMessage() != null) {
+						System.out.println("Server-Error -> " + e.getMessage());						
+					}
 				}
 			} // end While
-
-			System.out.println("Server erfolgreich beendet.");
+			System.out.println("Server beendet.");
 
 		} catch (Exception e) {
-			System.out.println("ERROR: Server abgestürzt!");
+			System.out.println("Erver-Error: Server abgestürzt!");
 		}
 
 	}

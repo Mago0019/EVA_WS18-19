@@ -48,6 +48,7 @@ public class GameField {
 	public boolean checkWin(int collumn, int player) {
 		int row = 0;
 		int counter = 0;
+		collumn--;
 
 		for (int i = 0; i < hight; i++) {
 			if (this.field[collumn][i] == player) {
@@ -56,7 +57,7 @@ public class GameField {
 			}
 		}
 		
-		System.out.println("CheckWin - col=" + collumn + " row="+row);
+	//	System.out.println("CheckWin - col=" + collumn + " row="+row);
 		
 		// Senkrechte prüfen
 
@@ -71,7 +72,7 @@ public class GameField {
 				counter = 0;
 			}
 		}
-		System.out.println("CheckWin - Senkrechte geprüft counter="+counter);
+	//	System.out.println("CheckWin - Senkrechte geprüft counter="+counter);
 		
 		counter = 0;
 		// Waagrechte überprüfen
@@ -88,7 +89,7 @@ public class GameField {
 				counter = 0;
 			}
 		}
-		System.out.println("CheckWin - Waagrechte geprüft counter="+counter);
+//		System.out.println("CheckWin - Waagrechte geprüft counter="+counter);
 		
 		counter = 0;
 		// Diagonale von links-unten nach rechts-oben prüfen
@@ -96,14 +97,14 @@ public class GameField {
 		int startCol = collumn;
 		int startRow = row;
 		
-		while(startCol <= 0 && startRow <= hight-1) {
+		while(startCol > 0 && startRow < hight-1) {
 			startCol--;
 			startRow++;
 		}
 		
-		System.out.println("CheckWin - found StartTile:["+startCol+"]["+startRow+"]");
+	//	System.out.println("CheckWin - found StartTile:["+startCol+"]["+startRow+"]");
 		
-		while(startCol <= width-1 && startRow <= 0) {
+		while(startCol <= width-1 && startRow > 0) {
 			if(field[startCol][startRow] == player) {
 				counter++;
 				if (counter == 4) {
@@ -113,21 +114,21 @@ public class GameField {
 			startCol++;
 			startRow--;			
 		}
-		System.out.println("CheckWin - erste Diagonale geprüft counter="+counter);
+	//	System.out.println("CheckWin - erste Diagonale geprüft counter="+counter);
 		counter = 0;
 		// Diagonale von links-oben nach rechts-unten prüfen
 
 		startCol = collumn;
 		startRow = row;
 		
-		while(startCol >= 0 && startRow >= 0) { // gehe nach links oben
+		while(startCol > 0 && startRow > 0) { // gehe nach links oben
 			startCol--;
 			startRow--;
 		}
 		
-		System.out.println("CheckWin - found StartTile:["+startCol+"]["+startRow+"]");
+	//	System.out.println("CheckWin - found StartTile:["+startCol+"]["+startRow+"]");
 		
-		while(startCol <= width-1 && startRow <= hight-1) {
+		while(startCol <= width-1 && startRow <= hight-1) { //TODO: <= vll wieder einsetzen?
 			if(field[startCol][startRow] == player) {
 				counter++;
 				if (counter == 4) {
@@ -137,9 +138,13 @@ public class GameField {
 			startCol++;
 			startRow++;			
 		}
-		System.out.println("CheckWin - zweite Diagonale geprüft counter="+counter);
+	//	System.out.println("CheckWin - zweite Diagonale geprüft counter="+counter);
 
 		return false;
+	}
+
+	public void clearField() {
+		this.field = new int[7][6];
 	}
 
 }

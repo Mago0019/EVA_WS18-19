@@ -7,16 +7,13 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-
-import sun.nio.cs.Surrogate;
 
 /**
  * Kleine Thread-Klasse, die den Clienten nach dem Namen fragt und ihn dann in
  * die Lobby einträgt. Danach wird die Kommunikation mit der Lobby geregelt.
  * 
- * IDEE: Startet die GameSessions aus der Lobby. Kümmert sich also weiter um den
- * Clienten.
+ * Erzeugt die GameSessions. Kümmert sich also weiter um die Kommunikation mit
+ * den Clienten.
  */
 public class ClientThread extends Thread {
 
@@ -28,17 +25,20 @@ public class ClientThread extends Thread {
 	boolean running;
 	BufferedReader input;
 	PrintStream output;
+	boolean debugMode;
 
 	public ClientThread(Socket clientSocket, Lobby lobby) {
 		client = new Player("", clientSocket);
 		// this.client.socket = clientSocket;
 		this.lobby = lobby;
 		this.running = true;
+		this.debugMode = false;
 	}
 
 	@Override
 	public void run() {
-		System.out.println("\nClientThread gestartet.");
+		if (debugMode)
+			System.out.println("\nNeuer ClientThread gestartet.");
 
 		// IO deklarieren für Lebenszeit des Threads
 		try (BufferedReader input = new BufferedReader(new InputStreamReader(client.socket.getInputStream()));
@@ -54,6 +54,7 @@ public class ClientThread extends Thread {
 			askForPlayerName();
 
 			// In die Lobby einfügen
+			System.out.println("- New client joined: " + this.client.name);
 			lobby.addPlayer(this.client);
 
 			// jetzt die Kommunikation regeln
@@ -62,10 +63,10 @@ public class ClientThread extends Thread {
 		} catch (IOException ioe) {
 			System.out.println("ERROR: Verbindung mit Clienten verloren!");
 		} catch (Exception e) {
-			System.out.println("ERROR: ClientThread abgestürzt -> " + e.getMessage());
-			e.printStackTrace();
+			System.out.println("ERROR: ClientThread abgestürzt -> " + e.getMessage() );
+			//e.printStackTrace();
 		} finally {
-			System.out.println("- " + this.client.name + " -> Baue Verbindung ab.");
+			System.out.println("- Client left: " + this.client.name + " -> close connection.");
 			logoutClient(); // Wenn es keine Kommunikation mehr gibt -> Client vom Server entfernen
 		}
 	}
@@ -90,7 +91,7 @@ public class ClientThread extends Thread {
 				content = msg.substring(4, msg.length());
 
 				// zun Debuggen:
-				if (!order.equals("~~99") && !order.equals("~~98"))
+				if (debugMode && !order.equals("~~99") && !order.equals("~~98"))
 					System.out.println("- " + this.client.name + " -> Order:<" + order + "> Content:<" + content + ">");
 
 				switch (order) {
@@ -119,8 +120,8 @@ public class ClientThread extends Thread {
 					try {
 						setStone(Integer.parseInt(content));
 					} catch (NumberFormatException e) {
-						System.out.println(
-								"ERROR: Das hätte nicht passieren sollen. Die Spalteneingabe ist keine Zahl gewesen!");
+						System.out
+								.println("ERROR: Das hätte nicht passieren sollen. NumberFormatExc. auf Serverseite!");
 						// Sollte nicht auftreten, da die Client-UI auf Fehleingaben prüft
 					}
 					break;
@@ -161,7 +162,9 @@ public class ClientThread extends Thread {
 				if (ioe.getMessage() != null) {
 					error = ioe.getMessage();
 				}
-				System.out.println("ERROR: keine Antwort von <" + this.client.name + "> : " + error + ". Versuch: " + tryCount);
+				if (debugMode)
+					System.out.println("ERROR: keine Antwort von <" + this.client.name + "> : " + error + ". Versuch: "
+							+ tryCount);
 				tryCount++;
 				// ioe.printStackTrace();
 			}
@@ -187,7 +190,8 @@ public class ClientThread extends Thread {
 				lobby.removeGameSession(gs);
 				this.iAmHost = false;
 
-				this.gameSession.player1.output.println("~~20" + this.client.name); // Host mitteilen, dass gejoint wurde
+				this.gameSession.player1.output.println("~~20" + this.client.name); // Host mitteilen, dass gejoint
+																					// wurde
 			}
 		}
 	}
@@ -211,11 +215,10 @@ public class ClientThread extends Thread {
 				// this.output.println("~~21");
 			}
 		} catch (Exception e) { // Falls der Client schon geschlossen ist
-			if (e.getMessage() != null) {
+			if (debugMode && e.getMessage() != null) {
 				System.out.println("E: leaveGame -> " + e.getMessage());
 			}
 		}
-
 	}
 
 	private void startGame() { // Du bist Host und hast das Spiel gestartet.
@@ -244,6 +247,11 @@ public class ClientThread extends Thread {
 
 	private void win_lose(boolean win) { // ich habe aufgegeben -> win = false
 		try {
+			// reset Gamefield
+
+			this.gameSession.gameField.clearField();
+
+			// Gewinnnachricht abschicken
 			if (iAmHost) { // bin Host
 				this.gameSession.player2.output.println("~~33" + !win);
 				this.output.println("~~33" + win);
@@ -252,7 +260,7 @@ public class ClientThread extends Thread {
 				this.output.println("~~33" + win);
 			}
 		} catch (Exception e) { // Falls der Client schon geschlossen ist
-			if (e.getMessage() != null) {
+			if (debugMode && e.getMessage() != null) {
 				System.out.println("E: win_lose -> " + e.getMessage());
 			}
 		}
@@ -260,7 +268,9 @@ public class ClientThread extends Thread {
 
 	private void setStone(int collumn) {
 		boolean correct = this.gameSession.setStone(collumn, this.client);
-		System.out.println("Setstone - Collumn="+collumn + " correct="+correct);
+
+		if (debugMode)
+			System.out.println("Setstone - Collumn=" + collumn + " correct=" + correct);
 
 		if (correct) {
 			this.output.println("~~32true"); // Stein-setzen hat geklappt
@@ -270,16 +280,19 @@ public class ClientThread extends Thread {
 			} else {
 				playerNr = -1;
 			}
-			
-			System.out.println("Setstone - currentPlayerNr:"+playerNr + " . Prüfe ob gewonnen...");
-			
+
+			// System.out.println("Setstone - currentPlayerNr:" + playerNr + " . Prüfe ob
+			// gewonnen...");
+
 			if (this.gameSession.gameField.checkWin(collumn, playerNr)) { // Überprüfen, ob ich gewonnen hab
 				win_lose(true);
-				System.out.println("Setstone - sollte jetzt gewonnen haben.");
+				if (debugMode)
+					System.out.println("Setstone - sollte jetzt gewonnen haben.");
 
 			} else {
-				System.out.println("Setstone - leider nicht gewonnen.");
-				
+				if (debugMode)
+					System.out.println("Setstone - leider nicht gewonnen.");
+
 				this.output.println("~~31false" + ";" + gameSession.gameFieldToString());
 				if (iAmHost) { // anderem Clienten bescheid geben, wer am Zug ist
 					this.gameSession.player2.output.println("~~31true" + ";" + gameSession.gameFieldToString());
@@ -288,8 +301,9 @@ public class ClientThread extends Thread {
 				}
 			}
 		} else {
-			System.out.println("Setstone - Steinsetzen fehlgeschlagen!"); // TODO: ausgaben entfernen
-			
+			if (debugMode)
+				System.out.println("Setstone - Steinsetzen fehlgeschlagen!");
+
 			this.output.println("~~32false"); // Stein-setzen hat nicht geklappt
 		}
 
@@ -320,7 +334,6 @@ public class ClientThread extends Thread {
 	}
 
 	private void logoutClient() {
-
 		if (this.gameSession != null) { // bin min in der Lobby
 			if (this.gameSession.playerTurn != 0) { // Spiel hat schon angefangen
 				win_lose(false); // gebe auf
@@ -342,16 +355,16 @@ public class ClientThread extends Thread {
 				// Namen Anfordern
 				output.println("~~00");
 				// output.flush();
-				System.out.println("Client nach Name gefragt (~~00)");
 
-				// TODO: Namen empfangen / Marshalling + DeMarshalling in extra Methoden
+				if (debugMode)
+					System.out.println("Client nach Name gefragt (~~00)");
+
 				String msg = input.readLine();
-
-				// System.out.println("DEBUG: msg: " + msg + " Code: " + msg.subSequence(0, 4));
 
 				if (msg.substring(0, 4).equals("~~00")) {
 					newName = msg.substring(4, msg.length());
-					System.out.println("Angefragter Name von Client: " + newName);
+					if (debugMode)
+						System.out.println("Angefragter Name von Client: " + newName);
 				} // im else-Fall -> newName bleibt null
 
 				// neuen Namen überprüfen
@@ -359,18 +372,21 @@ public class ClientThread extends Thread {
 
 					// Schauen, ob der Name schon vorhanden ist
 					if (lobby.containsPlayer(newName)) {
-						System.out.println("Name ist schon vergeben -> ~~02 an Client");
+						if (debugMode)
+							System.out.println("Name ist schon vergeben -> ~~02 an Client");
 						output.println("~~02"); // Name schon vorhanden
 						trycount = 0;
 
 					} else {
-						System.out.println("Name ist gültig -> ~~01 an Client");
+						if (debugMode)
+							System.out.println("Name ist gültig -> ~~01 an Client");
 						this.client.name = newName;
 						output.println("~~01"); // Name ist gültig
 						done = true;
 					}
 				} else {
-					System.out.println("Name ist ungültig -> ~~03 an Client");
+					if (debugMode)
+						System.out.println("Name ist ungültig -> ~~03 an Client");
 					output.println("~~03"); // Ungültiger Name
 					trycount = 0;
 				}
@@ -380,8 +396,9 @@ public class ClientThread extends Thread {
 				if (e.getMessage() != null) {
 					error = e.getMessage();
 				}
-				System.out.println(
-						"ERROR: Abfragen des ClientNamens fehlgeschlagen: " + error + ". Versuch: " + trycount);
+				if (debugMode)
+					System.out.println(
+							"ERROR: Abfragen des ClientNamens fehlgeschlagen: " + error + ". Versuch: " + trycount);
 				trycount++;
 			}
 		} // end While
@@ -391,6 +408,10 @@ public class ClientThread extends Thread {
 							// trycount);
 			throw new IOException();
 		}
+	}
+	
+	public void setDebugMode(boolean dm) {
+		this.debugMode = dm;
 	}
 
 	private void formatPlayerList(List<Player> list) {
