@@ -213,6 +213,7 @@ public class GameController
 					break;
 				case 1:
 					player2_TF.setText(" - ");
+					startGame_B.setDisable(true);
 					break;
 				}
 			}
