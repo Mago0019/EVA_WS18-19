@@ -104,8 +104,10 @@ public class Client extends Thread
 			this.name = spielerName;
 			boolean done = false;
 
-			System.out.println("Server - ip: " + serverIP + ":" + serverPort);
-			System.out.println("Player - ip: " + InetAddress.getLocalHost().getHostAddress() + " PlayerName: " + name);
+			System.out.println("Server - IP: " + serverIP + ":" + serverPort);
+			System.out.println("Player - IP: " + InetAddress.getLocalHost().getHostAddress());
+			System.out.println("PlayerName: " + name);
+			
 			if (this.socket == null)
 			{
 				if (debugMode)

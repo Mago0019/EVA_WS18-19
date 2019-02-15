@@ -1,0 +1,44 @@
+Befehle vom Server		
+Code	Bedeutung	Anhang
+~~00	Anfrage des Spielernamens	
+~~01	Name gültig	
+~~02	Name schon vorhanden	
+~~03	Name ungültig	
+		
+~~10	Update LobbyList	SpielerListe
+~~11	Update openGames	GameListe
+		
+~~20	other Player joined GameLobby	Name des 2. Spielers
+~~21	other Player left GameLobby	
+		
+~~30	Game startet	
+~~31	Your Turn/ Others Turn	Boolean;Spielfeld
+~~32	TurnResponse (valide Turn?)	Boolean
+~~33	You Lost/Won	Boolean
+		
+~~40	disconnect Client	
+		
+~~98	Pinganfrage	
+~~99	Pingantwort	
+
+-----------------------------------------------------------------------
+
+Befehle vom Clienten		
+Code	Bedeutung	Anhang
+~~00	Antwort mit Spelernamen	Name
+		
+~~50	create Game	
+~~51	join Game	SpielName
+~~52	leave Game	
+~~53	start Game	
+~~54	surrender Game	
+		
+~~60	set Stone	Collumn
+		
+~~70	give me PlayerLobby	
+~~71	give me OpenGames	
+		
+~~80	Logout			
+		
+~~98	Pinganfrage	
+~~99	Pingantwort	

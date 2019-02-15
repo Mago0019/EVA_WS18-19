@@ -4,7 +4,6 @@ import java.net.InetAddress;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Startet das WellcomeSocket und arbeitet dann als IO-Thread für den Server.
@@ -72,7 +71,7 @@ public class Server {
 
 				}
 			} // end While
-			System.out.println("Server beendet.");
+			System.out.println("Server closed.");
 			System.exit(0);
 
 		} catch (Exception e) {
