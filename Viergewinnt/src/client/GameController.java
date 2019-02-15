@@ -399,7 +399,7 @@ public class GameController
 			alert.setTitle("Über");
 			alert.setHeaderText("VierGewinnt");
 			alert.setContentText(
-					"VierGewinnt 2D\nVersion 0.3  -  28.11.18\n\nGeschrieben von Patrick Geerds und Manuel Golz\nEntwicklung-Verteilter-Systeme im WS 18/19");
+					"VierGewinnt 2D\nVersion 3.3  -  28.11.18\n\nGeschrieben von Patrick Geerds und Manuel Golz\nEntwicklung-Verteilter-Systeme im WS 18/19");
 			alert.show();
 
 		} catch (Exception e)

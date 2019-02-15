@@ -67,9 +67,10 @@ public class ClientThread extends Thread {
 		} 
 		catch (IOException ioe) {
 			System.out.println("ERROR: Verbindung mit Clienten verloren!");
+			ioe.printStackTrace();
 		} catch (Exception e) {
 			System.out.println("ERROR: ClientThread abgestürzt -> " + e.getMessage() );
-			//e.printStackTrace();
+			e.printStackTrace();
 		} finally {
 			System.out.println("- Client left: " + this.client.name + " -> close connection.");
 			logoutClient(); // Wenn es keine Kommunikation mehr gibt -> Client vom Server entfernen
@@ -160,6 +161,8 @@ public class ClientThread extends Thread {
 					this.output.println("~~98"); // Pinge Clienten an
 					pingCount++;
 				} else {
+					if(debugMode)
+						System.out.println("ERROR: <" + this.client.name + "> antwortet nicht mehr - Pingcount: " + pingCount + " -> " + stoe + ": " + stoe.getMessage() );
 					running = false;
 				}
 			} catch (IOException ioe) {
@@ -169,7 +172,7 @@ public class ClientThread extends Thread {
 				}
 				if (debugMode)
 					System.out.println("ERROR: keine Antwort von <" + this.client.name + "> : " + error + ". Versuch: "
-							+ tryCount);
+							+ tryCount + "");
 				tryCount++;
 				// ioe.printStackTrace();
 			}

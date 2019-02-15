@@ -96,6 +96,7 @@ public class Client extends Thread
 	{
 		try
 		{
+			// Baue Verbindung auf
 			this.serverIP = serverIP;
 			this.serverPort = serverPort;
 			this.name = spielerName;
@@ -105,25 +106,31 @@ public class Client extends Thread
 			System.out.println("Player - ip: " + InetAddress.getLocalHost().getHostAddress() + " PlayerName: " + name);
 			if (this.socket == null)
 			{
-				this.socket = new Socket(this.serverIP, this.serverPort); // TODO: vll Port ändern
+				System.out.println("Client -> Socket neu erstellt.");
+				this.socket = new Socket(this.serverIP, this.serverPort);
 				socket.setSoTimeout(15_000);
 			} else
 			{
-				System.out.println("Alte serverInetAdress: " + this.socket.getInetAddress().toString());
+				System.out.println("Client -> Socket bereits vorhanden");
 				StringBuilder sb = new StringBuilder(this.socket.getInetAddress().toString());
 				sb.deleteCharAt(0);
-				if (!sb.toString().equals(this.serverIP) || this.socket.getPort() != this.serverPort) // falls jetzt eine neue IP oder ein neuer Port angegeben wurde
+				System.out.println("alte IP: " + sb.toString() + " -> neue IP: " + this.serverIP);
+				if (!sb.toString().equals(this.serverIP)) // falls jetzt eine neue IP angegeben wurde
 				{
 					this.socket.close();
 					this.socket = new Socket(this.serverIP, this.serverPort);
+					socket.setSoTimeout(15_000);
 				}
 			}
 
+			
+			// Sende Spielernamen
 			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			PrintStream output = new PrintStream(socket.getOutputStream());
+			String serverNachricht = null;
 			while (!done)
 			{
-				String serverNachricht = input.readLine();
+				serverNachricht = input.readLine();
 				switch (serverNachricht)
 				{
 				case "~~00":
@@ -145,22 +152,16 @@ public class Client extends Thread
 		{
 			System.out.println("ERROR: Server connect fehlgeschlagen -> " +e + " : " + e.getMessage());
 			//e.printStackTrace();
-			try
-			{
+			try	{
 				if (socket != null)
-				{
 					socket.close();
-				}
-			} catch (IOException e1)
+				
+			} catch (Exception e2)
 			{
-				System.out.println("IOException e1: ");
-				e1.printStackTrace();
-			} catch (Exception ex)
-			{
-				System.out.println("Allgemeine Exception beim Socket close");
-				ex.printStackTrace();
+				System.out.println("Socket-Schließen fehlgeschlagen -> " + e2 + " : " + e2.getMessage());
+				
 			}
-			return 3;
+			return 3; // verbindung konnte nicht aufgebaut werden.
 		}
 
 	}
@@ -189,8 +190,9 @@ public class Client extends Thread
 				String content = msg.substring(4, msg.length());
 				LinkedList<String> tempList = new LinkedList<String>();
 
-				if (!order.equals("~~99") && !order.equals("~~98"))
-
+				//if (!order.equals("~~99") && !order.equals("~~98"))
+				System.out.println("- " + this.name + " -> Order:<" + order + "> Content:<" + content + ">");
+				
 					switch (order)
 					{
 
@@ -273,6 +275,7 @@ public class Client extends Thread
 					pingCount++;
 				} else
 				{
+					System.out.println("Server meldet sich nicht mehr -> Pingcount: " + pingCount + "  => Beende Client");
 					running = false;
 				}
 			} catch (IOException ioe)
@@ -282,8 +285,8 @@ public class Client extends Thread
 				// ioe.printStackTrace();
 			} catch (Exception e)
 			{
-				System.out.println("DEBUG: Allgemeine Exceptionn: ");
-				e.printStackTrace();
+				System.out.println("DEBUG: Allgemeine Exception: " + e);
+				
 			}
 		}
 
