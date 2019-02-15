@@ -439,7 +439,7 @@ public class GameController
 				try {
 					FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/client/JoinServer.fxml"));
 					Pane mainPane = fxmlLoader.load();
-					Scene scene = new Scene(mainPane);
+					Scene scene = new Scene(mainPane); // hat mal NullPointer geworfen
 					
 					scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 					Stage loginStage = (Stage) root.getScene().getWindow();

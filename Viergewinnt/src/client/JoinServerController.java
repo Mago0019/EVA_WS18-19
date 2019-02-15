@@ -140,9 +140,9 @@ public class JoinServerController {
 			GameController gameC = fxmlLoader.getController();
 			gameC.initialize();
 
-			if (this.client == null) {
+			//if (this.client == null) {
 				this.client = new Client(gameC);
-			}
+			//}
 			String spielerName = SpielerName_TF.getText();
 			int verbindungErfolgreich;
 			if (spielerName.contains(",") || spielerName.contains(";") || spielerName.contains("~")) {

@@ -108,12 +108,14 @@ public class Client extends Thread
 			System.out.println("Player - ip: " + InetAddress.getLocalHost().getHostAddress() + " PlayerName: " + name);
 			if (this.socket == null)
 			{
-				System.out.println("Client -> Socket neu erstellt.");
+				if (debugMode)
+					System.out.println("Client -> Socket neu erstellt.");
 				this.socket = new Socket(this.serverIP, this.serverPort);
 				socket.setSoTimeout(15_000);
 			} else
 			{
-				System.out.println("Client -> Socket bereits vorhanden");
+				if (debugMode)
+					System.out.println("Client -> Socket bereits vorhanden");
 				StringBuilder sb = new StringBuilder(this.socket.getInetAddress().toString());
 				sb.deleteCharAt(0);
 				System.out.println("alte IP: " + sb.toString() + " -> neue IP: " + this.serverIP);
@@ -147,20 +149,19 @@ public class Client extends Thread
 					return 2;
 				}
 			}
-
 			return 0; // Verbinden hat geklappt
 
 		} catch (Exception e)
 		{
 			System.out.println("ERROR: Server connect fehlgeschlagen -> " +e + " : " + e.getMessage());
-			//e.printStackTrace();
 			try	{
 				if (socket != null)
 					socket.close();
 				
 			} catch (Exception e2)
 			{
-				System.out.println("Socket-Schließen fehlgeschlagen -> " + e2 + " : " + e2.getMessage());
+				if (debugMode)
+					System.out.println("Socket-Schließen fehlgeschlagen -> " + e2 + " : " + e2.getMessage());
 				
 			}
 			return 3; // verbindung konnte nicht aufgebaut werden.
@@ -176,7 +177,8 @@ public class Client extends Thread
 		int pingCount = 1;
 		if (this.socket.isClosed())
 		{
-			System.out.println("Client-Socket ist closed.");
+			if (debugMode)
+				System.out.println("Client-Socket ist closed.");
 		}
 		while (running && tryCount <= 3)
 		{
@@ -192,8 +194,8 @@ public class Client extends Thread
 				String content = msg.substring(4, msg.length());
 				LinkedList<String> tempList = new LinkedList<String>();
 
-				//if (!order.equals("~~99") && !order.equals("~~98"))
-				System.out.println("- " + this.name + " -> Order:<" + order + "> Content:<" + content + ">");
+				if (debugMode && !order.equals("~~99") && !order.equals("~~98"))
+					System.out.println("- " + this.name + " -> Order:<" + order + "> Content:<" + content + ">");
 				
 					switch (order)
 					{

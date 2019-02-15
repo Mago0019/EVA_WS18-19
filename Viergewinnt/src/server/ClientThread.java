@@ -166,15 +166,10 @@ public class ClientThread extends Thread {
 					running = false;
 				}
 			} catch (IOException ioe) {
-				String error = "-";
-				if (ioe.getMessage() != null) {
-					error = ioe.getMessage();
-				}
 				if (debugMode)
-					System.out.println("ERROR: keine Antwort von <" + this.client.name + "> : " + error + ". Versuch: "
-							+ tryCount + "");
+					System.out.println("ERROR: keine Antwort von <" + this.client.name + "> : " + ioe + ". Versuch: "
+							+ tryCount);
 				tryCount++;
-				// ioe.printStackTrace();
 			}
 		}
 
@@ -363,7 +358,6 @@ public class ClientThread extends Thread {
 				newName = null;
 				// Namen Anfordern
 				output.println("~~00");
-				// output.flush();
 
 				if (debugMode)
 					System.out.println("Client nach Name gefragt (~~00)");
