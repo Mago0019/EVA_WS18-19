@@ -21,8 +21,8 @@ public class Server {
 
 			// SERVER-DATEN
 			int PORT = 19009;
-			InetAddress ADR = InetAddress.getLocalHost();
-//			InetAddress ADR = InetAddress.getByName("10.0.3.36");
+	//		InetAddress ADR = InetAddress.getLocalHost();
+			InetAddress ADR = InetAddress.getByName("10.0.3.36");
 			System.out.println("Server IP: " + ADR.getHostAddress() + ":" + PORT + "\n");
 
 			lobby = Lobby.getInstance();
