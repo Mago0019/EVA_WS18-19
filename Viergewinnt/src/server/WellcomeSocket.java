@@ -53,7 +53,10 @@ public class WellcomeSocket extends Thread {
 					System.out.println("ERROR (WellcomeSocket): SocketException / Timeout");
 			} catch (IOException ioe) {
 				if(Lobby.debugMode)
-					System.out.println("ERROR: (WellcomeSocket):" + ioe);
+					System.out.println("ERROR (WellcomeSocket):" + ioe);
+			} catch(Exception e) {
+				if(Lobby.debugMode)
+					System.out.println("ERROR (WellcomeSocket): " + e);
 			}
 			
 		} // end While

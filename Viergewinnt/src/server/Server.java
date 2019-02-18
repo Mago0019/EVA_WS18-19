@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutorService;
 public class Server {
 	public static boolean serverRunning = true;
 	private static WellcomeSocket wellcomeSocket;
-	private static ExecutorService tPool;
+	private static ExecutorService tPool; // momentan nicht gebraucht
 	private static Lobby lobby;
 
 	public static void main(String[] args) {
@@ -21,8 +21,8 @@ public class Server {
 
 			// SERVER-DATEN
 			int PORT = 19009;
-//			InetAddress ADR = InetAddress.getLocalHost();
-			InetAddress ADR = InetAddress.getByName("10.0.3.36");
+			InetAddress ADR = InetAddress.getLocalHost();
+//			InetAddress ADR = InetAddress.getByName("10.0.3.36");
 			System.out.println("Server IP: " + ADR.getHostAddress() + ":" + PORT + "\n");
 
 			lobby = Lobby.getInstance();
